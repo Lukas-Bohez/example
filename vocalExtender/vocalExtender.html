@@ -167,9 +167,11 @@
     .badge { font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 10px; display: inline-block; }
     .badge-teal { background: var(--teal-dim); color: var(--teal); border: 1px solid var(--teal2); }
     .badge-coral { background: rgba(245,108,122,0.1); color: var(--coral); border: 1px solid var(--coral2); }
-    .ph-warn { color: var(--amber); font-size: 10px; margin-top: 3px; }
     #tlOffsets { padding: 8px 16px; background: var(--bg2); border-bottom: 1px solid var(--border); display: flex; gap: 12px; flex-wrap: wrap; }
     #tlWrap { flex: 1; overflow: auto; }
+
+    /* Unit badge in prompt area */
+    .unit-badge { display: inline-block; font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 4px; background: #1a1400; color: var(--amber); border: 1px solid #6b4e08; vertical-align: middle; margin-left: 4px; }
   </style>
 </head>
 <body>
@@ -308,8 +310,8 @@
             <div id="dock-header"><span style="font-weight:700;font-size:10px;text-transform:uppercase;color:var(--text3)">AI Response</span><span class="spacer"></span><span style="font-size:10px;color:var(--text3)">Paste JSON → Auto-Fix → Preview → Apply</span></div>
             <div id="dock-body" style="height:240px">
               <div id="dock-paste">
-                <label style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--text3)">JSON Response</label>
-                <textarea id="aiResponseInput" placeholder='[{"onset":0,"dur_ns":705600000,"pitch":60,"lyric":"きょ","phoneme":""},...]'></textarea>
+                <label style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--text3)">JSON Response <span class="unit-badge">onset_ns + dur_ns = nanoseconds</span></label>
+                <textarea id="aiResponseInput" placeholder='[{"onset_ns":0,"dur_ns":461538462,"pitch":60,"lyric":"お","phoneme":"o"},...]'></textarea>
                 <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
                   <button class="btn sm teal" onclick="App.autoFixAndPreview()">&#x1F527; Auto-Fix &amp; Preview</button>
                   <button class="btn sm" onclick="App.parseAndPreview()">&#x25B6; Preview raw</button>
@@ -350,69 +352,60 @@
 
   <script>
     'use strict';
-    // ───────────────────────────────────────────────────────────
-    // SVP STUDIO — Synthesizer V Project Editor
-    // Romaji phoneme engine with comprehensive silent-note fixes
-    // Robust JSON loader (BOM, trailing commas, wrapped JSON)
-    // ───────────────────────────────────────────────────────────
 
+    // ─────────────────────────────────────────────────────────────────────────
+    // CONSTANTS
+    // ─────────────────────────────────────────────────────────────────────────
     const NS_PER_SECOND = 1_000_000_000;
     const DEFAULT_BPM = 130;
-    const DEFAULT_DUR_NS = 705600000;
+    // Default note duration: one quarter-note at 130 BPM = ~461 ms
+    // We compute this dynamically but keep a static fallback
+    const DEFAULT_DUR_NS = Math.round(NS_PER_SECOND * 60 / DEFAULT_BPM);
 
+    // ─────────────────────────────────────────────────────────────────────────
+    // PHONEME ENGINE
+    // ─────────────────────────────────────────────────────────────────────────
     const ROMAJI_PHONEME_MAP = {
       'あ':'a','い':'i','う':'u','え':'e','お':'o',
       'a':'a','i':'i','u':'u','e':'e','o':'o',
       'か':'ka','き':'ki','く':'ku','け':'ke','こ':'ko',
       'ka':'ka','ki':'ki','ku':'ku','ke':'ke','ko':'ko',
-      'きゃ':'kya','きゅ':'kyu','きょ':'kyo',
-      'kya':'kya','kyu':'kyu','kyo':'kyo',
+      'きゃ':'kya','きゅ':'kyu','きょ':'kyo','kya':'kya','kyu':'kyu','kyo':'kyo',
       'さ':'sa','し':'shi','す':'su','せ':'se','そ':'so',
       'sa':'sa','shi':'shi','su':'su','se':'se','so':'so',
       'しゃ':'sha','しゅ':'shu','しょ':'sho','しぇ':'she',
       'sha':'sha','shu':'shu','sho':'sho','she':'she',
       'た':'ta','ち':'chi','つ':'tsu','て':'te','と':'to',
       'ta':'ta','chi':'chi','tsu':'tsu','te':'te','to':'to',
-      'ちゃ':'cha','ちゅ':'chu','ちょ':'cho',
-      'cha':'cha','chu':'chu','cho':'cho',
+      'ちゃ':'cha','ちゅ':'chu','ちょ':'cho','cha':'cha','chu':'chu','cho':'cho',
       'な':'na','に':'ni','ぬ':'nu','ね':'ne','の':'no',
       'na':'na','ni':'ni','nu':'nu','ne':'ne','no':'no',
-      'にゃ':'nya','にゅ':'nyu','にょ':'nyo',
-      'nya':'nya','nyu':'nyu','nyo':'nyo',
+      'にゃ':'nya','にゅ':'nyu','にょ':'nyo','nya':'nya','nyu':'nyu','nyo':'nyo',
       'は':'ha','ひ':'hi','ふ':'fu','へ':'he','ほ':'ho',
       'ha':'ha','hi':'hi','fu':'fu','he':'he','ho':'ho',
-      'ひゃ':'hya','ひゅ':'hyu','ひょ':'hyo',
-      'hya':'hya','hyu':'hyu','hyo':'hyo',
+      'ひゃ':'hya','ひゅ':'hyu','ひょ':'hyo','hya':'hya','hyu':'hyu','hyo':'hyo',
       'ま':'ma','み':'mi','む':'mu','め':'me','も':'mo',
       'ma':'ma','mi':'mi','mu':'mu','me':'me','mo':'mo',
-      'みゃ':'mya','みゅ':'myu','みょ':'myo',
-      'mya':'mya','myu':'myu','myo':'myo',
-      'や':'ya','ゆ':'yu','よ':'yo',
-      'ya':'ya','yu':'yu','yo':'yo',
+      'みゃ':'mya','みゅ':'myu','みょ':'myo','mya':'mya','myu':'myu','myo':'myo',
+      'や':'ya','ゆ':'yu','よ':'yo','ya':'ya','yu':'yu','yo':'yo',
       'ら':'ra','り':'ri','る':'ru','れ':'re','ろ':'ro',
       'ra':'ra','ri':'ri','ru':'ru','re':'re','ro':'ro',
-      'りゃ':'rya','りゅ':'ryu','りょ':'ryo',
-      'rya':'rya','ryu':'ryu','ryo':'ryo',
-      'わ':'wa','を':'wo','wo':'wo','wa':'wa',
-      'ん':'n','n':'n',
+      'りゃ':'rya','りゅ':'ryu','りょ':'ryo','rya':'rya','ryu':'ryu','ryo':'ryo',
+      'わ':'wa','を':'wo','wo':'wo','wa':'wa','ん':'n','n':'n',
       'が':'ga','ぎ':'gi','ぐ':'gu','げ':'ge','ご':'go',
       'ga':'ga','gi':'gi','gu':'gu','ge':'ge','go':'go',
-      'ぎゃ':'gya','ぎゅ':'gyu','ぎょ':'gyo',
-      'gya':'gya','gyu':'gyu','gyo':'gyo',
+      'ぎゃ':'gya','ぎゅ':'gyu','ぎょ':'gyo','gya':'gya','gyu':'gyu','gyo':'gyo',
       'ざ':'za','じ':'ji','ず':'zu','ぜ':'ze','ぞ':'zo',
       'za':'za','ji':'ji','zu':'zu','ze':'ze','zo':'zo',
-      'じゃ':'ja','じゅ':'ju','じょ':'jo',
-      'ja':'ja','ju':'ju','jo':'jo',
+      'じゃ':'ja','じゅ':'ju','じょ':'jo','ja':'ja','ju':'ju','jo':'jo',
       'だ':'da','ぢ':'ji','づ':'zu','で':'de','ど':'do',
       'da':'da','de':'de','do':'do',
       'ば':'ba','び':'bi','ぶ':'bu','べ':'be','ぼ':'bo',
       'ba':'ba','bi':'bi','bu':'bu','be':'be','bo':'bo',
-      'びゃ':'bya','びゅ':'byu','びょ':'byo',
-      'bya':'bya','byu':'byu','byo':'byo',
+      'びゃ':'bya','びゅ':'byu','びょ':'byo','bya':'bya','byu':'byu','byo':'byo',
       'ぱ':'pa','ぴ':'pi','ぷ':'pu','ぺ':'pe','ぽ':'po',
       'pa':'pa','pi':'pi','pu':'pu','pe':'pe','po':'po',
-      'ぴゃ':'pya','ぴゅ':'pyu','ぴょ':'pyo',
-      'pya':'pya','pyu':'pyu','pyo':'pyo',
+      'ぴゃ':'pya','ぴゅ':'pyu','ぴょ':'pyo','pya':'pya','pyu':'pyu','pyo':'pyo',
     };
 
     const ROMAJI_CORRECTIONS = [
@@ -441,15 +434,19 @@
       if (!phoneme || !phoneme.trim()) return { needsFix: false, warnings: [] };
       const warnings = [];
       const p = phoneme.toLowerCase();
-      if (/\bci\b/.test(p)) warnings.push('"ci" → should be "chi" (ち) — causes SILENCE');
-      if (/\bti\b/.test(p) && !/\bti\s*[aeiou]/.test(p)) warnings.push('"ti" → should be "chi" (ち) — causes SILENCE');
-      if (/\bsi\b/.test(p)) warnings.push('"si" → should be "shi" (し) — causes SILENCE');
-      if (/\btu\b/.test(p)) warnings.push('"tu" → should be "tsu" (つ) — causes SILENCE');
-      if (/\bhu\b/.test(p)) warnings.push('"hu" → should be "fu" (ふ) — causes SILENCE');
-      if (/\bzi\b/.test(p)) warnings.push('"zi" → use "ji" (じ) preferred');
-      if (/\bdi\b/.test(p)) warnings.push('"di" → should be "ji" (ぢ)');
+      if (/\bci\b/.test(p)) warnings.push('"ci" → use "chi" — causes SILENCE');
+      if (/\bti\b/.test(p) && !/\bti\s*[aeiou]/.test(p)) warnings.push('"ti" → use "chi" — causes SILENCE');
+      if (/\bsi\b/.test(p)) warnings.push('"si" → use "shi" — causes SILENCE');
+      if (/\btu\b/.test(p)) warnings.push('"tu" → use "tsu" — causes SILENCE');
+      if (/\bhu\b/.test(p)) warnings.push('"hu" → use "fu" — causes SILENCE');
+      if (/\bzi\b/.test(p)) warnings.push('"zi" → use "ji"');
+      if (/\bdi\b/.test(p)) warnings.push('"di" → use "ji"');
       return { needsFix: warnings.length > 0, warnings };
     }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // NOTE HELPERS
+    // ─────────────────────────────────────────────────────────────────────────
 
     function getNotesFromPart(part) {
       if (!part || !part.notes) return [];
@@ -461,7 +458,6 @@
         detune: n.detune || 0,
         lyric: n.lyrics || '',
         phoneme: n.phonemes || '',
-        accent: n.accent || '',
       })).sort((a, b) => a.onset - b.onset);
     }
 
@@ -494,22 +490,95 @@
       else notes.splice(idx, 0, noteData);
     }
 
+    // ─────────────────────────────────────────────────────────────────────────
+    // JSON SANITIZER — handles markdown fences, trailing commas, etc.
+    // ─────────────────────────────────────────────────────────────────────────
     function sanitizeJSON(raw) {
       if (!raw || typeof raw !== 'string') throw new Error('Empty input');
       let s = raw.trim();
+      // Strip markdown code fences
       s = s.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/i, '').trim();
-      const arrMatch = s.match(/\[[\s\S]*\]/);
-      if (!arrMatch) throw new Error('No JSON array found');
-      s = arrMatch[0];
+      // Extract the first JSON array
+      const arrStart = s.indexOf('[');
+      const arrEnd = s.lastIndexOf(']');
+      if (arrStart === -1 || arrEnd === -1) throw new Error('No JSON array found in response');
+      s = s.substring(arrStart, arrEnd + 1);
+      // Fix common AI mistakes: assignment = instead of colon :
       s = s.replace(/"(\w+)"\s*=\s*/g, '"$1": ');
+      // Remove trailing commas before ] or }
       s = s.replace(/,\s*([}\]])/g, '$1');
       return JSON.parse(s);
     }
 
-    // ───────────────────────────────────────────────────────────
-    // APP STATE
-    // ───────────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
+    // ⚡ UNIT DETECTION — the core fix for the "all notes at t=0" bug
+    //
+    // The AI was instructed to output onset in SECONDS but the parse code
+    // treated them as NANOSECONDS, making 0.5s become 0 ns and 1.0s become
+    // 1 ns — every note collapsed to time zero.
+    //
+    // Fix: The prompt now asks for ALL timing in NANOSECONDS (onset_ns + dur_ns).
+    // But we also detect legacy/seconds output as a safety net, using heuristics:
+    //   - If max onset_ns < 100,000 AND there are notes spaced 0.x apart,
+    //     they are almost certainly seconds, not nanoseconds.
+    //   - Threshold: 500,000 ns = 0.5 ms — any "onset" below this with
+    //     multiple distinct values = seconds
+    // ─────────────────────────────────────────────────────────────────────────
+    function detectAndNormaliseOnsets(arr) {
+      // Collect all onset values from any recognised key
+      const onsets = arr.map(n =>
+        parseFloat(n.onset_ns ?? n.onset ?? n.t ?? 0)
+      ).filter(v => !isNaN(v));
 
+      if (!onsets.length) return arr;
+
+      const maxOnset = Math.max(...onsets);
+      const distinctOnsets = new Set(onsets.map(v => Math.round(v)));
+
+      // Heuristic: if max onset < 1,000,000 (1 ms) but we have more than 3
+      // distinct values spread across what looks like a melody (max > 1),
+      // these are almost certainly seconds that need converting.
+      // Real nanosecond onsets for a song start at hundreds of millions.
+      let multiplier = 1; // default: already nanoseconds
+      if (maxOnset < 1_000_000 && distinctOnsets.size > 1 && maxOnset > 0.001) {
+        // Looks like fractional seconds (0.0, 0.46, 0.92, ...) — convert
+        multiplier = NS_PER_SECOND;
+        console.warn(`[SVP Studio] Detected seconds-format onsets (max=${maxOnset}). Auto-converting to ns.`);
+      } else if (maxOnset > 0 && maxOnset < 100 && distinctOnsets.size > 2) {
+        // Could be integer seconds (0, 1, 2, 3, ...) — convert
+        multiplier = NS_PER_SECOND;
+        console.warn(`[SVP Studio] Detected integer-seconds onsets (max=${maxOnset}). Auto-converting to ns.`);
+      }
+
+      return arr.map(n => ({...n, _onset_ns_resolved: Math.round(parseFloat(n.onset_ns ?? n.onset ?? 0) * multiplier)}));
+    }
+
+    function detectAndNormaliseDurations(arr) {
+      // Duration detection: dur_ns should be hundreds of millions for normal notes
+      // If all durations are < 10,000 they might be seconds
+      const durs = arr.map(n =>
+        parseFloat(n.dur_ns ?? n.duration ?? n.dur ?? DEFAULT_DUR_NS)
+      ).filter(v => !isNaN(v) && v > 0);
+
+      if (!durs.length) return arr;
+      const maxDur = Math.max(...durs);
+
+      let durMultiplier = 1;
+      if (maxDur < 100 && maxDur > 0) {
+        // Probably seconds
+        durMultiplier = NS_PER_SECOND;
+        console.warn(`[SVP Studio] Detected seconds-format durations (max=${maxDur}). Auto-converting to ns.`);
+      }
+
+      return arr.map(n => ({
+        ...n,
+        _dur_ns_resolved: Math.round(parseFloat(n.dur_ns ?? n.duration ?? n.dur ?? DEFAULT_DUR_NS) * durMultiplier)
+      }));
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // APP STATE
+    // ─────────────────────────────────────────────────────────────────────────
     const FILES = [];
     let activeFile = null;
     let activePart = null;
@@ -529,6 +598,8 @@
     function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
     function nsToSec(ns) { return (ns / NS_PER_SECOND).toFixed(3); }
     function secToNs(s) { return Math.round(parseFloat(s) * NS_PER_SECOND); }
+    function beatNs(bpm) { return NS_PER_SECOND * 60 / bpm; }
+    function barNs(bpm) { return beatNs(bpm) * 4; }
 
     function getBPM(svpData) {
       const tempos = svpData?.time?.tempo || [];
@@ -540,10 +611,9 @@
       return { name: db.name || 'Unknown', language: db.language || 'japanese', phoneset: db.phoneset || 'romaji', backendType: db.backendType || 'SVR2AI' };
     }
 
-    // ───────────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
     // TOAST & MODALS
-    // ───────────────────────────────────────────────────────────
-
+    // ─────────────────────────────────────────────────────────────────────────
     function showToast(msg, type='info') {
       const c = document.getElementById('toastContainer');
       const t = document.createElement('div');
@@ -560,10 +630,9 @@
       m.addEventListener('click', e => { if (e.target === m) closeModal(m.id); });
     });
 
-    // ───────────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
     // UNDO / REDO
-    // ───────────────────────────────────────────────────────────
-
+    // ─────────────────────────────────────────────────────────────────────────
     function snapshotState() {
       if (!activeFile) return null;
       return { fileId: activeFile.id, json: JSON.stringify(activeFile.svpData), activePartIdx: activePart ? activeFile.parts.indexOf(activePart) : -1 };
@@ -610,10 +679,9 @@
       document.getElementById('redoBtn').disabled = !redoStack.length;
     }
 
-    // ───────────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
     // SELECTION
-    // ───────────────────────────────────────────────────────────
-
+    // ─────────────────────────────────────────────────────────────────────────
     function updateSelUI() {
       const n = selectedNoteIndices.size;
       const badge = document.getElementById('selBadge');
@@ -641,10 +709,9 @@
       showToast(`Deleted notes`);
     }
 
-    // ───────────────────────────────────────────────────────────
-    // SIDEBAR & FILE LOADING (ROBUST)
-    // ───────────────────────────────────────────────────────────
-
+    // ─────────────────────────────────────────────────────────────────────────
+    // FILE LOADING
+    // ─────────────────────────────────────────────────────────────────────────
     function rebuildFileParts(file) {
       const svp = file.svpData;
       const parts = [];
@@ -654,18 +721,17 @@
           const mainGroup = track.mainGroup || {};
           if (mainGroup.notes && mainGroup.notes.length) {
             parts.push({
-              trackIdx: ti, track, libEntry: null, notes: mainGroup.notes.slice(), offsetNs: 0,
+              trackIdx: ti, track, libEntry: null, notes: mainGroup.notes, offsetNs: 0,
               voiceName: voice.name, language: voice.language, phoneset: voice.phoneset,
               isEnglish: voice.language==='english', isChinese: voice.language==='mandarin'||voice.language==='chinese',
               name: track.name || ('Track '+(ti+1)),
             });
           }
-          const groups = track.groups || [];
-          groups.forEach((group, gi) => {
+          (track.groups || []).forEach((group, gi) => {
             const libEntry = (svp.library || []).find(l => l.uuid === group.groupID);
             if (libEntry && libEntry.notes && libEntry.notes.length) {
               parts.push({
-                trackIdx: ti, track, libEntry, notes: libEntry.notes.slice(), offsetNs: group.blickOffset || 0,
+                trackIdx: ti, track, libEntry, notes: libEntry.notes, offsetNs: group.blickOffset || 0,
                 voiceName: voice.name, language: voice.language, phoneset: voice.phoneset,
                 isEnglish: voice.language==='english', isChinese: voice.language==='mandarin'||voice.language==='chinese',
                 name: libEntry.name || (track.name+' Group '+(gi+1)),
@@ -678,7 +744,7 @@
         svp.library.forEach((lib, li) => {
           if (lib.notes && lib.notes.length) {
             parts.push({
-              trackIdx: li, track: null, libEntry: lib, notes: lib.notes.slice(), offsetNs: 0,
+              trackIdx: li, track: null, libEntry: lib, notes: lib.notes, offsetNs: 0,
               voiceName: 'Unknown', language: 'japanese', phoneset: 'romaji',
               isEnglish: false, isChinese: false, name: lib.name || ('Part '+(li+1)),
             });
@@ -708,7 +774,11 @@
       renderPartList();
     }
 
-    function removeFile(fi) { FILES.splice(fi,1); if (activeFile===FILES[fi]) { activeFile=null; activePart=null; } selectedNoteIndices.clear(); updateSelUI(); refreshAll(); showToast('File removed'); }
+    function removeFile(fi) {
+      if (activeFile === FILES[fi]) { activeFile=null; activePart=null; }
+      FILES.splice(fi,1);
+      selectedNoteIndices.clear(); updateSelUI(); refreshAll(); showToast('File removed');
+    }
 
     function renderPartList() {
       const pl = document.getElementById('partList');
@@ -749,10 +819,9 @@
       refreshAll();
     }
 
-    // ───────────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
     // PIANO ROLL
-    // ───────────────────────────────────────────────────────────
-
+    // ─────────────────────────────────────────────────────────────────────────
     const KW=44, RH=16;
     function drawPianoRoll() {
       const canvas = document.getElementById('rollCanvas');
@@ -763,16 +832,15 @@
       const notes = getNotesFromPart(activePart);
       if (!notes.length) { ctx.fillStyle='#08080f'; ctx.fillRect(0,0,canvas.width,canvas.height); rollBBoxes=[]; return; }
       const bpm = getBPM(activeFile.svpData);
-      const beatNs = NS_PER_SECOND*60/bpm;
+      const bNs = beatNs(bpm);
       const pitches = notes.map(n=>n.pitch);
       const minP = Math.max(0,Math.min(...pitches)-4);
       const maxP = Math.min(127,Math.max(...pitches)+4);
       const lastNs = Math.max(...notes.map(n=>n.onset+n.duration));
-      const nsPerPx = (lastNs/(canvas.width-KW-60))/rollZoom;
-      const totalW = KW+lastNs/nsPerPx+60;
+      const nsPerPx = Math.max(1, (lastNs/(Math.max(100, (wrap.clientWidth||800)-KW-60))/rollZoom));
+      const W = Math.max(KW+lastNs/nsPerPx+60, wrap.clientWidth||800);
       const pRange = maxP-minP+1;
-      const W = Math.max(totalW,canvas.width);
-      const H = Math.max(pRange*RH+4,canvas.height);
+      const H = Math.max(pRange*RH+4, wrap.clientHeight||300);
       canvas.width=W; canvas.height=H;
       ctx.fillStyle='#08080f'; ctx.fillRect(0,0,W,H);
       for (let p=minP;p<=maxP;p++) {
@@ -780,8 +848,8 @@
         ctx.fillStyle=[1,3,6,8,10].includes(p%12)?'#0c0c16':'#111120';
         ctx.fillRect(KW,y,W-KW,RH);
       }
-      for (let b=0;b*beatNs<=lastNs+beatNs;b++) {
-        const x=KW+b*beatNs/nsPerPx;
+      for (let b=0;b*bNs<=lastNs+bNs;b++) {
+        const x=KW+b*bNs/nsPerPx;
         ctx.strokeStyle=b%4===0?'#1e1e34':'#141422';
         ctx.lineWidth=b%4===0?1:0.5;
         ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke();
@@ -826,10 +894,9 @@
     function rollZoomOut(){rollZoom=Math.max(0.05,rollZoom/1.5);drawPianoRoll();}
     function rollZoomFit(){rollZoom=1.0;drawPianoRoll();}
 
-    // ───────────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
     // NOTE TABLE
-    // ───────────────────────────────────────────────────────────
-
+    // ─────────────────────────────────────────────────────────────────────────
     function highlightTableRows(){document.querySelectorAll('#noteGridInner table tbody tr').forEach((row,i)=>{row.classList.toggle('ng-selected',selectedNoteIndices.has(i));});}
 
     function renderNoteTable(){
@@ -838,11 +905,11 @@
       const notes=getNotesFromPart(activePart);
       if(!notes.length){wrap.innerHTML='<div style="padding:16px;color:var(--text3)">No notes in this part.</div>';return;}
       const bpm=getBPM(activeFile.svpData);
-      const beatNs=NS_PER_SECOND*60/bpm;
+      const bN=beatNs(bpm);
       let h=`<table class="ng"><thead><tr><th>#</th><th>Bar.Beat</th><th>Onset (s)</th><th>Dur (s)</th><th>Pitch</th><th>Lyric</th><th>Phoneme</th><th>Detune</th><th></th></tr></thead><tbody>`;
       notes.forEach((n,i)=>{
-        const bar=Math.floor(n.onset/(beatNs*4))+1;
-        const beat=((n.onset%(beatNs*4))/beatNs+1).toFixed(1);
+        const bar=Math.floor(n.onset/(bN*4))+1;
+        const beat=((n.onset%(bN*4))/bN+1).toFixed(1);
         const phIssue=checkPhonemeIssues(n.phoneme);
         const phWarn=phIssue.needsFix?`<span title="${phIssue.warnings.join('; ')}" style="color:var(--amber);margin-left:4px">&#x26A0;</span>`:'';
         h+=`<tr onclick="App.selectNote(${i},event.shiftKey)">
@@ -885,7 +952,8 @@
       document.getElementById('anT').value=nsToSec(lastEnd);
       document.getElementById('anY').value=activePart.isEnglish?'ah':'a';
       document.getElementById('anP').value='';
-      document.getElementById('anDur').value=nsToSec(DEFAULT_DUR_NS);
+      const bpm=getBPM(activeFile.svpData);
+      document.getElementById('anDur').value=nsToSec(beatNs(bpm));
       document.getElementById('anDet').value='0';
       openModal('addModal');
     }
@@ -903,13 +971,11 @@
       closeModal('addModal');refreshAll();showToast('Note added');
     }
 
-    // ───────────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
     // EXPORT
-    // ───────────────────────────────────────────────────────────
-
+    // ─────────────────────────────────────────────────────────────────────────
     function doExport(){
       if(!activeFile)return showToast('Select a file first','error');
-      activeFile.parts.forEach(part=>{if(part.libEntry)part.libEntry.notes=part.notes;else if(part.track&&part.notes)part.track.mainGroup.notes=part.notes;});
       const jsonStr=JSON.stringify(activeFile.svpData,null,2);
       const blob=new Blob([jsonStr],{type:'application/json'});
       const a=document.createElement('a');
@@ -920,10 +986,141 @@
       showToast('Exported: '+a.download,'success');
     }
 
-    // ───────────────────────────────────────────────────────────
-    // AI BRIDGE
-    // ───────────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
+    // AI BRIDGE — PROMPT GENERATION
+    // ─────────────────────────────────────────────────────────────────────────
+    function phonemeRulesBlock(part){
+      if(part.language==='english')return `PHONEME FORMAT: ARPAbet
+  "sing" → phoneme="s ih ng"  |  "love" → phoneme="l ah v"\n\n`;
+      return `PHONEME FORMAT: Romaji (Japanese)
+  ⚠ WRONG PHONEMES = SILENCE ⚠
+  ち → "chi" (NOT "ci" or "ti")
+  し → "shi" (NOT "si")
+  つ → "tsu" (NOT "tu")
+  ふ → "fu"  (NOT "hu")
+  じ → "ji"  (NOT "zi")
+  っ → put in lyric field, leave phoneme empty\n\n`;
+    }
 
+    function naturalSpeechRules(part){
+      if(part.isEnglish)return "MELODY NATURALNESS: same-word syllables stay within ±2 semitones. Large leaps only between words.\n\n";
+      return "JAPANESE MELODY NATURALNESS: morae within a word ±2 st. Particles short+low. ん/っ short (dur ≤ 300ms).\n\n";
+    }
+
+    function genMelodyPrompt(){
+      if(!activePart||!activeFile) return '(select a part first)';
+      const notes = getNotesFromPart(activePart);
+      const bpm = getBPM(activeFile.svpData);
+      const bN = beatNs(bpm);
+      const baN = barNs(bpm);
+      const bars = parseInt(document.getElementById('extBars').value)||8;
+      const pitches = notes.map(n=>n.pitch);
+      const minP = pitches.length ? Math.min(...pitches) : 52;
+      const maxP = pitches.length ? Math.max(...pitches) : 76;
+      const style = document.getElementById('extStyle').value==='custom'
+        ? document.getElementById('customHint').value
+        : document.getElementById('extStyle').value;
+      const isReplace = currentMode==='replace';
+      const lastEnd = notes.length ? Math.max(...notes.map(n=>n.onset+n.duration)) : 0;
+      const startNs = isReplace ? 0 : lastEnd;
+
+      // Compute beat and bar sizes in nanoseconds so the AI can use them directly
+      const beatDurMs = Math.round(bN / 1_000_000);
+      const barDurMs  = Math.round(baN / 1_000_000);
+
+      let p = `You are a SynthV melody composer. Output ONLY a raw JSON array — no markdown, no explanation.
+
+══ PROJECT INFO ══
+Voice: ${activePart.voiceName} (${activePart.language})
+BPM: ${bpm.toFixed(1)}
+Operation: ${isReplace ? 'REPLACE (rewrite everything from scratch)' : 'EXTEND (add notes after existing melody)'}
+Style: ${style}
+Bars to write: ${bars}
+Start onset: ${startNs} ns  (= ${nsToSec(startNs)}s)
+Pitch range suggestion: MIDI ${minP}–${maxP}
+
+══ TIMING — ALL VALUES IN NANOSECONDS ══
+1 beat  = ${Math.round(bN)} ns  (${beatDurMs} ms)
+1 bar   = ${Math.round(baN)} ns  (${barDurMs} ms)
+Quarter note = ${Math.round(bN)} ns
+Eighth note  = ${Math.round(bN/2)} ns
+Half note    = ${Math.round(bN*2)} ns
+
+Example positions for ${bars} bars starting at ${startNs} ns:
+`;
+      for(let b=0;b<bars && b<8;b++){
+        p+=`  Bar ${b+1}: onset_ns = ${Math.round(startNs + b*baN)}\n`;
+      }
+      p+='\n';
+      p+=phonemeRulesBlock(activePart);
+      p+=naturalSpeechRules(activePart);
+
+      if(!isReplace && notes.length){
+        p+=`══ EXISTING MELODY (last ${Math.min(notes.length,16)} notes for context) ══\n`;
+        notes.slice(-16).forEach(n=>{
+          p+=`  onset_ns=${n.onset}  dur_ns=${n.duration}  pitch=${n.pitch}(${midiName(n.pitch)})  lyric="${n.lyric}"\n`;
+        });
+        p+='\n';
+      }
+
+      const crossCtx = document.getElementById('crossCtx').value.trim();
+      if(crossCtx){p+=`OTHER SINGER CONTEXT:\n${crossCtx}\n\n`;}
+
+p+=`══ OUTPUT FORMAT ══
+Return a JSON array. Each note object MUST have these exact keys:
+{
+  "onset_ns": <integer nanoseconds from start>,
+  "dur_ns": <integer nanoseconds, minimum ${Math.round(bN/4)} ns>,
+  "pitch": <MIDI integer 0-127>,
+  "lyric": "<kana/text character(s)>",
+  "phoneme": "<romaji or empty string>"
+}
+
+CRITICAL RULES:
+• onset_ns values MUST increase (notes must not overlap unless intended harmony)
+• First note onset_ns = ${startNs} exactly
+• dur_ns must be a positive integer, minimum ${Math.round(bN/8)} ns
+• Do NOT output seconds — output nanoseconds ONLY
+• Do NOT add any text before or after the JSON array
+`;
+      return p;
+    }
+
+    function genLyricsPrompt(){
+      if(!activePart||!activeFile) return '(select a part first)';
+      const notes = getNotesFromPart(activePart);
+      const bpm = getBPM(activeFile.svpData);
+      const bN = beatNs(bpm);
+      let p=`You are a SynthV lyricist. Rewrite ONLY the lyrics and phonemes for ${notes.length} notes. Do NOT change timing or pitch.\n`;
+      p+=`Theme: ${document.getElementById('lyricsTheme').value||'any'}\nVoice: ${activePart.voiceName}\n\n`;
+      p+=phonemeRulesBlock(activePart);
+      p+=`══ CURRENT NOTES ══\n`;
+      notes.forEach((n,i)=>{
+        const bar=Math.floor(n.onset/(bN*4))+1;
+        const beat=((n.onset%(bN*4))/bN+1).toFixed(1);
+        if(i>0&&n.onset-(notes[i-1].onset+notes[i-1].duration)>bN*2)p+='  | (gap)\n';
+        p+=`  [${bar}.${beat}] onset_ns=${n.onset}  dur_ns=${n.duration}  pitch=${n.pitch}  lyric="${n.lyric}"\n`;
+      });
+      p+=`\n══ OUTPUT FORMAT ══\nReturn a JSON array with exactly ${notes.length} objects.\nEach object: {"onset_ns":<same as input>,"dur_ns":<same as input>,"pitch":<same as input>,"lyric":"<new lyric>","phoneme":"<romaji>"}\n`;
+      return p;
+    }
+
+    function refreshPrompt(){
+      const box=document.getElementById('promptBox');
+      if(!activePart){box.textContent='(select a part first)';return;}
+      box.textContent=currentMode==='lyrics'?genLyricsPrompt():genMelodyPrompt();
+    }
+
+    function copyPrompt(){
+      navigator.clipboard.writeText(document.getElementById('promptBox').textContent)
+        .then(()=>showToast('Prompt copied','success'))
+        .catch(()=>showToast('Copy failed','error'));
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // AI BRIDGE — PARSE & PREVIEW
+    // Key fix: handle onset_ns / onset in nanoseconds correctly
+    // ─────────────────────────────────────────────────────────────────────────
     function parseAndPreview(){
       const raw=document.getElementById('aiResponseInput').value.trim();
       const st=document.getElementById('parseStatus');
@@ -932,22 +1129,69 @@
       if(!activePart){st.textContent='⚠ Select a part first';st.style.color='var(--coral)';return;}
       if(!raw){st.textContent='⚠ Paste AI response first';st.style.color='var(--coral)';return;}
       try{
-        const arr=sanitizeJSON(raw);
+        let arr=sanitizeJSON(raw);
         if(!Array.isArray(arr)||!arr.length)throw new Error('Empty or invalid array');
+
         const bpm=getBPM(activeFile.svpData);
-        const beatNs=NS_PER_SECOND*60/bpm;
+        const bN=beatNs(bpm);
+        const defaultDur=Math.round(bN); // quarter note
+
         if(currentMode==='lyrics'){
           const existing=getNotesFromPart(activePart);
           if(arr.length!==existing.length)throw new Error(`Need exactly ${existing.length} entries for lyrics mode, got ${arr.length}`);
-          pendingNotes=arr.map((n,i)=>({onset:existing[i].onset,duration:existing[i].duration,pitch:existing[i].pitch,detune:existing[i].detune,lyric:String(n.lyric||n.y||existing[i].lyric),phoneme:fixRomajiPhoneme(String(n.phoneme||n.p||''))}));
-        }else{
-          pendingNotes=arr.map(n=>({onset:Math.round(parseFloat(n.onset)||(n.t?n.t*beatNs/480:0)),duration:Math.round(parseFloat(n.dur_ns||n.duration)||(n.dur?n.dur*beatNs/480:DEFAULT_DUR_NS)),pitch:parseInt(n.pitch||n.n)||60,detune:parseInt(n.detune)||0,lyric:String(n.lyric||n.y||'a'),phoneme:fixRomajiPhoneme(String(n.phoneme||n.p||''))}));
+          pendingNotes=arr.map((n,i)=>({
+            onset: existing[i].onset,
+            duration: existing[i].duration,
+            pitch: existing[i].pitch,
+            detune: existing[i].detune||0,
+            lyric: String(n.lyric||n.y||existing[i].lyric),
+            phoneme: fixRomajiPhoneme(String(n.phoneme||n.p||'')),
+          }));
+        } else {
+          // ── CORE FIX: Detect and normalise units ──
+          arr = detectAndNormaliseOnsets(arr);
+          arr = detectAndNormaliseDurations(arr);
+
+          pendingNotes = arr.map(n => {
+            const onsetNs = n._onset_ns_resolved !== undefined
+              ? n._onset_ns_resolved
+              : Math.round(parseFloat(n.onset_ns ?? n.onset ?? 0));
+
+            const durNs = n._dur_ns_resolved !== undefined
+              ? n._dur_ns_resolved
+              : Math.round(parseFloat(n.dur_ns ?? n.duration ?? defaultDur));
+
+            return {
+              onset:    Math.max(0, onsetNs),
+              duration: Math.max(Math.round(bN/8), durNs), // min = 1/8 note
+              pitch:    parseInt(n.pitch ?? n.n) || 60,
+              detune:   parseInt(n.detune) || 0,
+              lyric:    String(n.lyric ?? n.y ?? 'a'),
+              phoneme:  fixRomajiPhoneme(String(n.phoneme ?? n.p ?? '')),
+            };
+          });
+
+          // Sort by onset so they display in order
+          pendingNotes.sort((a,b) => a.onset - b.onset);
+
+          // Validate: if all onsets are the same (collapsed), warn loudly
+          const uniqueOnsets = new Set(pendingNotes.map(n=>n.onset)).size;
+          if(pendingNotes.length > 1 && uniqueOnsets === 1){
+            throw new Error(`All ${pendingNotes.length} notes have the same onset — the AI may have output seconds instead of nanoseconds. Try Auto-Fix or re-generate.`);
+          }
         }
+
         renderPreview(pendingNotes);
         const fixCount=pendingNotes.filter(n=>n.phoneme&&checkPhonemeIssues(n.phoneme).needsFix).length;
-        st.textContent=`✔ ${pendingNotes.length} notes parsed · ${fixCount} phonemes auto-fixed`;
+        st.textContent=`✔ ${pendingNotes.length} notes parsed · ${fixCount} phoneme(s) auto-fixed`;
         st.style.color='var(--teal)';
-      }catch(e){st.textContent='✖ '+e.message;st.style.color='var(--coral)';input.classList.add('error-flash');setTimeout(()=>input.classList.remove('error-flash'),800);discardPreview();}
+      }catch(e){
+        st.textContent='✖ '+e.message;
+        st.style.color='var(--coral)';
+        input.classList.add('error-flash');
+        setTimeout(()=>input.classList.remove('error-flash'),800);
+        discardPreview();
+      }
     }
 
     function autoFixAndPreview(){
@@ -955,9 +1199,31 @@
       const raw=input.value.trim();
       if(!raw){document.getElementById('parseStatus').textContent='⚠ Nothing to fix';return;}
       try{
-        const arr=sanitizeJSON(raw);
-        const fixed=arr.map(n=>({...n,phoneme:fixRomajiPhoneme(String(n.phoneme||n.p||'')),lyric:n.lyric||n.y||(n.phoneme||'a')}));
-        input.value=JSON.stringify(fixed,null,2);
+        let arr=sanitizeJSON(raw);
+
+        // Detect and fix unit issues before re-serialising
+        arr = detectAndNormaliseOnsets(arr);
+        arr = detectAndNormaliseDurations(arr);
+
+        const bpm = activeFile ? getBPM(activeFile.svpData) : DEFAULT_BPM;
+        const bN = beatNs(bpm);
+
+        const fixed=arr.map(n=>{
+          const onsetNs = n._onset_ns_resolved !== undefined ? n._onset_ns_resolved : Math.round(parseFloat(n.onset_ns ?? n.onset ?? 0));
+          const durNs   = n._dur_ns_resolved   !== undefined ? n._dur_ns_resolved   : Math.round(parseFloat(n.dur_ns ?? n.duration ?? bN));
+          return {
+            onset_ns: Math.max(0, onsetNs),
+            dur_ns:   Math.max(Math.round(bN/8), durNs),
+            pitch:    parseInt(n.pitch ?? n.n) || 60,
+            lyric:    String(n.lyric ?? n.y ?? 'a'),
+            phoneme:  fixRomajiPhoneme(String(n.phoneme ?? n.p ?? '')),
+          };
+        });
+
+        // Sort by onset
+        fixed.sort((a,b) => a.onset_ns - b.onset_ns);
+
+        input.value=JSON.stringify(fixed, null, 2);
         showToast('Auto-fix applied','success');
         parseAndPreview();
       }catch(e){showToast('Auto-fix failed: '+e.message,'error');}
@@ -965,10 +1231,10 @@
 
     function renderPreview(notes){
       const bpm=getBPM(activeFile?.svpData||{});
-      const beatNs=NS_PER_SECOND*60/bpm;
+      const bN=beatNs(bpm);
       const lines=notes.map(n=>{
-        const bar=Math.floor(n.onset/(beatNs*4))+1;
-        const beat=((n.onset%(beatNs*4))/beatNs+1).toFixed(1);
+        const bar=Math.floor(n.onset/(bN*4))+1;
+        const beat=((n.onset%(bN*4))/bN+1).toFixed(1);
         const phIssue=checkPhonemeIssues(n.phoneme);
         const warn=phIssue.needsFix?' ⚠FIXED:'+phIssue.warnings.join(','):'';
         return `[${bar}.${beat}] ${midiName(n.pitch).padEnd(4)} dur=${nsToSec(n.duration)}s "${n.lyric}"  [${n.phoneme||'auto'}]${warn}`;
@@ -1004,87 +1270,64 @@
       pendingNotes=[];document.getElementById('aiResponseInput').value='';discardPreview();refreshAll();
     }
 
-    const MODE_INFO={append:'AI appends new notes after the existing melody.',replace:'AI replaces all notes in the part.',lyrics:'AI rewrites lyrics and phonemes keeping pitches/timing.'};
+    const MODE_INFO={
+      append:'AI appends new notes after the existing melody.',
+      replace:'AI replaces all notes in the part with a new composition.',
+      lyrics:'AI rewrites lyrics and phonemes, keeping all pitches and timing.'
+    };
+
     function setMode(mode){
       currentMode=mode;
-      ['append','replace','lyrics'].forEach(m=>{const el=document.getElementById('mode'+m[0].toUpperCase()+m.slice(1));if(el)el.className='mode-btn'+(m===mode?' m-active-'+m:'');});
+      ['append','replace','lyrics'].forEach(m=>{
+        const el=document.getElementById('mode'+m[0].toUpperCase()+m.slice(1));
+        if(el)el.className='mode-btn'+(m===mode?' m-active-'+m:'');
+      });
       document.getElementById('modeInfo').textContent=MODE_INFO[mode];
       document.getElementById('melodyOpts').style.display=mode==='lyrics'?'none':'';
       document.getElementById('lyricsOpts').style.display=mode==='lyrics'?'':'none';
       discardPreview();refreshPrompt();
     }
 
-    function onStyleChange(){document.getElementById('customHintFld').style.display=document.getElementById('extStyle').value==='custom'?'':'none';refreshPrompt();}
-
-    function refreshPrompt(){const box=document.getElementById('promptBox');if(!activePart){box.textContent='(select a part first)';return;}box.textContent=currentMode==='lyrics'?genLyricsPrompt():genMelodyPrompt();}
-
-    function phonemeRulesBlock(part){
-      if(part.language==='english')return `PHONEME FORMAT: ARPAbet\n  "sing" → phoneme="s ih ng"  |  "love" → phoneme="l ah v"\n\n`;
-      return `PHONEME FORMAT: Romaji (Japanese)\n  ⚠ WRONG = SILENT ⚠\n  ち → "chi" (NOT "ci"/"ti")\n  し → "shi" (NOT "si")\n  つ → "tsu" (NOT "tu")\n  ふ → "fu" (NOT "hu")\n  じ → "ji" (NOT "zi")\n  っ → include in lyric, leave phoneme empty\n\n`;
+    function onStyleChange(){
+      document.getElementById('customHintFld').style.display=document.getElementById('extStyle').value==='custom'?'':'none';
+      refreshPrompt();
     }
 
-    function naturalSpeechRules(part){
-      if(part.isEnglish)return "═══ MELODY NATURALNESS ═══\n• Same word syllables stay within ±2 semitones.\n• Large leaps only between words.\n\n";
-      return "═══ JAPANESE MELODY NATURALNESS ═══\n• Morae within a word stay within ±2 st.\n• Particles short, low pitched.\n• ん/っ short (dur ≤ 0.3s).\n\n";
-    }
-
-    function genMelodyPrompt(){
-      const notes=getNotesFromPart(activePart);
-      const bpm=getBPM(activeFile.svpData);
-      const beatNs=NS_PER_SECOND*60/bpm;
-      const bars=parseInt(document.getElementById('extBars').value)||8;
-      const pitches=notes.map(n=>n.pitch);
-      const minP=pitches.length?Math.min(...pitches):52;
-      const maxP=pitches.length?Math.max(...pitches):76;
-      const midPitch=Math.round((minP+maxP)/2);
-      const style=document.getElementById('extStyle').value==='custom'?document.getElementById('customHint').value:document.getElementById('extStyle').value;
-      const isReplace=currentMode==='replace';
-      const lastEnd=notes.length?Math.max(...notes.map(n=>n.onset+n.duration)):0;
-      const startNs=isReplace?0:lastEnd;
-      let p=`You are a SynthV melody composer.\nVoice: ${activePart.voiceName} (${activePart.language})\nBPM: ${bpm.toFixed(1)}\nOperation: ${isReplace?'REPLACE':'EXTEND'}\nStyle: ${style}\nBars: ${bars}\nStart onset: ${nsToSec(startNs)}s\nPitch range: MIDI ${minP}–${maxP}\n\n`;
-      p+=phonemeRulesBlock(activePart);p+=naturalSpeechRules(activePart);
-      if(!isReplace&&notes.length){p+=`EXISTING MELODY (last ${Math.min(notes.length,20)}):\n`;notes.slice(-20).forEach(n=>p+=`  onset=${nsToSec(n.onset)}s dur=${nsToSec(n.duration)}s pitch=${n.pitch}(${midiName(n.pitch)}) lyric="${n.lyric}"\n`);}
-      p+=`OUTPUT: JSON array only. Each: {"onset":SECONDS,"dur_ns":NANOSECONDS,"pitch":MIDI,"lyric":"...","phoneme":"..."}\nFirst onset exactly ${nsToSec(startNs)}s.\n`;
-      return p;
-    }
-
-    function genLyricsPrompt(){
-      const notes=getNotesFromPart(activePart);
-      const bpm=getBPM(activeFile.svpData);
-      const beatNs=NS_PER_SECOND*60/bpm;
-      let p=`You are a SynthV lyricist. Rewrite lyrics for ${notes.length} notes.\nTheme: ${document.getElementById('lyricsTheme').value||'any'}\nVoice: ${activePart.voiceName}\n\n`+phonemeRulesBlock(activePart)+`CURRENT NOTES:\n`;
-      notes.forEach((n,i)=>{
-        const bar=Math.floor(n.onset/(beatNs*4))+1;
-        const beat=((n.onset%(beatNs*4))/beatNs+1).toFixed(1);
-        if(i>0&&n.onset-(notes[i-1].onset+notes[i-1].duration)>beatNs*2)p+='  | (gap)\n';
-        p+=`  [${bar}.${beat}] onset=${nsToSec(n.onset)}s dur=${nsToSec(n.duration)}s pitch=${n.pitch} lyric="${n.lyric}"\n`;
-      });
-      p+=`OUTPUT: JSON array with exactly ${notes.length} objects. Keep onset/dur_ns/pitch.\n`;
-      return p;
-    }
-
-    function copyPrompt(){navigator.clipboard.writeText(document.getElementById('promptBox').textContent).then(()=>showToast('Prompt copied','success')).catch(()=>showToast('Copy failed','error'));}
-
+    // ─────────────────────────────────────────────────────────────────────────
+    // GENERATE WITH CLAUDE (in-app API call)
+    // ─────────────────────────────────────────────────────────────────────────
     async function generateWithClaude(){
       if(isGenerating)return;
       if(!activePart)return showToast('Select a part first','error');
       const prompt=document.getElementById('promptBox').textContent;
       if(!prompt||prompt.startsWith('(select'))return showToast('Prompt is empty','error');
-      isGenerating=true;const btn=document.getElementById('generateBtn');btn.textContent='⏳ Generating…';btn.disabled=true;
+      isGenerating=true;
+      const btn=document.getElementById('generateBtn');
+      btn.textContent='⏳ Generating…';btn.disabled=true;
       try{
-        const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4000,system:'You are a SynthV composition assistant. Always respond with raw JSON arrays only.',messages:[{role:'user',content:prompt}]})});
+        const res=await fetch('https://api.anthropic.com/v1/messages',{
+          method:'POST',
+          headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01'},
+          body:JSON.stringify({
+            model:'claude-sonnet-4-6',
+            max_tokens:4000,
+            system:'You are a SynthV composition assistant. ALWAYS respond with raw JSON arrays ONLY — no markdown fences, no explanation text, no preamble. Every timing value (onset_ns, dur_ns) must be in nanoseconds as integers.',
+            messages:[{role:'user',content:prompt}]
+          })
+        });
         if(!res.ok)throw new Error((await res.json().catch(()=>({}))).error?.message||'HTTP '+res.status);
         const data=await res.json();
-        document.getElementById('aiResponseInput').value=data.content.filter(b=>b.type==='text').map(b=>b.text).join('');
-        autoFixAndPreview();showToast('Generated! Review preview below.','success');
+        const text=data.content.filter(b=>b.type==='text').map(b=>b.text).join('');
+        document.getElementById('aiResponseInput').value=text;
+        showToast('Generated! Running auto-fix…','success');
+        autoFixAndPreview();
       }catch(e){showToast('API error: '+e.message,'error');}
       finally{isGenerating=false;btn.textContent='✨ Generate with Claude';btn.disabled=false;}
     }
 
-    // ───────────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
     // TIMELINE
-    // ───────────────────────────────────────────────────────────
-
+    // ─────────────────────────────────────────────────────────────────────────
     function renderTimeline(){
       const canvas=document.getElementById('tlCanvas');
       const ctx=canvas.getContext('2d');
@@ -1102,38 +1345,63 @@
       const H=HDR+totalRows*ROW+10;
       canvas.width=W;canvas.height=H;
       ctx.fillStyle='#08080f';ctx.fillRect(0,0,W,H);
-      for(let s=0;s<=Math.ceil(maxSec);s++){const x=KEY+s*pxPerSec;ctx.strokeStyle=s%Math.max(1,Math.floor(60/getBPM(FILES[0]?.svpData||{})))===0?'#1e1e34':'#141422';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+      for(let s=0;s<=Math.ceil(maxSec)+1;s++){
+        const x=KEY+s*pxPerSec;
+        ctx.strokeStyle=s%4===0?'#1e1e34':'#141422';
+        ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();
+        if(s%4===0&&x<W){ctx.fillStyle='#252540';ctx.font='9px system-ui';ctx.fillText(s+'s',x+2,12);}
+      }
       let row=0;
-      FILES.forEach((f,fi)=>{const color=FILE_COLORS[fi%FILE_COLORS.length];f.parts.forEach(part=>{const y=HDR+row*ROW;ctx.fillStyle=row%2?'#0b0b14':'#0d0d18';ctx.fillRect(0,y,W,ROW);ctx.fillStyle=color;ctx.fillRect(0,y+4,3,ROW-8);ctx.fillStyle=color;ctx.font='10px system-ui';ctx.fillText((f.name+' / '+part.name).slice(0,30),8,y+18);getNotesFromPart(part).forEach(n=>{const x=KEY+((n.onset+(f.offsetNs||0))/NS_PER_SECOND)*pxPerSec;ctx.fillStyle=color;ctx.fillRect(x,y+6,Math.max(2,(n.duration/NS_PER_SECOND)*pxPerSec-1),ROW-12);});row++;});});
+      FILES.forEach((f,fi)=>{
+        const color=FILE_COLORS[fi%FILE_COLORS.length];
+        f.parts.forEach(part=>{
+          const y=HDR+row*ROW;
+          ctx.fillStyle=row%2?'#0b0b14':'#0d0d18';
+          ctx.fillRect(0,y,W,ROW);
+          ctx.fillStyle=color;ctx.fillRect(0,y+4,3,ROW-8);
+          ctx.fillStyle=color;ctx.font='10px system-ui';
+          ctx.fillText((f.name+' / '+part.name).slice(0,30),8,y+18);
+          getNotesFromPart(part).forEach(n=>{
+            const x=KEY+((n.onset+(f.offsetNs||0))/NS_PER_SECOND)*pxPerSec;
+            const w=Math.max(2,(n.duration/NS_PER_SECOND)*pxPerSec-1);
+            ctx.fillStyle=color;ctx.fillRect(x,y+6,w,ROW-12);
+          });
+          row++;
+        });
+      });
       const ob=document.getElementById('tlOffsets');ob.innerHTML='';
-      FILES.forEach((f,fi)=>{const chip=document.createElement('div');chip.style.cssText='display:flex;align-items:center;gap:8px;padding:5px 12px;background:var(--bg3);border:1px solid var(--border2);border-radius:6px';chip.innerHTML=`<span style="font-size:11px;color:var(--text2)">${esc(f.name)}</span> <span style="font-size:10px;color:var(--text3)">offset (s)</span> <input type="number" value="${nsToSec(f.offsetNs||0)}" step="0.001" style="width:80px;background:var(--bg2);border:1px solid var(--border2);color:var(--text);padding:3px 6px;border-radius:4px;font-size:11px" onchange="FILES[${fi}].offsetNs=secToNs(this.value);App.renderTimeline()">`;ob.appendChild(chip);});
+      FILES.forEach((f,fi)=>{
+        const chip=document.createElement('div');
+        chip.style.cssText='display:flex;align-items:center;gap:8px;padding:5px 12px;background:var(--bg3);border:1px solid var(--border2);border-radius:6px';
+        chip.innerHTML=`<span style="font-size:11px;color:var(--text2)">${esc(f.name)}</span><span style="font-size:10px;color:var(--text3)">offset (s)</span><input type="number" value="${nsToSec(f.offsetNs||0)}" step="0.001" style="width:80px;background:var(--bg2);border:1px solid var(--border2);color:var(--text);padding:3px 6px;border-radius:4px;font-size:11px" onchange="FILES[${fi}].offsetNs=secToNs(this.value);App.renderTimeline()">`;
+        ob.appendChild(chip);
+      });
     }
 
-    // ───────────────────────────────────────────────────────────
-    // FILE LOADING (ROBUST)
-    // ───────────────────────────────────────────────────────────
-
+    // ─────────────────────────────────────────────────────────────────────────
+    // FILE LOADING (ROBUST — handles BOM, wrapped JSON, trailing commas)
+    // ─────────────────────────────────────────────────────────────────────────
     function loadSvpFile(file){
       const reader=new FileReader();
       reader.onload=ev=>{
         let rawText=ev.target.result;
         if(rawText.charCodeAt(0)===0xFEFF)rawText=rawText.slice(1);
-        let jsonStart=rawText.indexOf('{');
-        let jsonEnd=rawText.lastIndexOf('}');
+        const jsonStart=rawText.indexOf('{');
+        const jsonEnd=rawText.lastIndexOf('}');
         if(jsonStart===-1||jsonEnd===-1){showToast('No JSON object found in file','error');return;}
         let jsonCandidate=rawText.substring(jsonStart,jsonEnd+1);
         let svpData;
         try{svpData=JSON.parse(jsonCandidate);}catch(parseError){
-          let cleaned=jsonCandidate.replace(/,\s*([}\]])/g,'$1');
-          try{svpData=JSON.parse(cleaned);}catch(e2){showToast('JSON parse error: '+parseError.message,'error');return;}
+          try{svpData=JSON.parse(jsonCandidate.replace(/,\s*([}\]])/g,'$1'));}
+          catch(e2){showToast('JSON parse error: '+parseError.message,'error');return;}
         }
-        if(!svpData||(typeof svpData!=='object')){showToast('Parsed data is not an object','error');return;}
+        if(!svpData||typeof svpData!=='object'){showToast('Parsed data is not an object','error');return;}
         if(!svpData.version&&!svpData.tracks&&!svpData.library){showToast('Not a valid SVP file','error');return;}
         const entry={id:Date.now()+Math.random(),name:file.name,svpData,parts:[],offsetNs:0};
         rebuildFileParts(entry);
         if(!entry.parts.length){showToast('No note parts found in '+file.name,'warning');}
         FILES.push(entry);
-        if(!activeFile){activeFile=entry;selectPart(entry.parts[0]);}
+        if(!activeFile){activeFile=entry;if(entry.parts.length)selectPart(entry.parts[0]);}
         refreshAll();
         showToast('Loaded: '+file.name+' ('+entry.parts.length+' part(s))','success');
       };
@@ -1150,21 +1418,57 @@
       if(e.target.matches('input,textarea,select,[contenteditable]'))return;
       if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();deleteSelected();}
       if((e.ctrlKey||e.metaKey)&&e.key==='z'){e.preventDefault();undo();}
-      if((e.ctrlKey||e.metaKey)&&(e.key==='y'||(e.shiftKey&&e.key==='z'))){e.preventDefault();redo();}
+      if((e.ctrlKey||e.metaKey)&&(e.key==='y'||(e.shiftKey&&e.key==='Z'))){e.preventDefault();redo();}
       if((e.ctrlKey||e.metaKey)&&e.key==='a'){e.preventDefault();selectAll();}
       if(e.key==='Escape'){closeModal('addModal');closeModal('phonemeRef');clearSelection();}
     });
 
     // Tabs
-    document.querySelectorAll('.tab').forEach(tab=>{tab.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));tab.classList.add('active');const panel=document.getElementById(tab.dataset.panel);if(panel)panel.classList.add('active');if(tab.dataset.panel==='timelinePanel')renderTimeline();if(tab.dataset.panel==='pianoRollPanel')drawPianoRoll();});});
+    document.querySelectorAll('.tab').forEach(tab=>{
+      tab.addEventListener('click',()=>{
+        document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+        tab.classList.add('active');
+        const panel=document.getElementById(tab.dataset.panel);
+        if(panel)panel.classList.add('active');
+        if(tab.dataset.panel==='timelinePanel')renderTimeline();
+        if(tab.dataset.panel==='pianoRollPanel')drawPianoRoll();
+        if(tab.dataset.panel==='aiBridgePanel')refreshPrompt();
+      });
+    });
 
-    // Resizers
-    (function(){const resizer=document.getElementById('gridResizer');const ngw=document.getElementById('noteGridWrap');let dragging=false,startY,startH;resizer.addEventListener('mousedown',e=>{dragging=true;startY=e.clientY;startH=ngw.offsetHeight;document.body.style.cursor='row-resize';e.preventDefault();});document.addEventListener('mousemove',e=>{if(!dragging)return;ngw.style.height=Math.max(60,Math.min(600,startH+(startY-e.clientY)))+'px';drawPianoRoll();});document.addEventListener('mouseup',()=>{dragging=false;document.body.style.cursor='';});})();
-    (function(){const header=document.getElementById('dock-header');const body=document.getElementById('dock-body');let dragging=false,startY,startH;header.addEventListener('mousedown',e=>{if(e.target.closest('button'))return;dragging=true;startY=e.clientY;startH=body.offsetHeight;document.body.style.cursor='row-resize';e.preventDefault();});document.addEventListener('mousemove',e=>{if(!dragging)return;body.style.height=Math.max(120,Math.min(600,startH+(startY-e.clientY)))+'px';});document.addEventListener('mouseup',()=>{dragging=false;document.body.style.cursor='';});})();
+    // Grid resizer (piano roll height)
+    (function(){
+      const resizer=document.getElementById('gridResizer');
+      const ngw=document.getElementById('noteGridWrap');
+      let dragging=false,startY,startH;
+      resizer.addEventListener('mousedown',e=>{dragging=true;startY=e.clientY;startH=ngw.offsetHeight;document.body.style.cursor='row-resize';e.preventDefault();});
+      document.addEventListener('mousemove',e=>{if(!dragging)return;ngw.style.height=Math.max(60,Math.min(600,startH+(startY-e.clientY)))+'px';drawPianoRoll();});
+      document.addEventListener('mouseup',()=>{dragging=false;document.body.style.cursor='';});
+    })();
 
-    // Phoneme reference
+    // AI response dock resizer
+    (function(){
+      const header=document.getElementById('dock-header');
+      const body=document.getElementById('dock-body');
+      let dragging=false,startY,startH;
+      header.addEventListener('mousedown',e=>{if(e.target.closest('button'))return;dragging=true;startY=e.clientY;startH=body.offsetHeight;document.body.style.cursor='row-resize';e.preventDefault();});
+      document.addEventListener('mousemove',e=>{if(!dragging)return;body.style.height=Math.max(120,Math.min(600,startH+(startY-e.clientY)))+'px';});
+      document.addEventListener('mouseup',()=>{dragging=false;document.body.style.cursor='';});
+    })();
+
+    // Phoneme reference data
     function populatePhRef(){
-      const silentData=[{kana:'ち "ci"',rom:'WRONG → SILENT',ph:'chi ✓'},{kana:'ち "ti"',rom:'WRONG → SILENT',ph:'chi ✓'},{kana:'し "si"',rom:'WRONG → SILENT',ph:'shi ✓'},{kana:'つ "tu"',rom:'WRONG → SILENT',ph:'tsu ✓'},{kana:'ふ "hu"',rom:'WRONG → SILENT',ph:'fu ✓'},{kana:'っ (small tsu)',rom:'lyric field OK',ph:'auto or double cons.'},{kana:'じ "zi"',rom:'avoid',ph:'ji ✓'},{kana:'づ "du"',rom:'WRONG',ph:'zu ✓'}];
+      const silentData=[
+        {kana:'ち "ci"',rom:'WRONG → SILENT',ph:'chi ✓'},
+        {kana:'ち "ti"',rom:'WRONG → SILENT',ph:'chi ✓'},
+        {kana:'し "si"',rom:'WRONG → SILENT',ph:'shi ✓'},
+        {kana:'つ "tu"',rom:'WRONG → SILENT',ph:'tsu ✓'},
+        {kana:'ふ "hu"',rom:'WRONG → SILENT',ph:'fu ✓'},
+        {kana:'っ (small tsu)',rom:'lyric field OK',ph:'auto or double cons.'},
+        {kana:'じ "zi"',rom:'avoid',ph:'ji ✓'},
+        {kana:'づ "du"',rom:'WRONG',ph:'zu ✓'},
+      ];
       const vowelData=[{kana:'あ',rom:'a',ph:'a'},{kana:'い',rom:'i',ph:'i'},{kana:'う',rom:'u',ph:'u'},{kana:'え',rom:'e',ph:'e'},{kana:'お',rom:'o',ph:'o'}];
       const kData=[{kana:'か',rom:'ka',ph:'ka'},{kana:'き',rom:'ki',ph:'ki'},{kana:'く',rom:'ku',ph:'ku'},{kana:'け',rom:'ke',ph:'ke'},{kana:'こ',rom:'ko',ph:'ko'},{kana:'きゃ',rom:'kya',ph:'kya'},{kana:'きゅ',rom:'kyu',ph:'kyu'},{kana:'きょ',rom:'kyo',ph:'kyo'}];
       const sData=[{kana:'さ',rom:'sa',ph:'sa'},{kana:'し',rom:'shi ⚠',ph:'shi'},{kana:'す',rom:'su',ph:'su'},{kana:'せ',rom:'se',ph:'se'},{kana:'そ',rom:'so',ph:'so'},{kana:'しゃ',rom:'sha',ph:'sha'},{kana:'しゅ',rom:'shu',ph:'shu'},{kana:'しょ',rom:'sho',ph:'sho'}];
@@ -1175,12 +1479,27 @@
       cells(silentData,'phref-silent');cells(vowelData,'phref-vowels');cells(kData,'phref-k');cells(sData,'phref-s');cells(tData,'phref-t');cells(nhmyrwData,'phref-nhmyrw');cells(gemData,'phref-gem');
     }
 
-    function updateFileCount(){const n=FILES.length;document.getElementById('fileCount').textContent=n?`${n} file${n!==1?'s':''} loaded`:'No files loaded';document.getElementById('btnExport').disabled=!n;}
+    function updateFileCount(){
+      const n=FILES.length;
+      document.getElementById('fileCount').textContent=n?`${n} file${n!==1?'s':''} loaded`:'No files loaded';
+      document.getElementById('btnExport').disabled=!n;
+    }
 
-    function refreshAll(){renderSidebar();renderPartList();renderNoteTable();drawPianoRoll();refreshPrompt();renderTimeline();updateUndoButtons();updateFileCount();}
+    function refreshAll(){
+      renderSidebar();renderPartList();renderNoteTable();drawPianoRoll();refreshPrompt();renderTimeline();updateUndoButtons();updateFileCount();
+    }
 
-    window.App={undo,redo,deleteSelected,selectNote,selectAll,clearSelection,editNote,deleteSingleNote,openAddNote,commitAdd,doExport,rollZoomIn,rollZoomOut,rollZoomFit,setMode,onStyleChange,refreshPrompt,parseAndPreview,autoFixAndPreview,doCommit,discardPreview,generateWithClaude,copyPrompt,renderTimeline};
+    // Public API
+    window.App={
+      undo,redo,deleteSelected,selectNote,selectAll,clearSelection,
+      editNote,deleteSingleNote,openAddNote,commitAdd,doExport,
+      rollZoomIn,rollZoomOut,rollZoomFit,
+      setMode,onStyleChange,refreshPrompt,
+      parseAndPreview,autoFixAndPreview,doCommit,discardPreview,
+      generateWithClaude,copyPrompt,renderTimeline,
+    };
 
+    // Init
     populatePhRef();
     drawPianoRoll();
     updateUndoButtons();
