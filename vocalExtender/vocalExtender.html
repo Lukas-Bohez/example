@@ -3,1028 +3,366 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SVP Studio – Final Fix: Phoneme‑free Export</title>
+    <title>SVP Studio — AI Bridge + Piano Roll</title>
     <style>
-        /* identical to previous, omitted for brevity */
         :root {
-            --bg: #08080f;
-            --bg2: #0e0e1a;
-            --bg3: #131325;
-            --bg4: #1a1a30;
-            --bg5: #22223e;
-            --border: #1c1c32;
-            --border2: #27274a;
-            --border3: #35355a;
-            --text: #e3e3f5;
-            --text2: #8a8ab8;
-            --text3: #505080;
-            --accent: #7ec8ff;
-            --accent2: #4a90d9;
-            --accent-dim: #0a1a30;
-            --teal: #3fe8b5;
-            --teal2: #1d9e7c;
-            --teal-dim: #081c14;
-            --coral: #f56c7a;
-            --coral2: #b83a46;
-            --amber: #eab040;
-            --amber-dim: #1c1400;
-            --green: #5ed47e;
-            --blue: #60bef4;
-            --pink: #f07bab;
-            --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', system-ui, sans-serif;
-            --mono: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', 'Consolas', monospace;
-            --radius: 6px;
-            --radius2: 8px;
-            --radius3: 12px;
-            --shadow-sm: 0 2px 6px rgba(0,0,0,0.4);
-            --shadow-md: 0 6px 20px rgba(0,0,0,0.5);
-            --ease: cubic-bezier(0.16, 1, 0.3, 1);
+            --bg: #0d0d16; --bg2: #12121f; --bg3: #19192b; --bg4: #1f1f38;
+            --border: #1c1c32; --border2: #282850; --text: #e0e0f0; --text2: #9090c0; --text3: #505080;
+            --accent: #7ec8ff; --teal: #3fe8b5; --coral: #f56c7a; --amber: #eab040;
+            --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            --mono: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+            --radius: 6px; --radius2: 10px; --ease: cubic-bezier(0.16, 1, 0.3, 1);
         }
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
         html,body{height:100%;overflow:hidden}
-        body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:12.5px;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;letter-spacing:0.01em}
-        #topbar{height:44px;display:flex;align-items:center;gap:10px;padding:0 16px;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0;z-index:20}
-        .logo{font-size:14px;font-weight:700;color:var(--accent);display:flex;align-items:center;gap:8px;user-select:none}
-        .tbsep{width:1px;height:22px;background:var(--border2);margin:0 6px}
+        body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:12.5px;display:flex;flex-direction:column}
+        #topbar{height:44px;display:flex;align-items:center;gap:8px;padding:0 14px;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0}
+        .logo{font-size:13px;font-weight:700;color:var(--accent);user-select:none}
         .spacer{flex:1}
-        #tabs{height:40px;display:flex;align-items:flex-end;gap:1px;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0;padding:0 12px}
-        .tab{height:100%;display:flex;align-items:center;gap:7px;padding:0 18px;font-size:12px;font-weight:500;cursor:pointer;color:var(--text3);border-bottom:2px solid transparent;transition:all 0.18s var(--ease);user-select:none;border-radius:var(--radius) var(--radius) 0 0;margin-bottom:-1px}
+        #tabs{height:36px;display:flex;align-items:flex-end;gap:1px;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0;padding:0 10px}
+        .tab{height:100%;display:flex;align-items:center;gap:6px;padding:0 16px;font-size:11px;font-weight:500;cursor:pointer;color:var(--text3);border-bottom:2px solid transparent;transition:0.15s;user-select:none;border-radius:var(--radius) var(--radius) 0 0;margin-bottom:-1px}
         .tab:hover{color:var(--text2);background:var(--bg3)}
         .tab.active{color:var(--text);border-bottom-color:var(--accent);background:var(--bg3)}
         #workspace{display:flex;flex:1;overflow:hidden}
-        #sidebar{width:240px;flex-shrink:0;display:flex;flex-direction:column;background:var(--bg2);border-right:1px solid var(--border);overflow:hidden}
-        #sidebar-body{flex:1;overflow-y:auto;padding:6px 0}
+        #sidebar{width:220px;flex-shrink:0;display:flex;flex-direction:column;background:var(--bg2);border-right:1px solid var(--border);overflow:hidden}
+        #sidebar-body{flex:1;overflow-y:auto;padding:4px 0}
         .sb-section{border-bottom:1px solid var(--border);padding:4px 0}
-        .sb-header{display:flex;align-items:center;justify-content:space-between;padding:8px 16px 6px;user-select:none}
-        .sb-header-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3)}
-        .sb-header-action{font-size:10px;color:var(--accent);cursor:pointer;padding:3px 10px;border-radius:var(--radius);border:none;background:transparent;font-weight:600}
-        .sb-header-action:hover{background:var(--accent-dim)}
-        .sb-content{padding:4px 8px}
-        .file-row,.part-row{display:flex;align-items:center;gap:10px;padding:7px 12px;border-radius:var(--radius);cursor:pointer;transition:0.12s;border:1px solid transparent;margin-bottom:2px}
+        .sb-header{padding:8px 14px 4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);display:flex;justify-content:space-between}
+        .sb-action{color:var(--accent);cursor:pointer;font-size:10px;background:none;border:none;font-weight:600}
+        .sb-action:hover{opacity:0.8}
+        .file-row,.part-row{display:flex;align-items:center;gap:8px;padding:6px 12px;border-radius:var(--radius);cursor:pointer;margin:1px 6px;border:1px solid transparent;transition:0.12s}
         .file-row:hover,.part-row:hover{background:var(--bg4);border-color:var(--border2)}
-        .file-row.active{background:var(--bg4);border-color:var(--border2);box-shadow:inset 3px 0 0 var(--accent)}
-        .part-row.active{background:var(--bg4);border-color:var(--border2);box-shadow:inset 3px 0 0 var(--teal)}
-        .file-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
-        .part-icon{width:5px;height:28px;border-radius:3px;flex-shrink:0}
-        .file-row-info,.part-info{flex:1;min-width:0}
-        .file-row-name,.part-name{font-size:11.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-        .file-row-meta,.part-meta{font-size:10px;color:var(--text3);margin-top:2px}
-        .part-voice{font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;display:inline-block;margin-top:3px}
-        .pv-jp{background:var(--teal-dim);color:var(--teal);border:1px solid var(--teal2)}
-        .pv-en{background:#0b1e3c;color:var(--blue);border:1px solid #1a3860}
-        .pv-cn{background:#1c0a20;color:var(--pink);border:1px solid #5a2050}
-        .file-row-del{opacity:0;background:none;border:none;color:var(--coral);font-size:16px;cursor:pointer;padding:2px 6px;border-radius:var(--radius);font-weight:700}
-        .file-row:hover .file-row-del{opacity:0.8}
-        #sidebar-foot{padding:12px 16px;border-top:1px solid var(--border);font-size:11px;color:var(--text2);background:var(--bg3)}
+        .file-row.active{background:var(--bg3);border-color:var(--accent)}.part-row.active{background:var(--bg3);border-color:var(--teal)}
+        .file-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}.part-dot{width:4px;height:22px;border-radius:2px;flex-shrink:0}
+        .file-info,.part-info{flex:1;min-width:0;font-size:11px}.file-info .name,.part-info .name{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .file-info .meta,.part-info .meta{font-size:10px;color:var(--text3)}.part-tag{font-size:9px;padding:1px 7px;border-radius:8px;display:inline-block;margin-top:3px}
+        .tag-jp{background:#082018;color:var(--teal);border:1px solid #1d4a38}.tag-en{background:#0b1e3c;color:#60bef4;border:1px solid #1a3860}
+        #sidebar-foot{padding:10px 14px;border-top:1px solid var(--border);font-size:10px;color:var(--text2);background:var(--bg3)}
         #main{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--bg)}
-        #toolbar{height:42px;display:flex;align-items:center;gap:10px;padding:0 16px;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0}
-        .panel{display:none;flex:1;overflow:hidden;flex-direction:column}
-        .panel.active{display:flex}
-        #rollWrap{flex:1;overflow:auto;background:var(--bg);cursor:crosshair}
-        #rollCanvas{display:block}
-        #gridResizer{height:6px;background:var(--border);cursor:row-resize;flex-shrink:0}
-        #noteGridWrap{height:190px;flex-shrink:0;overflow:auto;min-height:80px}
-        table.ng{width:100%;border-collapse:collapse;font-size:11px}
-        table.ng thead th{position:sticky;top:0;background:var(--bg4);padding:5px 10px;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--text3);border-bottom:2px solid var(--border2)}
-        table.ng tbody tr:hover td{background:var(--bg3)}
-        table.ng tbody tr.ng-selected td{background:var(--accent-dim)!important}
-        .ng-in{background:transparent;border:1px solid transparent;font-size:11px;color:var(--text);padding:3px 6px;border-radius:var(--radius);width:100%}
-        .ng-in:focus{border-color:var(--accent);background:var(--bg5);outline:none}
-        #aiBridgePanel{flex-direction:row;background:var(--bg)}
-        #ai-left{width:310px;flex-shrink:0;display:flex;flex-direction:column;border-right:1px solid var(--border);background:var(--bg2);overflow:hidden}
-        #ai-left-body{flex:1;overflow-y:auto;padding:16px 18px}
-        #ai-left-foot{padding:12px 18px;border-top:1px solid var(--border);background:var(--bg3);display:flex;flex-direction:column;gap:8px}
-        #ai-right{flex:1;display:flex;flex-direction:column;overflow:hidden}
-        #ai-prompt-area{flex:1;overflow:hidden;display:flex;flex-direction:column;padding:16px 18px;gap:8px}
-        #promptBox{flex:1;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius2);padding:12px 16px;font-family:var(--mono);font-size:11px;color:var(--text2);overflow-y:auto;white-space:pre;line-height:1.6}
-        #ai-response-dock{flex-shrink:0;border-top:2px solid var(--border2);background:var(--bg2);display:flex;flex-direction:column}
-        #dock-header{display:flex;align-items:center;gap:10px;padding:8px 18px;background:var(--bg3);border-bottom:1px solid var(--border);cursor:row-resize;user-select:none}
-        #dock-body{display:flex;flex:1;overflow:hidden}
-        #dock-paste{width:370px;flex-shrink:0;padding:12px 14px;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:8px}
-        #aiResponseInput{flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius2);padding:10px 12px;font-family:var(--mono);font-size:11px;color:var(--text);resize:none;outline:none;min-height:80px}
-        #aiResponseInput:focus{border-color:var(--accent)}
-        #aiResponseInput.error-flash{border-color:var(--coral)!important;box-shadow:0 0 0 3px rgba(245,108,122,0.2)}
-        #dock-preview{flex:1;display:flex;flex-direction:column;background:var(--bg);overflow:hidden}
-        .preview-empty{flex:1;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:12px}
-        #previewSection{flex:1;display:none;flex-direction:column;overflow:hidden}
-        .preview-head{display:flex;align-items:center;justify-content:space-between;padding:8px 16px;background:var(--bg3);border-bottom:1px solid var(--border)}
-        #previewCount{font-size:10px;background:var(--teal-dim);color:var(--teal);border-radius:12px;padding:2px 10px;font-weight:700}
-        .preview-body{flex:1;overflow-y:auto;padding:12px 16px;font-family:var(--mono);font-size:10.5px;color:var(--text2);white-space:pre;line-height:1.7}
-        .btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border:1px solid var(--border2);border-radius:var(--radius);background:transparent;color:var(--text);font-size:11px;font-weight:500;cursor:pointer;transition:all 0.15s var(--ease);white-space:nowrap;font-family:var(--font)}
-        .btn:hover{background:var(--bg4);border-color:var(--border3)}
-        .btn:active{transform:scale(0.97)}
-        .btn:disabled{opacity:0.4;cursor:default;pointer-events:none}
-        .btn.pri{background:var(--accent2);border-color:var(--accent);color:white;font-weight:600}
-        .btn.pri:hover{background:var(--accent)}
-        .btn.teal{background:var(--teal2);border-color:var(--teal);color:white;font-weight:600}
-        .btn.teal:hover{background:var(--teal);color:#000}
-        .btn.danger{border-color:var(--coral2);color:var(--coral)}
-        .btn.danger:hover{background:rgba(245,108,122,0.1)}
-        .btn.sm{font-size:10px;padding:4px 10px}
-        .mode-strip{display:flex;gap:4px;margin-bottom:14px}
-        .mode-btn{flex:1;padding:8px 6px;border-radius:var(--radius);border:1px solid var(--border2);background:transparent;color:var(--text3);font-size:11px;font-weight:600;cursor:pointer;font-family:var(--font);transition:0.15s}
-        .mode-btn:hover{background:var(--bg4)}
-        .mode-btn.m-active-append{background:var(--teal-dim);color:var(--teal);border-color:var(--teal2)}
-        .mode-btn.m-active-replace{background:var(--amber-dim);color:var(--amber);border-color:#6b4e08}
-        .mode-btn.m-active-lyrics{background:var(--accent-dim);color:var(--accent);border-color:var(--accent2)}
-        .fld{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
-        .fld label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3)}
-        .fld input,.fld select,.fld textarea{font-size:12px;padding:7px 10px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);color:var(--text);outline:none;font-family:var(--font)}
-        .fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--accent)}
-        .fld select option{background:var(--bg3)}
-        #statusbar{height:28px;display:flex;align-items:center;gap:16px;padding:0 16px;background:var(--bg2);border-top:1px solid var(--border);font-size:11px;color:var(--text3);flex-shrink:0}
-        .sb-dot{width:7px;height:7px;border-radius:50%;background:var(--border2)}
-        .sb-dot.ok{background:var(--teal);box-shadow:0 0 6px var(--teal)}
-        #addModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:100;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
-        .modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius3);width:420px;box-shadow:var(--shadow-md)}
-        .modal-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
-        .modal-head h2{font-size:14px}
-        .modal-body{padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
-        .modal-foot{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end}
-        #phonemeRef{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
-        .phref-modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius3);width:720px;max-height:85vh;display:flex;flex-direction:column;box-shadow:var(--shadow-md)}
-        .phref-body{flex:1;overflow-y:auto;padding:16px 20px}
-        .phref-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:16px}
-        .phref-cell{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);padding:7px 10px}
-        .phref-kana{font-size:16px;font-weight:700;color:var(--teal)}
-        .phref-rom{font-size:10px;color:var(--text3);margin-top:1px}
-        .phref-ph{font-size:11px;font-family:var(--mono);color:var(--text);margin-top:3px;background:var(--bg4);padding:2px 6px;border-radius:4px;display:inline-block}
-        .phref-section-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin:12px 0 8px}
-        #toastContainer{position:fixed;bottom:40px;right:20px;z-index:500;display:flex;flex-direction:column;gap:8px;pointer-events:none}
-        .toast{background:var(--bg2);border:1px solid var(--border2);padding:10px 16px;border-radius:var(--radius);box-shadow:var(--shadow-md);pointer-events:all;opacity:0;transform:translateX(20px);transition:0.25s var(--ease);max-width:320px;font-size:12px}
-        .toast.show{opacity:1;transform:translateX(0)}
-        .toast-success{border-left:3px solid var(--teal)}
-        .toast-error{border-left:3px solid var(--coral)}
-        .toast-info{border-left:3px solid var(--accent)}
-        ::-webkit-scrollbar{width:5px;height:5px}
-        ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
-        .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--text3);gap:12px;text-align:center;padding:24px}
-        .empty-state h3{font-size:14px;color:var(--text2)}
-        kbd{background:var(--bg3);border:1px solid var(--border2);border-radius:4px;padding:1px 6px;font-family:var(--mono);font-size:10px;color:var(--text2)}
-        .badge{font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;display:inline-block}
-        .badge-teal{background:var(--teal-dim);color:var(--teal);border:1px solid var(--teal2)}
-        .badge-coral{background:rgba(245,108,122,0.1);color:var(--coral);border:1px solid var(--coral2)}
-        #tlOffsets{padding:8px 16px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;gap:12px;flex-wrap:wrap}
-        #tlWrap{flex:1;overflow:auto}
-        .unit-badge{display:inline-block;font-size:9px;font-weight:700;padding:1px 6px;border-radius:4px;background:#1a1400;color:var(--amber);border:1px solid #6b4e08;vertical-align:middle;margin-left:4px}
-        #fixBanner{background:var(--teal-dim);border:1px solid var(--teal2);color:var(--teal);padding:6px 16px;font-size:11px;text-align:center;flex-shrink:0;font-weight:600;display:none}
+        #toolbar{height:38px;display:flex;align-items:center;gap:8px;padding:0 12px;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0}
+        .panel{display:none;flex:1;overflow:hidden;flex-direction:column}.panel.active{display:flex}
+        #rollWrap{flex:1;overflow:auto;background:var(--bg);cursor:crosshair}#rollCanvas{display:block}
+        #gridResizer{height:5px;background:var(--border);cursor:row-resize;flex-shrink:0}
+        #noteGridWrap{height:160px;flex-shrink:0;overflow:auto;min-height:60px}
+        table.ns{width:100%;border-collapse:collapse;font-size:10.5px}
+        table.ns thead th{position:sticky;top:0;background:var(--bg4);padding:4px 8px;font-size:9.5px;font-weight:700;text-transform:uppercase;color:var(--text3);border-bottom:2px solid var(--border2)}
+        table.ns tbody tr:hover td{background:var(--bg3)}table.ns tbody tr.sel td{background:var(--accent-dim)!important}
+        .ns-in{background:transparent;border:1px solid transparent;font-size:10.5px;color:var(--text);padding:3px 5px;border-radius:var(--radius);width:100%}
+        .ns-in:focus{border-color:var(--accent);background:var(--bg4);outline:none}
+        #aiPanel{flex-direction:row}#aiLeft{width:290px;flex-shrink:0;display:flex;flex-direction:column;border-right:1px solid var(--border);background:var(--bg2);overflow:hidden}
+        #aiLeftBody{flex:1;overflow-y:auto;padding:14px 16px}#aiLeftFoot{padding:10px 16px;border-top:1px solid var(--border);background:var(--bg3);display:flex;flex-direction:column;gap:6px}
+        #aiRight{flex:1;display:flex;flex-direction:column;overflow:hidden}#aiPromptArea{flex:1;overflow:hidden;display:flex;flex-direction:column;padding:12px 14px;gap:6px}
+        #promptBox{flex:1;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius2);padding:10px 12px;font-family:var(--mono);font-size:10.5px;color:var(--text2);overflow-y:auto;white-space:pre;line-height:1.5}
+        #aiDock{flex-shrink:0;border-top:2px solid var(--border2);background:var(--bg2);display:flex;flex-direction:column}
+        #dockHead{display:flex;align-items:center;gap:8px;padding:6px 14px;background:var(--bg3);border-bottom:1px solid var(--border);cursor:row-resize}
+        #dockBody{display:flex;flex:1;overflow:hidden}#dockPaste{width:340px;flex-shrink:0;padding:10px 12px;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:6px}
+        #aiInput{flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius2);padding:8px 10px;font-family:var(--mono);font-size:10.5px;color:var(--text);resize:none;outline:none;min-height:60px}
+        #aiInput:focus{border-color:var(--accent)}#aiInput.err{border-color:var(--coral)!important;box-shadow:0 0 0 2px rgba(245,108,122,0.2)}
+        #dockPrev{flex:1;display:flex;flex-direction:column;background:var(--bg);overflow:hidden}
+        .prev-empty{flex:1;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:11px}
+        #prevSection{flex:1;display:none;flex-direction:column;overflow:hidden}.prev-head{display:flex;align-items:center;justify-content:space-between;padding:6px 12px;background:var(--bg3);border-bottom:1px solid var(--border)}
+        #prevCount{font-size:9px;background:var(--teal-dim);color:var(--teal);border-radius:10px;padding:1px 8px;font-weight:700}
+        .prev-body{flex:1;overflow-y:auto;padding:10px 12px;font-family:var(--mono);font-size:10px;color:var(--text2);white-space:pre;line-height:1.6}
+        .btn{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border:1px solid var(--border2);border-radius:var(--radius);background:transparent;color:var(--text);font-size:10.5px;font-weight:500;cursor:pointer;transition:0.15s;white-space:nowrap;font-family:var(--font)}
+        .btn:hover{background:var(--bg4);border-color:#35355a}.btn:active{transform:scale(0.97)}.btn:disabled{opacity:0.35;pointer-events:none}
+        .btn.pri{background:var(--accent);border-color:var(--accent);color:#000;font-weight:600}.btn.pri:hover{background:#a0dcff}
+        .btn.teal{background:var(--teal);border-color:var(--teal);color:#000;font-weight:600}.btn.teal:hover{background:#5ff0c5}
+        .btn.danger{border-color:var(--coral);color:var(--coral)}.btn.danger:hover{background:rgba(245,108,122,0.1)}.btn.sm{font-size:9.5px;padding:3px 9px}
+        .mode-strip{display:flex;gap:3px;margin-bottom:10px}
+        .mode-btn{flex:1;padding:7px 4px;border-radius:var(--radius);border:1px solid var(--border2);background:transparent;color:var(--text3);font-size:10.5px;font-weight:600;cursor:pointer;transition:0.15s}
+        .mode-btn:hover{background:var(--bg4)}.mode-btn.act-append{background:#082018;color:var(--teal);border-color:#1d4a38}.mode-btn.act-replace{background:#1c1400;color:var(--amber);border-color:#6b4e08}
+        .fld{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+        .fld label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text3)}
+        .fld input,.fld select{font-size:11.5px;padding:6px 9px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);color:var(--text);outline:none;font-family:var(--font)}
+        .fld input:focus,.fld select:focus{border-color:var(--accent)}.fld select option{background:var(--bg3)}
+        #statusbar{height:26px;display:flex;align-items:center;gap:12px;padding:0 12px;background:var(--bg2);border-top:1px solid var(--border);font-size:10.5px;color:var(--text3);flex-shrink:0}
+        .sb-dot{width:6px;height:6px;border-radius:50%;background:var(--border2)}.sb-dot.ok{background:var(--teal)}
+        #toastContainer{position:fixed;bottom:30px;right:16px;z-index:500;display:flex;flex-direction:column;gap:6px;pointer-events:none}
+        .toast{background:var(--bg2);border:1px solid var(--border2);padding:8px 14px;border-radius:var(--radius);box-shadow:0 4px 14px rgba(0,0,0,0.5);pointer-events:all;opacity:0;transform:translateX(16px);transition:0.25s var(--ease);max-width:280px;font-size:11px}
+        .toast.show{opacity:1;transform:translateX(0)}.toast-ok{border-left:3px solid var(--teal)}.toast-err{border-left:3px solid var(--coral)}
+        ::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+        .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--text3);gap:10px;text-align:center;padding:20px}
+        .empty h3{font-size:13px;color:var(--text2)}kbd{background:var(--bg3);border:1px solid var(--border2);border-radius:3px;padding:1px 5px;font-family:var(--mono);font-size:9.5px}
+        .badge{font-size:8.5px;font-weight:700;padding:1px 6px;border-radius:8px;display:inline-block}.badge-t{background:var(--teal-dim);color:var(--teal);border:1px solid #1d4a38}
+        #fixBanner{background:#082018;border:1px solid #1d4a38;color:var(--teal);padding:4px 12px;font-size:10.5px;text-align:center;flex-shrink:0;font-weight:600}
+        #addModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:100;align-items:center;justify-content:center}
+        .modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius2);width:380px;box-shadow:0 8px 30px rgba(0,0,0,0.6)}
+        .modal-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+        .modal-head h2{font-size:13px}.modal-body{padding:16px 18px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+        .modal-foot{padding:12px 18px;border-top:1px solid var(--border);display:flex;gap:6px;justify-content:flex-end}
     </style>
 </head>
 <body>
 <div id="toastContainer"></div>
 <div id="addModal">
     <div class="modal">
-        <div class="modal-head"><h2>Add Note</h2><button class="btn sm" onclick="closeModal('addModal')">&#x2715;</button></div>
+        <div class="modal-head"><h2>Add Note</h2><button class="btn sm" onclick="document.getElementById('addModal').style.display='none'">&#x2715;</button></div>
         <div class="modal-body">
-            <div class="fld"><label>Lyric</label><input id="anY" value="a"></div>
-            <div class="fld"><label>Phoneme (leave empty for auto)</label><input id="anP" value="" placeholder="auto if empty"></div>
-            <div class="fld"><label>Pitch (MIDI 0–127)</label><input type="number" id="anN" value="60" min="0" max="127"></div>
+            <div class="fld"><label>Lyric (kana)</label><input id="anY" value="あ"></div>
+            <div class="fld"><label>Pitch (MIDI 0-127)</label><input type="number" id="anN" value="60" min="0" max="127"></div>
             <div class="fld"><label>Onset (seconds)</label><input type="number" id="anT" value="0" min="0" step="0.001"></div>
-            <div class="fld"><label>Duration (seconds)</label><input type="number" id="anDur" value="0.5" min="0.001" step="0.001"></div>
+            <div class="fld"><label>Duration (seconds)</label><input type="number" id="anDur" value="0.461" min="0.001" step="0.001"></div>
             <div class="fld"><label>Detune (cents)</label><input type="number" id="anDet" value="0" min="-1200" max="1200"></div>
         </div>
         <div class="modal-foot">
-            <button class="btn" onclick="closeModal('addModal')">Cancel</button>
+            <button class="btn" onclick="document.getElementById('addModal').style.display='none'">Cancel</button>
             <button class="btn pri" onclick="App.commitAdd()">Add Note</button>
-        </div>
-    </div>
-</div>
-<div id="phonemeRef">
-    <div class="phref-modal">
-        <div class="modal-head"><h2>Synthesizer V – Phoneme Reference (for manual use only)</h2><button class="btn sm" onclick="closeModal('phonemeRef')">&#x2715;</button></div>
-        <div class="phref-body">
-            <div class="phref-section-title">⚠ Notes are silent? Just leave phoneme empty!</div>
-            <div class="phref-grid" id="phref-silent"></div>
-            <div class="phref-section-title">Vowels</div>
-            <div class="phref-grid" id="phref-vowels"></div>
-            <div class="phref-section-title">K Column</div>
-            <div class="phref-grid" id="phref-k"></div>
-            <div class="phref-section-title">S Column</div>
-            <div class="phref-grid" id="phref-s"></div>
-            <div class="phref-section-title">T Column</div>
-            <div class="phref-grid" id="phref-t"></div>
-            <div class="phref-section-title">N, H, M, Y, R, W Columns</div>
-            <div class="phref-grid" id="phref-nhmyrw"></div>
-            <div class="phref-section-title">Gemination (small tsu)</div>
-            <div class="phref-grid" id="phref-gem"></div>
         </div>
     </div>
 </div>
 
 <div id="topbar">
     <div class="logo">&#x266C; SVP Studio</div>
-    <div class="tbsep"></div>
-    <button class="btn" onclick="document.getElementById('fileIn').click()">&#x1F4C2; Open</button>
+    <button class="btn sm" onclick="document.getElementById('fileIn').click()">&#x1F4C2; Open</button>
     <input type="file" id="fileIn" accept=".svp,.json" multiple hidden>
-    <button class="btn" id="undoBtn" disabled onclick="App.undo()">&#x21A9; Undo</button>
-    <button class="btn" id="redoBtn" disabled onclick="App.redo()">&#x21AA; Redo</button>
-    <div class="tbsep"></div>
-    <button class="btn pri" id="btnExport" disabled onclick="App.doExport()">&#x1F4E5; Export .svp</button>
+    <button class="btn sm" id="undoBtn" disabled onclick="App.undo()">&#x21A9;</button>
+    <button class="btn sm" id="redoBtn" disabled onclick="App.redo()">&#x21AA;</button>
     <div class="spacer"></div>
-    <button class="btn sm" onclick="openModal('phonemeRef')">&#x1F50E; Phoneme Ref</button>
-    <span id="fileCount" style="font-size:11px;color:var(--text3);margin-left:8px">No files loaded</span>
+    <button class="btn pri" id="btnExport" disabled onclick="App.doExport()">&#x1F4E5; Export .svp</button>
+    <span id="fileCount" style="font-size:10px;color:var(--text3)">No files</span>
 </div>
-<div id="fixBanner">✅ Phoneme left empty – SynthV handles pronunciation perfectly.</div>
+<div id="fixBanner">✅ Export removes phonemes — SynthV dictionary handles all pronunciation.</div>
 
 <div id="tabs">
     <div class="tab active" data-panel="pianoRollPanel">&#x1F3B9; Piano Roll</div>
-    <div class="tab" data-panel="aiBridgePanel">&#x1F916; AI Bridge</div>
-    <div class="tab" data-panel="timelinePanel">&#x23F1; Timeline</div>
+    <div class="tab" data-panel="aiPanel">&#x1F916; AI Bridge</div>
 </div>
 
 <div id="workspace">
     <div id="sidebar">
         <div id="sidebar-body">
             <div class="sb-section">
-                <div class="sb-header"><span class="sb-header-title">Files</span><button class="sb-header-action" onclick="document.getElementById('fileIn').click()">+ Open</button></div>
-                <div class="sb-content" id="fileList"><div style="font-size:11px;color:var(--text3);padding:8px">Drop .svp files here or use Open</div></div>
+                <div class="sb-header"><span>Files</span><button class="sb-action" onclick="document.getElementById('fileIn').click()">+ Open</button></div>
+                <div id="fileList"><div style="font-size:10px;color:var(--text3);padding:6px 12px">Drop .svp files here</div></div>
             </div>
             <div class="sb-section">
-                <div class="sb-header"><span class="sb-header-title">Parts</span></div>
-                <div class="sb-content" id="partList"><div style="font-size:11px;color:var(--text3);padding:8px">Select a file above</div></div>
+                <div class="sb-header"><span>Parts</span></div>
+                <div id="partList"><div style="font-size:10px;color:var(--text3);padding:6px 12px">Select a file</div></div>
             </div>
         </div>
-        <div id="sidebar-foot">
-            <div style="font-size:10px;color:var(--text3);text-transform:uppercase;font-weight:700;margin-bottom:2px">Master</div>
-            <span id="masterInfo">No file</span>
-        </div>
+        <div id="sidebar-foot"><span id="masterInfo">No file</span></div>
     </div>
     <div id="main">
         <div id="toolbar">
-            <span id="toolbar-title" style="color:var(--text2)">No part selected</span>
-            <div class="spacer"></div>
-            <span id="selBadge" style="display:none;background:var(--accent-dim);color:var(--accent);padding:2px 10px;border-radius:10px;font-weight:700;font-size:11px">0 selected</span>
-            <button class="btn sm danger" id="btnDelSel" style="display:none" onclick="App.deleteSelected()">&#x2715; Delete</button>
-            <button class="btn sm" id="btnAddNote" disabled onclick="App.openAddNote()">+ Add Note</button>
+            <span id="toolbarTitle" style="color:var(--text2)">No part selected</span><div class="spacer"></div>
+            <span id="selBadge" style="display:none;background:var(--accent-dim);color:var(--accent);padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700">0</span>
+            <button class="btn sm danger" id="btnDelSel" style="display:none" onclick="App.deleteSelected()">&#x2715; Del</button>
+            <button class="btn sm" id="btnAddNote" disabled onclick="App.openAddNote()">+ Note</button>
         </div>
         <div class="panel active" id="pianoRollPanel">
-            <div style="height:36px;display:flex;align-items:center;gap:8px;padding:0 12px;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0">
-                <span style="font-size:10px;font-weight:700;color:var(--text3)">Zoom</span>
-                <button class="btn sm" onclick="App.rollZoomOut()">&#x2212;</button>
-                <button class="btn sm" onclick="App.rollZoomFit()">Fit</button>
-                <button class="btn sm" onclick="App.rollZoomIn()">+</button>
-                <span class="spacer"></span>
-                <span style="font-size:10px;color:var(--text3)">Click note to select · Shift multi‑select · Del to remove</span>
+            <div style="height:32px;display:flex;align-items:center;gap:6px;padding:0 10px;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0">
+                <span style="font-size:9.5px;color:var(--text3)">Zoom</span>
+                <button class="btn sm" onclick="App.zoomOut()">-</button>
+                <button class="btn sm" onclick="App.zoomFit()">Fit</button>
+                <button class="btn sm" onclick="App.zoomIn()">+</button>
             </div>
             <div id="rollWrap"><canvas id="rollCanvas"></canvas></div>
             <div id="gridResizer"></div>
-            <div id="noteGridWrap"><div id="noteGridInner"><div class="empty-state"><h3>No Part Selected</h3><p>Choose a part from the sidebar</p></div></div></div>
+            <div id="noteGridWrap"><div id="noteGridInner"><div class="empty"><h3>No Part Selected</h3><p>Choose a part from the sidebar</p></div></div></div>
         </div>
-        <div class="panel" id="aiBridgePanel">
-            <div id="ai-left">
-                <div id="ai-left-body">
+        <div class="panel" id="aiPanel">
+            <div id="aiLeft">
+                <div id="aiLeftBody">
                     <div class="fld"><label>Operation</label>
                         <div class="mode-strip">
-                            <button class="mode-btn m-active-append" id="modeAppend" onclick="App.setMode('append')">➕ Extend</button>
+                            <button class="mode-btn act-append" id="modeAppend" onclick="App.setMode('append')">➕ Extend</button>
                             <button class="mode-btn" id="modeReplace" onclick="App.setMode('replace')">↩ Replace</button>
-                            <button class="mode-btn" id="modeLyrics" onclick="App.setMode('lyrics')">📝 Lyrics</button>
                         </div>
-                        <div id="modeInfo" style="background:var(--bg3);border:1px solid var(--border2);padding:10px 12px;border-radius:var(--radius);font-size:11px;color:var(--text2)">AI appends new notes after the existing melody.</div>
+                        <div id="modeInfo" style="background:var(--bg3);border:1px solid var(--border2);padding:8px 10px;border-radius:var(--radius);font-size:10px;color:var(--text2)">AI adds notes after the existing melody.</div>
                     </div>
-                    <div id="melodyOpts">
-                        <div class="fld"><label>Bars to add</label><div style="display:flex;align-items:center;gap:10px"><input type="range" min="2" max="32" step="2" value="8" id="extBars" oninput="document.getElementById('extBarsVal').textContent=this.value;App.refreshPrompt()" style="flex:1"><span id="extBarsVal" style="font-weight:700;min-width:24px;text-align:right">8</span></div></div>
-                        <div class="fld"><label>Style</label><select id="extStyle" onchange="App.onStyleChange()"><option value="natural">Natural continuation</option><option value="energetic">Energetic / upbeat</option><option value="emotional">Slow / emotional</option><option value="bridge">Bridge section</option><option value="hook">Repeat the hook</option><option value="duet">Duet response</option><option value="custom">Custom…</option></select></div>
-                        <div class="fld" id="customHintFld" style="display:none"><input type="text" id="customHint" placeholder="Describe style…" oninput="App.refreshPrompt()"></div>
-                        <div class="fld"><label>Other singer context</label><textarea id="crossCtx" placeholder="Paste other singer's lyrics..." oninput="App.refreshPrompt()" rows="2"></textarea></div>
-                    </div>
-                    <div id="lyricsOpts" style="display:none">
-                        <div class="fld"><label>Theme</label><input type="text" id="lyricsTheme" placeholder="e.g. longing, summer rain..." oninput="App.refreshPrompt()"></div>
-                        <div class="fld"><label>Tone</label><select id="lyricsTone" onchange="App.refreshPrompt()"><option value="poetic">Poetic</option><option value="cheerful">Cheerful</option><option value="melancholic">Melancholic</option><option value="powerful">Powerful</option></select></div>
-                    </div>
+                    <div class="fld"><label>Bars to add</label><div style="display:flex;align-items:center;gap:8px"><input type="range" min="2" max="32" step="2" value="8" id="extBars" oninput="document.getElementById('extBarsVal').textContent=this.value;App.refreshPrompt()" style="flex:1"><span id="extBarsVal" style="font-weight:700;min-width:20px">8</span></div></div>
+                    <div class="fld"><label>Style</label><select id="extStyle" onchange="App.refreshPrompt()"><option value="natural">Natural</option><option value="energetic">Energetic</option><option value="emotional">Emotional</option><option value="bridge">Bridge</option><option value="hook">Hook</option></select></div>
                 </div>
-                <div id="ai-left-foot">
-                    <button class="btn teal" id="generateBtn" onclick="App.generateWithClaude()" style="width:100%">✨ Generate with Claude</button>
+                <div id="aiLeftFoot">
+                    <button class="btn teal" id="generateBtn" onclick="App.generate()" style="width:100%">✨ Generate with Claude</button>
                     <button class="btn sm" onclick="App.copyPrompt()">📋 Copy Prompt</button>
-                    <button class="btn sm" onclick="openModal('phonemeRef')">🔎 Romaji Reference</button>
                 </div>
             </div>
-            <div id="ai-right">
-                <div id="ai-prompt-area">
-                    <label style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--text3)">Generated Prompt (editable)</label>
+            <div id="aiRight">
+                <div id="aiPromptArea">
+                    <label style="font-size:9.5px;font-weight:700;text-transform:uppercase;color:var(--text3)">Generated Prompt</label>
                     <div id="promptBox" contenteditable="true">(select a part first)</div>
                 </div>
-                <div id="ai-response-dock">
-                    <div id="dock-header"><span style="font-weight:700;font-size:10px;text-transform:uppercase;color:var(--text3)">AI Response</span><span class="spacer"></span><span style="font-size:10px;color:var(--text3)">Paste JSON → Auto-Fix → Preview → Apply</span></div>
-                    <div id="dock-body" style="height:240px">
-                        <div id="dock-paste">
-                            <label style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--text3)">JSON Response <span class="unit-badge">onset_ns + dur_ns = nanoseconds</span></label>
-                            <textarea id="aiResponseInput" placeholder='[{"onset_ns":0,"dur_ns":461538462,"pitch":60,"lyric":"あ"},...]'></textarea>
-                            <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
-                                <button class="btn sm teal" onclick="App.autoFixAndPreview()">🔧 Auto-Fix &amp; Preview</button>
-                                <button class="btn sm" onclick="App.parseAndPreview()">▶ Preview raw</button>
+                <div id="aiDock">
+                    <div id="dockHead"><span style="font-weight:700;font-size:9.5px;text-transform:uppercase;color:var(--text3)">AI Response</span><span class="spacer"></span><span style="font-size:9.5px;color:var(--text3)">Paste JSON → Auto-Fix → Apply</span></div>
+                    <div id="dockBody" style="height:200px">
+                        <div id="dockPaste">
+                            <label style="font-size:9px;font-weight:700;text-transform:uppercase;color:var(--text3)">JSON Response</label>
+                            <textarea id="aiInput" placeholder='[{"onset_ns":0,"dur_ns":461538462,"pitch":60,"lyric":"あ"},...]'></textarea>
+                            <div style="display:flex;gap:5px">
+                                <button class="btn sm teal" onclick="App.autoFix()">🔧 Auto-Fix &amp; Preview</button>
+                                <button class="btn sm" onclick="App.preview()">▶ Preview</button>
                             </div>
-                            <span id="parseStatus" style="font-size:11px;"></span>
+                            <span id="parseStatus" style="font-size:10px;"></span>
                         </div>
-                        <div id="dock-preview">
-                            <div class="preview-empty" id="previewEmpty">📌 Paste AI response above and click Auto-Fix &amp; Preview</div>
-                            <div id="previewSection">
-                                <div class="preview-head">
-                                    <div><span style="font-weight:700;font-size:10px;color:var(--text3)">Preview</span><span id="previewCount" class="badge badge-teal" style="margin-left:8px"></span></div>
-                                    <div style="display:flex;gap:8px"><button class="btn teal sm" id="applyBtn" onclick="App.doCommit()">✔ Apply</button><button class="btn danger sm" id="discardBtn" onclick="App.discardPreview()">✖ Discard</button></div>
+                        <div id="dockPrev">
+                            <div class="prev-empty" id="prevEmpty">📌 Paste AI response and click Auto-Fix</div>
+                            <div id="prevSection">
+                                <div class="prev-head">
+                                    <span id="prevCount" class="badge badge-t"></span>
+                                    <div style="display:flex;gap:6px">
+                                        <button class="btn teal sm" id="applyBtn" onclick="App.doCommit()">✔ Apply</button>
+                                        <button class="btn danger sm" onclick="App.discard()">✖ Discard</button>
+                                    </div>
                                 </div>
-                                <div class="preview-body" id="previewNotes"></div>
+                                <div class="prev-body" id="prevNotes"></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="panel" id="timelinePanel">
-            <div style="display:flex;align-items:center;gap:12px;padding:0 16px;height:40px;background:var(--bg2);border-bottom:1px solid var(--border)"><span style="font-size:11px;color:var(--text2)">Track offsets &amp; zoom</span><input type="range" id="tlZoom" min="0.01" max="0.5" step="0.01" value="0.1" oninput="document.getElementById('tlZoomVal').textContent=parseFloat(this.value).toFixed(2)+' s/px';App.renderTimeline()" style="width:100px"><span id="tlZoomVal" style="font-size:11px">0.10 s/px</span></div>
-            <div id="tlOffsets"></div>
-            <div id="tlWrap"><canvas id="tlCanvas"></canvas></div>
         </div>
     </div>
 </div>
 <div id="statusbar">
-    <div class="sb-dot" id="sdot"></div>
-    <span id="stNotes">Ready</span>
+    <div class="sb-dot" id="sdot"></div><span id="stNotes">Ready</span>
     <span id="stRangeW" style="display:none">Range <b id="stRange"></b></span>
-    <span id="stEndW" style="display:none">End <b id="stEnd"></b> s</span>
+    <span id="stEndW" style="display:none">End <b id="stEnd"></b>s</span>
     <span id="stVoiceW" style="display:none">Voice <b id="stVoice"></b></span>
     <span class="spacer"></span>
-    <span><kbd>Ctrl+Z</kbd> Undo &nbsp; <kbd>Ctrl+A</kbd> Select all &nbsp; <kbd>Del</kbd> Delete</span>
+    <span><kbd>Ctrl+Z</kbd> Undo <kbd>Del</kbd> Delete</span>
     <span id="stTempoW" style="display:none"><b id="stTempo"></b> BPM</span>
 </div>
 
 <script>
-    'use strict';
-    const NS_PER_SECOND = 1_000_000_000;
-    const BLICKS_PER_QUARTER = 705_600_000;
-    const DEFAULT_BPM = 130;
-    const DEFAULT_DUR_NS = Math.round(NS_PER_SECOND * 60 / DEFAULT_BPM);
+'use strict';
+const BLICKS = 705_600_000, NS = 1_000_000_000, DEF_BPM = 130;
+const blick2sec = (b,bpm) => (b/BLICKS)*(60/bpm);
+const sec2blick = (s,bpm) => Math.round(Math.max(0,s)*(bpm/60)*BLICKS);
+const ns2blick = (ns,bpm) => Math.round(Math.max(0,ns)/NS*(bpm/60)*BLICKS);
+const blick2ns = (b,bpm) => Math.round((b/BLICKS)*(60/bpm)*NS);
+const NOTE_NAMES = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const COLORS = ['#7ec8ff','#3fe8b5','#f56c7a','#eab040','#60bef4','#5ed47e'];
+function mname(n){return NOTE_NAMES[((n%12)+12)%12]+(Math.floor(n/12)-1)}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function bpm(svp){return(svp?.time?.tempo||[]).length?svp.time.tempo[0].bpm:DEF_BPM}
 
-    const blickToNs = (b, bpm) => Math.round((b / BLICKS_PER_QUARTER) * (60 / bpm) * NS_PER_SECOND);
-    const nsToBlick = (n, bpm) => Math.round((n / NS_PER_SECOND) * (bpm / 60) * BLICKS_PER_QUARTER);
+let FILES=[],activeFile=null,activePart=null,pending=[],mode='append',genBusy=false;
+let zoom=1.0,bboxes=[],sel=new Set(),undoS=[],redoS=[];
 
-    // ═══════════════════════════════════════════════════════════════════════════
-    //  PHONEME LOGIC: now defaults to empty (let SynthV handle it)
-    // ═══════════════════════════════════════════════════════════════════════════
-    function preparePhoneme(raw) {
-        // If user explicitly enters something, we keep it; otherwise empty.
-        if (!raw || typeof raw !== 'string' || !raw.trim()) return '';
-        return raw.trim(); // no automatic spacing
-    }
+function toast(m,t='ok'){const c=document.getElementById('toastContainer'),d=document.createElement('div');d.className='toast toast-'+t;d.textContent=m;c.appendChild(d);requestAnimationFrame(()=>d.classList.add('show'));setTimeout(()=>{d.classList.remove('show');setTimeout(()=>d.remove(),300)},2500)}
+function notesBlickRaw(p){if(!p||!p.notes)return[];return p.notes.map((n,i)=>({el:n,idx:i,onB:(n.onset||0)+(p.offB||0),durB:n.duration||BLICKS,pitch:n.pitch||60,det:n.detune||0,lyric:n.lyrics||''})).sort((a,b)=>a.onB-b.onB)}
+function mkNote(onB,durB,pitch,det,lyric){return{musicalType:'singing',onset:Math.max(0,onB),duration:Math.max(1,durB),lyrics:String(lyric||'あ'),accent:'',pitch:Math.max(0,Math.min(127,Math.round(pitch))),detune:Math.max(-1200,Math.min(1200,Math.round(det||0))),instantMode:false,attributes:{dF0Vbr:0,evenSyllableDuration:true},systemAttributes:{tF0Offset:0,tF0Left:.0923077,tF0Right:.0923077,dF0Left:0,dF0Right:0,dF0Vbr:0,evenSyllableDuration:true},pitchTakes:{activeTakeId:0,takes:[{id:0,expr:0,liked:false}]},timbreTakes:{activeTakeId:0,takes:[{id:0,expr:0,liked:false}]}}}
+function insertSorted(p,nd){const i=p.notes.findIndex(n=>n.onset>nd.onset);if(i===-1)p.notes.push(nd);else p.notes.splice(i,0,nd)}
+function storeNote(p,netOnB,durB,pitch,det,lyric){const adj=netOnB-(p.offB||0);insertSorted(p,mkNote(adj,durB,pitch,det,lyric))}
+function sanitize(raw){let s=raw.trim().replace(/^```(?:json)?\s*/i,'').replace(/\s*```\s*$/i,'').trim();const a=s.indexOf('['),e=s.lastIndexOf(']');if(a===-1||e===-1)throw new Error('No JSON array');return JSON.parse(s.substring(a,e+1).replace(/"(\w+)"\s*=\s*/g,'"$1":').replace(/,\s*([}\]])/g,'$1'))}
+function snap(){return activeFile?{fid:activeFile.id,json:JSON.stringify(activeFile.svpData),pidx:activePart?activeFile.parts.indexOf(activePart):-1}:null}
+function restore(sn){const f=FILES.find(x=>x.id===sn.fid);if(!f)return;try{f.svpData=JSON.parse(sn.json)}catch(e){return}rebuild(f);activeFile=f;activePart=(sn.pidx>=0&&sn.pidx<f.parts.length)?f.parts[sn.pidx]:null;sel.clear();refreshAll()}
+function pushU(){const s=snap();if(!s)return;undoS.push(s);if(undoS.length>60)undoS.shift();redoS.length=0;updUB()}
+function undo(){if(!undoS.length)return;const c=snap();if(c)redoS.push(c);restore(undoS.pop());toast('Undo')}
+function redo(){if(!redoS.length)return;const c=snap();if(c)undoS.push(c);restore(redoS.pop());toast('Redo')}
+function updUB(){document.getElementById('undoBtn').disabled=!undoS.length;document.getElementById('redoBtn').disabled=!redoS.length}
+function updSel(){const n=sel.size;document.getElementById('selBadge').style.display=n?'':'none';document.getElementById('selBadge').textContent=n?String(n):'';document.getElementById('btnDelSel').style.display=n?'':'none'}
+function selNote(i,multi){if(multi){sel.has(i)?sel.delete(i):sel.add(i)}else{sel.clear();sel.add(i)}updSel();drawRoll();hlTable()}
+function clrSel(){sel.clear();updSel();drawRoll();hlTable()}
+function selAll(){if(!activePart)return;notesBlickRaw(activePart).forEach((_,i)=>sel.add(i));updSel();drawRoll();hlTable()}
+function delSel(){if(!activePart||!sel.size)return;pushU();[...sel].sort((a,b)=>b-a).forEach(i=>{if(i>=0&&i<activePart.notes.length)activePart.notes.splice(i,1)});sel.clear();updSel();refreshAll();toast('Deleted')}
 
-    const getNotesFromPart = (part) => {
-        if (!part || !part.notes) return [];
-        return part.notes.map((n, i) => ({
-            el: n, idx: i,
-            onset: (n.onset || 0) + (part.offsetNs || 0),
-            duration: n.duration || DEFAULT_DUR_NS,
-            pitch: n.pitch || 60, detune: n.detune || 0,
-            lyric: n.lyrics || '', phoneme: n.phonemes || '',
-        })).sort((a, b) => a.onset - b.onset);
-    };
+function rebuild(f){const svp=f.svpData,parts=[];if(svp._ok)return;svp._ok=true;if(svp.tracks){svp.tracks.forEach((t,ti)=>{const db=t?.mainRef?.database||{},v={name:db.name||'Unknown',lang:db.language||'japanese'};const mg=t.mainGroup||{};if(mg.notes&&mg.notes.length)parts.push({ti,track:t,lib:null,notes:mg.notes,offB:0,vname:v.name,lang:v.lang,en:v.lang==='english',name:t.name||('Track '+(ti+1))});(t.groups||[]).forEach((g,gi)=>{const l=(svp.library||[]).find(x=>x.uuid===g.groupID);if(l&&l.notes&&l.notes.length)parts.push({ti,track:t,lib:l,notes:l.notes,offB:g.blickOffset||0,vname:v.name,lang:v.lang,en:v.lang==='english',name:l.name||(t.name+' G'+(gi+1))})})})}if(!parts.length&&svp.library){svp.library.forEach((l,li)=>{if(l.notes&&l.notes.length)parts.push({ti:li,track:null,lib:l,notes:l.notes,offB:0,vname:'Unknown',lang:'japanese',en:false,name:l.name||('Part '+(li+1))})})}f.parts=parts}
 
-    const buildNoteData = (onsetNs, durNs, pitch, detune, lyric, phoneme) => ({
-        musicalType: 'singing',
-        onset: Math.max(0, Math.round(onsetNs)),
-        duration: Math.max(1, Math.round(durNs)),
-        lyrics: String(lyric || 'a'),
-        phonemes: preparePhoneme(phoneme || ''),
-        accent: '',
-        pitch: Math.max(0, Math.min(127, Math.round(pitch))),
-        detune: Math.max(-1200, Math.min(1200, Math.round(detune || 0))),
-        instantMode: true,
-        attributes: { dF0Vbr: 0.0, evenSyllableDuration: true },
-        systemAttributes: { tF0Offset: -0.0, tF0Left: 0.09230769425630569, tF0Right: 0.09230769425630569, dF0Left: 0.0, dF0Right: 0.0, dF0Vbr: 0.0, evenSyllableDuration: true },
-        pitchTakes: { activeTakeId: 0, takes: [{ id: 0, expr: 0.0, liked: false }] },
-        timbreTakes: { activeTakeId: 0, takes: [{ id: 0, expr: 0.0, liked: false }] },
-    });
+function doExport(){if(!activeFile)return toast('Select a file first','err');const bp=bpm(activeFile.svpData);const d=JSON.parse(JSON.stringify(activeFile.svpData));delete d._ok;const clean=n=>{delete n.phonemes};if(d.tracks)d.tracks.forEach(t=>{if(t.mainGroup?.notes)t.mainGroup.notes.forEach(clean)});if(d.library)d.library.forEach(l=>{if(l.notes)l.notes.forEach(clean)});const j=JSON.stringify(d,null,2);const b=new Blob([j],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=activeFile.name.replace(/\.svp$/i,'')+'_export.svp';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),3000);toast('Exported — SynthV will pronounce all kana!')}
 
-    const insertNoteSorted = (part, noteData) => {
-        const idx = part.notes.findIndex(n => n.onset > noteData.onset);
-        if (idx === -1) part.notes.push(noteData);
-        else part.notes.splice(idx, 0, noteData);
-    };
-    const storeNoteInPart = (part, netOnsetNs, durNs, pitch, detune, lyric, phoneme) => {
-        const adj = netOnsetNs - (part.offsetNs || 0);
-        insertNoteSorted(part, buildNoteData(adj, durNs, pitch, detune, lyric, phoneme));
-    };
+function renderFiles(){const fl=document.getElementById('fileList');if(!FILES.length){fl.innerHTML='<div style="font-size:10px;color:var(--text3);padding:6px 12px">Drop .svp files here</div>';renderParts();return}fl.innerHTML='';FILES.forEach((f,fi)=>{const c=COLORS[fi%COLORS.length];const tn=f.parts.reduce((a,p)=>a+p.notes.length,0);const r=document.createElement('div');r.className='file-row'+(activeFile?.id===f.id?' active':'');r.innerHTML=`<div class="file-dot" style="background:${c}"></div><div class="file-info"><div class="name">${esc(f.name)}</div><div class="meta">${f.parts.length} parts · ${tn} notes · ${bpm(f.svpData).toFixed(0)} BPM</div></div><button style="opacity:0;background:none;border:none;color:var(--coral);cursor:pointer;font-size:14px;padding:2px 5px" class="del-btn">&#x2715;</button>`;r.querySelector('.del-btn').onclick=e=>{e.stopPropagation();removeFile(fi)};r.onclick=()=>{activeFile=f;renderParts()};fl.appendChild(r)});renderParts()}
+function removeFile(i){if(activeFile===FILES[i]){activeFile=null;activePart=null}FILES.splice(i,1);sel.clear();updSel();refreshAll();toast('File removed')}
+function renderParts(){const pl=document.getElementById('partList');if(!activeFile){pl.innerHTML='<div style="font-size:10px;color:var(--text3);padding:6px 12px">Select a file</div>';return}pl.innerHTML='';const c=COLORS[FILES.indexOf(activeFile)%COLORS.length];activeFile.parts.forEach(p=>{const r=document.createElement('div');r.className='part-row'+(activePart===p?' active':'');r.innerHTML=`<div class="part-dot" style="background:${c}"></div><div class="part-info"><div class="name">${esc(p.name)}</div><div class="meta">${p.notes.length} notes</div><span class="part-tag ${p.en?'tag-en':'tag-jp'}">${esc(p.vname)}</span></div>`;r.onclick=()=>selPart(p);pl.appendChild(r)});const bp=bpm(activeFile.svpData);const mtr=(activeFile.svpData.time?.meter||[{numerator:4,denominator:4}])[0];document.getElementById('masterInfo').innerHTML=`<b>${bp.toFixed(1)}</b> BPM · ${mtr.numerator}/${mtr.denominator}`}
+function selPart(p){activePart=p;activeFile=FILES.find(f=>f.parts.includes(p))||activeFile;sel.clear();updSel();document.getElementById('toolbarTitle').innerHTML=`<b>${esc(p.name)}</b> — ${esc(p.vname)}`;document.getElementById('btnAddNote').disabled=false;document.getElementById('sdot').className='sb-dot ok';const ns=notesBlickRaw(p);const bp=bpm(activeFile.svpData);document.getElementById('stNotes').textContent=`${ns.length} notes`;document.getElementById('stVoice').textContent=p.vname;document.getElementById('stVoiceW').style.display='';if(ns.length){const pts=ns.map(n=>n.pitch);document.getElementById('stRange').textContent=`${mname(Math.min(...pts))}–${mname(Math.max(...pts))}`;document.getElementById('stEnd').textContent=blick2sec(Math.max(...ns.map(n=>n.onB+n.durB)),bp).toFixed(2);document.getElementById('stRangeW').style.display='';document.getElementById('stEndW').style.display=''}else{document.getElementById('stRangeW').style.display='none';document.getElementById('stEndW').style.display='none'}document.getElementById('stTempo').textContent=bp.toFixed(1);document.getElementById('stTempoW').style.display='';refreshAll()}
 
-    const sanitizeJSON = (raw) => {
-        if (!raw || typeof raw !== 'string') throw new Error('Empty input');
-        let s = raw.trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/i, '').trim();
-        const arrStart = s.indexOf('['), arrEnd = s.lastIndexOf(']');
-        if (arrStart === -1 || arrEnd === -1) throw new Error('No JSON array found');
-        s = s.substring(arrStart, arrEnd + 1).replace(/"(\w+)"\s*=\s*/g, '"$1": ').replace(/,\s*([}\]])/g, '$1');
-        return JSON.parse(s);
-    };
+// Piano roll (safe)
+const KW=40,RH=15;
+function drawRoll(){
+    const cv=document.getElementById('rollCanvas'),ctx=cv.getContext('2d'),wrap=document.getElementById('rollWrap');
+    const W=Math.max(600,wrap.clientWidth||600),H=Math.max(200,wrap.clientHeight||200);
+    cv.width=W;cv.height=H;
+    if(!activePart){ctx.fillStyle='#0d0d16';ctx.fillRect(0,0,W,H);bboxes=[];return}
+    const ns=notesBlickRaw(activePart);
+    if(!ns.length){ctx.fillStyle='#0d0d16';ctx.fillRect(0,0,W,H);bboxes=[];return}
+    const bp=bpm(activeFile.svpData),beatB=BLICKS;
+    const pts=ns.map(n=>n.pitch),minP=Math.max(0,Math.min(...pts)-4),maxP=Math.min(127,Math.max(...pts)+4);
+    let lastB=Math.max(...ns.map(n=>n.onB+n.durB));
+    if(!isFinite(lastB)||lastB<0)lastB=beatB*16;
+    if(lastB>beatB*400)lastB=beatB*400;
+    const bPerPx=Math.max(1,lastB/Math.max(100,W-KW-40)/Math.max(0.05,zoom));
+    const cw=Math.min(10000,Math.max(W,KW+lastB/bPerPx+40));
+    const pRange=maxP-minP+1,ch=Math.max(pRange*RH+4,H);
+    cv.width=cw;cv.height=ch;
+    ctx.fillStyle='#0d0d16';ctx.fillRect(0,0,cw,ch);
+    for(let p=minP;p<=maxP;p++){const y=ch-(p-minP+1)*RH;ctx.fillStyle=[1,3,6,8,10].includes(p%12)?'#10101c':'#151528';ctx.fillRect(KW,y,cw-KW,RH)}
+    const maxBeats=Math.min(2000,Math.ceil(lastB/beatB)+2);
+    for(let b=0;b<maxBeats;b++){const x=KW+b*beatB/bPerPx;if(x>cw+100)break;ctx.strokeStyle=b%4===0?'#1e1e36':'#141424';ctx.lineWidth=b%4===0?1:0.5;ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,ch);ctx.stroke();if(b%4===0&&x<cw){ctx.fillStyle='#303058';ctx.font='8px system-ui';ctx.fillText('B'+(b/4+1),x+2,10)}}
+    for(let p=minP;p<=maxP;p++){const y=ch-(p-minP+1)*RH;const isB=[1,3,6,8,10].includes(p%12);ctx.fillStyle=isB?'#1a1a2e':'#2a2a4a';ctx.fillRect(0,y,KW-2,RH-1);if(!isB&&p%12===0){ctx.fillStyle='#3fe8b5';ctx.font='bold 7px system-ui';ctx.fillText('C'+(Math.floor(p/12)-1),2,y+RH-3)}}
+    const fi=FILES.indexOf(activeFile),bc=COLORS[fi%COLORS.length];
+    bboxes=ns.map((n,i)=>{const x=KW+n.onB/bPerPx;const y=ch-(n.pitch-minP+1)*RH+1;return{idx:i,x,y,w:Math.max(2,n.durB/bPerPx-1),h:RH-2}});
+    ns.forEach((n,i)=>{const b=bboxes[i];const isS=sel.has(i);ctx.fillStyle=isS?'#fff':bc+'cc';ctx.beginPath();ctx.roundRect(b.x,b.y,b.w,b.h,2.5);ctx.fill();if(isS){ctx.strokeStyle=bc;ctx.lineWidth=2;ctx.stroke()}if(b.w>18){ctx.fillStyle=isS?bc:'rgba(255,255,255,.85)';ctx.font='bold 8px system-ui';ctx.fillText(n.lyric||'?',b.x+3,b.y+b.h-3)}});
+}
+document.getElementById('rollCanvas').addEventListener('click',e=>{const r=e.target.getBoundingClientRect();const x=e.clientX-r.left+document.getElementById('rollWrap').scrollLeft;const y=e.clientY-r.top+document.getElementById('rollWrap').scrollTop;for(let i=bboxes.length-1;i>=0;i--){const b=bboxes[i];if(x>=b.x&&x<=b.x+b.w&&y>=b.y&&y<=b.y+b.h){selNote(b.idx,e.shiftKey);return}}if(!e.shiftKey)clrSel()});
+function zoomIn(){zoom=Math.min(10,zoom*1.4);drawRoll()}function zoomOut(){zoom=Math.max(0.05,zoom/1.4);drawRoll()}function zoomFit(){zoom=1.0;drawRoll()}
 
-    const detectAndNormaliseOnsets = (arr) => {
-        const onsets = arr.map(n => parseFloat(n.onset_ns ?? n.onset ?? n.t ?? 0)).filter(v => !isNaN(v));
-        if (!onsets.length) return arr;
-        const maxOnset = Math.max(...onsets), distinct = new Set(onsets.map(v => Math.round(v)));
-        let mul = 1;
-        if (maxOnset < 1_000_000 && distinct.size > 1 && maxOnset > 0.001) mul = NS_PER_SECOND;
-        else if (maxOnset > 0 && maxOnset < 100 && distinct.size > 2) mul = NS_PER_SECOND;
-        return arr.map(n => ({ ...n, _onset_ns_resolved: Math.round(parseFloat(n.onset_ns ?? n.onset ?? 0) * mul) }));
-    };
-    const detectAndNormaliseDurations = (arr) => {
-        const durs = arr.map(n => parseFloat(n.dur_ns ?? n.duration ?? n.dur ?? DEFAULT_DUR_NS)).filter(v => !isNaN(v) && v > 0);
-        if (!durs.length) return arr;
-        const maxDur = Math.max(...durs);
-        let mul = 1;
-        if (maxDur < 100 && maxDur > 0) mul = NS_PER_SECOND;
-        return arr.map(n => ({ ...n, _dur_ns_resolved: Math.round(parseFloat(n.dur_ns ?? n.duration ?? n.dur ?? DEFAULT_DUR_NS) * mul) }));
-    };
+function hlTable(){document.querySelectorAll('#noteGridInner table tbody tr').forEach((r,i)=>r.classList.toggle('sel',sel.has(i)))}
+function renderTable(){
+    const w=document.getElementById('noteGridInner');
+    if(!activePart){w.innerHTML='<div class="empty"><h3>No Part Selected</h3></div>';return}
+    const ns=notesBlickRaw(activePart);
+    if(!ns.length){w.innerHTML='<div style="padding:12px;color:var(--text3)">No notes.</div>';return}
+    const bp=bpm(activeFile.svpData),beatB=BLICKS;
+    let h=`<table class="ns"><thead><tr><th>#</th><th>Bar.Beat</th><th>Onset(s)</th><th>Dur(s)</th><th>Pitch</th><th>Lyric</th><th></th></tr></thead><tbody>`;
+    ns.forEach((n,i)=>{const be=n.onB/beatB,bar=Math.floor(be/4)+1,bt=((be%4)+1).toFixed(1);h+=`<tr onclick="App.selNote(${i},event.shiftKey)"><td style="color:var(--text3)">${i+1}</td><td>${bar}.${bt}</td><td><input class="ns-in" value="${blick2sec(n.onB,bp).toFixed(3)}" onchange="App.editN(${i},'on',this.value)" onclick="event.stopPropagation()"></td><td><input class="ns-in" value="${blick2sec(n.durB,bp).toFixed(3)}" onchange="App.editN(${i},'dur',this.value)" onclick="event.stopPropagation()"></td><td>${mname(n.pitch)} (${n.pitch})</td><td><input class="ns-in" value="${esc(n.lyric)}" onchange="App.editN(${i},'lyric',this.value)" onclick="event.stopPropagation()"></td><td><button style="background:none;border:none;color:var(--coral);cursor:pointer;font-size:12px" onclick="event.stopPropagation();App.delN(${i})">&#x2715;</button></td></tr>`});
+    h+='</tbody></table>';w.innerHTML=h;hlTable()
+}
+function editN(i,f,v){if(!activePart||i>=activePart.notes.length)return;pushU();const n=activePart.notes[i];const bp=bpm(activeFile.svpData);if(f==='on'){const net=sec2blick(parseFloat(v),bp);n.onset=Math.max(0,net-(activePart.offB||0))}else if(f==='dur')n.duration=Math.max(1,sec2blick(parseFloat(v),bp));else if(f==='lyric')n.lyrics=String(v);drawRoll()}
+function delN(i){if(!activePart)return;pushU();activePart.notes.splice(i,1);sel.delete(i);updSel();refreshAll();toast('Note deleted')}
+function openAdd(){if(!activePart)return;const ns=notesBlickRaw(activePart);const last=ns.length?ns[ns.length-1].onB+ns[ns.length-1].durB:0;const bp=bpm(activeFile.svpData);document.getElementById('anT').value=blick2sec(last,bp).toFixed(3);document.getElementById('anY').value='あ';document.getElementById('anDur').value=blick2sec(BLICKS,bp).toFixed(3);document.getElementById('anDet').value='0';document.getElementById('addModal').style.display='flex'}
+function commitAdd(){if(!activePart)return;pushU();const bp=bpm(activeFile.svpData);const onB=sec2blick(parseFloat(document.getElementById('anT').value),bp);const durB=sec2blick(parseFloat(document.getElementById('anDur').value),bp);const pit=parseInt(document.getElementById('anN').value)||60;const det=parseInt(document.getElementById('anDet').value)||0;const lyr=document.getElementById('anY').value||'あ';storeNote(activePart,onB,durB,pit,det,lyr);document.getElementById('addModal').style.display='none';refreshAll();toast('Note added')}
 
-    const FILES = [];
-    let activeFile = null, activePart = null, pendingNotes = [], currentMode = 'append', isGenerating = false;
-    const FILE_COLORS = ['#7ec8ff','#3fe8b5','#f56c7a','#eab040','#60bef4','#5ed47e','#f07bab'];
-    const NOTE_NAMES = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
-    let rollZoom = 1.0, rollBBoxes = [], selectedNoteIndices = new Set();
-    const undoStack = [], redoStack = [];
+// AI Bridge
+function genPrompt(){if(!activePart||!activeFile)return'(select a part first)';const ns=notesBlickRaw(activePart);const bp=bpm(activeFile.svpData);const bN=Math.round(NS*60/bp),baN=bN*4;const bars=parseInt(document.getElementById('extBars').value)||8;const pts=ns.map(n=>n.pitch),mnP=pts.length?Math.min(...pts):52,mxP=pts.length?Math.max(...pts):76;const st=document.getElementById('extStyle').value;const isR=mode==='replace';const last=ns.length?Math.max(...ns.map(n=>n.onB+n.durB)):0;const sNs=isR?0:blick2ns(last,bp);let p=`You are a SynthV melody composer. Output ONLY a raw JSON array — no markdown.
 
-    const midiName = n => NOTE_NAMES[((n % 12) + 12) % 12] + (Math.floor(n / 12) - 1);
-    const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-    const nsToSec = ns => (ns / NS_PER_SECOND).toFixed(3);
-    const secToNs = s => Math.round(parseFloat(s) * NS_PER_SECOND);
-    const beatNs = bpm => NS_PER_SECOND * 60 / bpm;
-    const barNs = bpm => beatNs(bpm) * 4;
-    const getBPM = svpData => (svpData?.time?.tempo || []).length ? svpData.time.tempo[0].bpm : DEFAULT_BPM;
-    const getVoiceInfo = track => {
-        const db = track?.mainRef?.database || {};
-        return { name: db.name || 'Unknown', language: db.language || 'japanese', phoneset: db.phoneset || 'romaji', backendType: db.backendType || 'SVR2AI' };
-    };
-
-    const showToast = (msg, type='info') => {
-        const c = document.getElementById('toastContainer'), t = document.createElement('div');
-        t.className = `toast toast-${type}`; t.textContent = msg; c.appendChild(t);
-        requestAnimationFrame(() => t.classList.add('show'));
-        setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 300); }, 3200);
-    };
-    const openModal = id => document.getElementById(id).style.display = 'flex';
-    const closeModal = id => document.getElementById(id).style.display = 'none';
-    document.querySelectorAll('#addModal, #phonemeRef').forEach(m => m.addEventListener('click', e => { if (e.target === m) closeModal(m.id); }));
-
-    const snapshotState = () => {
-        if (!activeFile) return null;
-        return { fileId: activeFile.id, json: JSON.stringify(activeFile.svpData), activePartIdx: activePart ? activeFile.parts.indexOf(activePart) : -1 };
-    };
-    const restoreSnapshot = snap => {
-        const file = FILES.find(f => f.id === snap.fileId);
-        if (!file) return;
-        try { file.svpData = JSON.parse(snap.json); } catch (e) { return; }
-        rebuildFileParts(file);
-        activeFile = file;
-        activePart = (snap.activePartIdx >= 0 && snap.activePartIdx < file.parts.length) ? file.parts[snap.activePartIdx] : null;
-        selectedNoteIndices.clear(); refreshAll();
-    };
-    const pushUndo = () => {
-        const snap = snapshotState(); if (!snap) return;
-        undoStack.push(snap); if (undoStack.length > 60) undoStack.shift();
-        redoStack.length = 0; updateUndoButtons();
-    };
-    const undo = () => { if (!undoStack.length) return showToast('Nothing to undo'); const cur = snapshotState(); if (cur) redoStack.push(cur); restoreSnapshot(undoStack.pop()); showToast('Undo'); };
-    const redo = () => { if (!redoStack.length) return showToast('Nothing to redo'); const cur = snapshotState(); if (cur) undoStack.push(cur); restoreSnapshot(redoStack.pop()); showToast('Redo'); };
-    const updateUndoButtons = () => { document.getElementById('undoBtn').disabled = !undoStack.length; document.getElementById('redoBtn').disabled = !redoStack.length; };
-
-    const updateSelUI = () => {
-        const n = selectedNoteIndices.size;
-        document.getElementById('selBadge').style.display = n ? '' : 'none';
-        document.getElementById('selBadge').textContent = n ? `${n} selected` : '';
-        document.getElementById('btnDelSel').style.display = n ? '' : 'none';
-    };
-    const selectNote = (idx, multi = false) => {
-        if (multi) { selectedNoteIndices.has(idx) ? selectedNoteIndices.delete(idx) : selectedNoteIndices.add(idx); }
-        else { selectedNoteIndices.clear(); selectedNoteIndices.add(idx); }
-        updateSelUI(); drawPianoRoll(); highlightTableRows();
-    };
-    const clearSelection = () => { selectedNoteIndices.clear(); updateSelUI(); drawPianoRoll(); highlightTableRows(); };
-    const selectAll = () => { if (!activePart) return; getNotesFromPart(activePart).forEach((_, i) => selectedNoteIndices.add(i)); updateSelUI(); drawPianoRoll(); highlightTableRows(); };
-    const deleteSelected = () => {
-        if (!activePart || !selectedNoteIndices.size) return;
-        pushUndo();
-        [...selectedNoteIndices].sort((a, b) => b - a).forEach(i => { if (i >= 0 && i < activePart.notes.length) activePart.notes.splice(i, 1); });
-        selectedNoteIndices.clear(); updateSelUI(); refreshAll(); showToast('Deleted notes');
-    };
-
-    const rebuildFileParts = (file) => {
-        const svp = file.svpData, bpm = getBPM(svp), parts = [];
-        if (svp.tracks) {
-            svp.tracks.forEach((track, ti) => {
-                const voice = getVoiceInfo(track);
-                const mainGroup = track.mainGroup || {};
-                if (mainGroup.notes && mainGroup.notes.length) {
-                    mainGroup.notes.forEach(note => { note.onset = blickToNs(note.onset || 0, bpm); note.duration = blickToNs(note.duration || 0, bpm); });
-                    parts.push({ trackIdx: ti, track, libEntry: null, notes: mainGroup.notes, offsetNs: 0, voiceName: voice.name, language: voice.language, phoneset: voice.phoneset, isEnglish: voice.language==='english', isChinese: voice.language==='mandarin'||voice.language==='chinese', name: track.name || ('Track '+(ti+1)) });
-                }
-                (track.groups || []).forEach((group, gi) => {
-                    const libEntry = (svp.library || []).find(l => l.uuid === group.groupID);
-                    if (libEntry && libEntry.notes && libEntry.notes.length) {
-                        if (!libEntry._converted) {
-                            libEntry.notes.forEach(note => { note.onset = blickToNs(note.onset || 0, bpm); note.duration = blickToNs(note.duration || 0, bpm); });
-                            libEntry._converted = true;
-                        }
-                        parts.push({ trackIdx: ti, track, libEntry, notes: libEntry.notes, offsetNs: blickToNs(group.blickOffset || 0, bpm), voiceName: voice.name, language: voice.language, phoneset: voice.phoneset, isEnglish: voice.language==='english', isChinese: voice.language==='mandarin'||voice.language==='chinese', name: libEntry.name || (track.name+' Group '+(gi+1)) });
-                    }
-                });
-            });
-        }
-        if (!parts.length && svp.library) {
-            svp.library.forEach((lib, li) => {
-                if (lib.notes && lib.notes.length) {
-                    if (!lib._converted) { lib.notes.forEach(note => { note.onset = blickToNs(note.onset || 0, bpm); note.duration = blickToNs(note.duration || 0, bpm); }); lib._converted = true; }
-                    parts.push({ trackIdx: li, track: null, libEntry: lib, notes: lib.notes, offsetNs: 0, voiceName: 'Unknown', language: 'japanese', phoneset: 'romaji', isEnglish: false, isChinese: false, name: lib.name || ('Part '+(li+1)) });
-                }
-            });
-        }
-        file.parts = parts;
-    };
-
-    const doExport = () => {
-        if (!activeFile) return showToast('Select a file first', 'error');
-        const bpm = getBPM(activeFile.svpData);
-        const exportData = JSON.parse(JSON.stringify(activeFile.svpData));
-
-        // Helper: remove phoneme key if empty
-        const cleanNote = note => {
-            note.onset = nsToBlick(note.onset || 0, bpm);
-            note.duration = nsToBlick(note.duration || 0, bpm);
-            if (!note.phonemes || note.phonemes.trim() === '') {
-                delete note.phonemes;
-            }
-        };
-
-        if (exportData.tracks) {
-            exportData.tracks.forEach(track => {
-                if (track.mainGroup?.notes) track.mainGroup.notes.forEach(cleanNote);
-            });
-        }
-        if (exportData.library) {
-            exportData.library.forEach(lib => {
-                if (lib.notes) lib.notes.forEach(cleanNote);
-                delete lib._converted;
-            });
-        }
-
-        const jsonStr = JSON.stringify(exportData, null, 2);
-        const blob = new Blob([jsonStr], { type: 'application/json' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = activeFile.name.replace(/\.svp$/i, '') + '_fixed.svp';
-        a.click();
-        setTimeout(() => URL.revokeObjectURL(a.href), 3000);
-        showToast('Exported – SynthV will now handle phonemes perfectly!', 'success');
-    };
-
-    const renderSidebar = () => {
-        const fl = document.getElementById('fileList');
-        if (!FILES.length) { fl.innerHTML = '<div style="font-size:11px;color:var(--text3);padding:8px">Drop .svp files here or use Open</div>'; renderPartList(); return; }
-        fl.innerHTML = '';
-        FILES.forEach((f, fi) => {
-            const color = FILE_COLORS[fi % FILE_COLORS.length];
-            const totalNotes = f.parts.reduce((a, p) => a + p.notes.length, 0);
-            const row = document.createElement('div');
-            row.className = 'file-row' + (activeFile?.id === f.id ? ' active' : '');
-            row.innerHTML = `<div class="file-dot" style="background:${color}"></div><div class="file-row-info"><div class="file-row-name">${esc(f.name)}</div><div class="file-row-meta">${f.parts.length} part(s) · ${totalNotes} notes · ${getBPM(f.svpData).toFixed(0)} BPM</div></div><button class="file-row-del" title="Remove">&#x2715;</button>`;
-            row.querySelector('.file-row-del').onclick = e => { e.stopPropagation(); removeFile(fi); };
-            row.onclick = () => { activeFile = f; renderPartList(); renderTimeline(); };
-            fl.appendChild(row);
-        });
-        renderPartList();
-    };
-    const removeFile = fi => { if (activeFile === FILES[fi]) { activeFile = null; activePart = null; } FILES.splice(fi, 1); selectedNoteIndices.clear(); updateSelUI(); refreshAll(); showToast('File removed'); };
-    const renderPartList = () => {
-        const pl = document.getElementById('partList');
-        if (!activeFile) { pl.innerHTML = '<div style="font-size:11px;color:var(--text3);padding:8px">Select a file above</div>'; return; }
-        pl.innerHTML = '';
-        const color = FILE_COLORS[FILES.indexOf(activeFile) % FILE_COLORS.length];
-        activeFile.parts.forEach(part => {
-            const row = document.createElement('div');
-            row.className = 'part-row' + (activePart === part ? ' active' : '');
-            const langClass = part.isEnglish ? 'pv-en' : (part.isChinese ? 'pv-cn' : 'pv-jp');
-            row.innerHTML = `<div class="part-icon" style="background:${color}20;border-left:2px solid ${color}"></div><div class="part-info"><div class="part-name">${esc(part.name)}</div><div class="part-meta">${part.notes.length} notes</div><span class="part-voice ${langClass}">${esc(part.voiceName)} (${part.phoneset})</span></div>`;
-            row.onclick = () => selectPart(part);
-            pl.appendChild(row);
-        });
-        const bpm = getBPM(activeFile.svpData);
-        const meter = (activeFile.svpData.time?.meter || [{ numerator: 4, denominator: 4 }])[0];
-        document.getElementById('masterInfo').innerHTML = `<b>${bpm.toFixed(1)}</b> BPM · ${meter.numerator}/${meter.denominator}`;
-    };
-    const selectPart = part => {
-        activePart = part; activeFile = FILES.find(f => f.parts.includes(part)) || activeFile;
-        selectedNoteIndices.clear(); updateSelUI();
-        document.getElementById('toolbar-title').innerHTML = `<b>${esc(part.name)}</b> — ${esc(part.voiceName)}`;
-        document.getElementById('btnAddNote').disabled = false;
-        document.getElementById('sdot').className = 'sb-dot ok';
-        const notes = getNotesFromPart(part);
-        document.getElementById('stNotes').textContent = `${notes.length} notes`;
-        document.getElementById('stVoice').textContent = part.voiceName; document.getElementById('stVoiceW').style.display = '';
-        if (notes.length) {
-            const pitches = notes.map(n => n.pitch);
-            document.getElementById('stRange').textContent = `${midiName(Math.min(...pitches))}–${midiName(Math.max(...pitches))}`;
-            document.getElementById('stEnd').textContent = nsToSec(Math.max(...notes.map(n => n.onset + n.duration)));
-            document.getElementById('stRangeW').style.display = ''; document.getElementById('stEndW').style.display = '';
-        } else { document.getElementById('stRangeW').style.display = 'none'; document.getElementById('stEndW').style.display = 'none'; }
-        document.getElementById('stTempo').textContent = getBPM(activeFile.svpData).toFixed(1); document.getElementById('stTempoW').style.display = '';
-        document.getElementById('fixBanner').style.display = '';
-        refreshAll();
-    };
-
-    const KW = 44, RH = 16;
-    const drawPianoRoll = () => {
-        const canvas = document.getElementById('rollCanvas'), ctx = canvas.getContext('2d'), wrap = document.getElementById('rollWrap');
-        canvas.width = wrap.clientWidth || 800; canvas.height = wrap.clientHeight || 300;
-        if (!activePart) { ctx.fillStyle = '#08080f'; ctx.fillRect(0, 0, canvas.width, canvas.height); rollBBoxes = []; return; }
-        const notes = getNotesFromPart(activePart);
-        if (!notes.length) { ctx.fillStyle = '#08080f'; ctx.fillRect(0, 0, canvas.width, canvas.height); rollBBoxes = []; return; }
-        const bpm = getBPM(activeFile.svpData), bN = beatNs(bpm);
-        const pitches = notes.map(n => n.pitch), minP = Math.max(0, Math.min(...pitches) - 4), maxP = Math.min(127, Math.max(...pitches) + 4);
-        const lastNs = Math.max(...notes.map(n => n.onset + n.duration));
-        const nsPerPx = Math.max(1, (lastNs / (Math.max(100, (wrap.clientWidth || 800) - KW - 60)) / rollZoom));
-        const W = Math.max(KW + lastNs / nsPerPx + 60, wrap.clientWidth || 800);
-        const pRange = maxP - minP + 1, H = Math.max(pRange * RH + 4, wrap.clientHeight || 300);
-        canvas.width = W; canvas.height = H;
-        ctx.fillStyle = '#08080f'; ctx.fillRect(0, 0, W, H);
-        for (let p = minP; p <= maxP; p++) { const y = H - (p - minP + 1) * RH; ctx.fillStyle = [1, 3, 6, 8, 10].includes(p % 12) ? '#0c0c16' : '#111120'; ctx.fillRect(KW, y, W - KW, RH); }
-        for (let b = 0; b * bN <= lastNs + bN; b++) { const x = KW + b * bN / nsPerPx; ctx.strokeStyle = b % 4 === 0 ? '#1e1e34' : '#141422'; ctx.lineWidth = b % 4 === 0 ? 1 : 0.5; ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); if (b % 4 === 0 && x < W) { ctx.fillStyle = '#252540'; ctx.font = '9px system-ui'; ctx.fillText('B' + (b / 4 + 1), x + 2, 12); } }
-        for (let p = minP; p <= maxP; p++) { const y = H - (p - minP + 1) * RH; const isBlack = [1, 3, 6, 8, 10].includes(p % 12); ctx.fillStyle = isBlack ? '#1a1a2e' : '#2a2a4a'; ctx.fillRect(0, y, KW - 2, RH - 1); if (!isBlack && p % 12 === 0) { ctx.fillStyle = '#3fe8b5'; ctx.font = 'bold 8px system-ui'; ctx.fillText('C' + (Math.floor(p / 12) - 1), 3, y + RH - 4); } }
-        const fi = FILES.indexOf(activeFile), baseColor = FILE_COLORS[fi % FILE_COLORS.length];
-        rollBBoxes = notes.map((n, i) => { const x = KW + n.onset / nsPerPx; const y = H - (n.pitch - minP + 1) * RH + 1; return { idx: i, x, y, w: Math.max(3, n.duration / nsPerPx - 1), h: RH - 2 }; });
-        notes.forEach((n, i) => {
-            const b = rollBBoxes[i]; const isSel = selectedNoteIndices.has(i);
-            ctx.fillStyle = isSel ? '#ffffff' : baseColor + 'cc';
-            ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(b.x, b.y, b.w, b.h, 2.5); else ctx.rect(b.x, b.y, b.w, b.h);
-            ctx.fill(); if (isSel) { ctx.strokeStyle = baseColor; ctx.lineWidth = 2; ctx.stroke(); }
-            if (b.w > 22) { ctx.fillStyle = isSel ? baseColor : 'rgba(255,255,255,.9)'; ctx.font = 'bold 9px system-ui'; ctx.fillText(n.lyric || '?', b.x + 4, b.y + b.h - 3); }
-        });
-    };
-    document.getElementById('rollCanvas').addEventListener('click', e => {
-        const rect = e.target.getBoundingClientRect();
-        const x = e.clientX - rect.left + document.getElementById('rollWrap').scrollLeft;
-        const y = e.clientY - rect.top + document.getElementById('rollWrap').scrollTop;
-        for (let i = rollBBoxes.length - 1; i >= 0; i--) { const b = rollBBoxes[i]; if (x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y + b.h) { selectNote(b.idx, e.shiftKey); return; } }
-        if (!e.shiftKey) clearSelection();
-    });
-    const rollZoomIn = () => { rollZoom = Math.min(10, rollZoom * 1.5); drawPianoRoll(); };
-    const rollZoomOut = () => { rollZoom = Math.max(0.05, rollZoom / 1.5); drawPianoRoll(); };
-    const rollZoomFit = () => { rollZoom = 1.0; drawPianoRoll(); };
-
-    const highlightTableRows = () => { document.querySelectorAll('#noteGridInner table tbody tr').forEach((row, i) => row.classList.toggle('ng-selected', selectedNoteIndices.has(i))); };
-    const renderNoteTable = () => {
-        const wrap = document.getElementById('noteGridInner');
-        if (!activePart) { wrap.innerHTML = '<div class="empty-state"><h3>No Part Selected</h3><p>Select a part from the sidebar</p></div>'; return; }
-        const notes = getNotesFromPart(activePart);
-        if (!notes.length) { wrap.innerHTML = '<div style="padding:16px;color:var(--text3)">No notes in this part.</div>'; return; }
-        const bpm = getBPM(activeFile.svpData), bN = beatNs(bpm);
-        let h = `<table class="ng"><thead><tr><th>#</th><th>Bar.Beat</th><th>Onset (s)</th><th>Dur (s)</th><th>Pitch</th><th>Lyric</th><th>Phoneme</th><th>Detune</th><th></th></tr></thead><tbody>`;
-        notes.forEach((n, i) => {
-            const bar = Math.floor(n.onset / (bN * 4)) + 1, beat = ((n.onset % (bN * 4)) / bN + 1).toFixed(1);
-            h += `<tr onclick="App.selectNote(${i},event.shiftKey)"><td style="color:var(--text3)">${i+1}</td><td>${bar}.${beat}</td><td><input class="ng-in" value="${nsToSec(n.onset)}" onchange="App.editNote(${i},'onset',secToNs(this.value))" onclick="event.stopPropagation()"></td><td><input class="ng-in" value="${nsToSec(n.duration)}" onchange="App.editNote(${i},'duration',secToNs(this.value))" onclick="event.stopPropagation()"></td><td>${midiName(n.pitch)} (${n.pitch})</td><td><input class="ng-in" value="${esc(n.lyric)}" onchange="App.editNote(${i},'lyric',this.value)" onclick="event.stopPropagation()"></td><td><input class="ng-in" value="${esc(n.phoneme)}" onchange="App.editNote(${i},'phoneme',this.value)" onclick="event.stopPropagation()" placeholder="auto"></td><td>${n.detune}</td><td><button style="background:none;border:none;color:var(--coral);cursor:pointer;font-size:13px;padding:2px 6px" onclick="event.stopPropagation();App.deleteSingleNote(${i})">&#x2715;</button></td></tr>`;
-        });
-        h += '</tbody></table>'; wrap.innerHTML = h; highlightTableRows();
-    };
-    const editNote = (idx, field, val) => {
-        if (!activePart || idx >= activePart.notes.length) return;
-        pushUndo(); const note = activePart.notes[idx];
-        if (field === 'onset') { const net = Math.max(0, Math.round(val)); note.onset = net - (activePart.offsetNs || 0); }
-        else if (field === 'duration') note.duration = Math.max(1, Math.round(val));
-        else if (field === 'lyric') note.lyrics = String(val);
-        else if (field === 'phoneme') note.phonemes = val.trim();
-        drawPianoRoll();
-    };
-    const deleteSingleNote = idx => { if (!activePart) return; pushUndo(); activePart.notes.splice(idx, 1); selectedNoteIndices.delete(idx); updateSelUI(); refreshAll(); showToast('Note deleted'); };
-    const openAddNote = () => {
-        if (!activePart) return;
-        const notes = getNotesFromPart(activePart);
-        const lastEnd = notes.length ? notes[notes.length - 1].onset + notes[notes.length - 1].duration : 0;
-        document.getElementById('anT').value = nsToSec(lastEnd);
-        document.getElementById('anY').value = activePart.isEnglish ? 'ah' : 'a';
-        document.getElementById('anP').value = '';
-        const bpm = getBPM(activeFile.svpData);
-        document.getElementById('anDur').value = nsToSec(beatNs(bpm));
-        document.getElementById('anDet').value = '0';
-        openModal('addModal');
-    };
-    const commitAdd = () => {
-        if (!activePart) return;
-        pushUndo();
-        const onsetNs = secToNs(document.getElementById('anT').value);
-        const durNs = secToNs(document.getElementById('anDur').value);
-        const pitch = parseInt(document.getElementById('anN').value) || 60;
-        const detune = parseInt(document.getElementById('anDet').value) || 0;
-        const lyric = document.getElementById('anY').value || 'a';
-        const phoneme = document.getElementById('anP').value || '';
-        storeNoteInPart(activePart, onsetNs, durNs, pitch, detune, lyric, phoneme);
-        closeModal('addModal'); refreshAll(); showToast('Note added');
-    };
-
-    const phonemeRulesBlock = part => part.language === 'english'
-        ? `PHONEME: leave empty – SynthV uses the lyric.\n`
-        : `PHONEME: leave the "phoneme" field empty. SynthV will automatically convert the kana lyric.\n  Example: {"lyric":"あ"} → automatically pronounced as "a".\n  DO NOT put any romaji in the phoneme field.\n`;
-
-    const naturalSpeechRules = part => part.isEnglish
-        ? "Keep same-word syllables within ±2 st. Leaps only between words.\n"
-        : "JAPANESE MELODY NATURALNESS: morae within a word ±2 st. Particles short+low. ん/っ short (≤300ms).\n";
-
-    const genMelodyPrompt = () => {
-        if (!activePart || !activeFile) return '(select a part first)';
-        const notes = getNotesFromPart(activePart);
-        const bpm = getBPM(activeFile.svpData), bN = beatNs(bpm), baN = barNs(bpm);
-        const bars = parseInt(document.getElementById('extBars').value) || 8;
-        const pitches = notes.map(n => n.pitch), minP = pitches.length ? Math.min(...pitches) : 52, maxP = pitches.length ? Math.max(...pitches) : 76;
-        const style = document.getElementById('extStyle').value === 'custom' ? document.getElementById('customHint').value : document.getElementById('extStyle').value;
-        const isReplace = currentMode === 'replace';
-        const lastEnd = notes.length ? Math.max(...notes.map(n => n.onset + n.duration)) : 0;
-        const startNs = isReplace ? 0 : lastEnd;
-        let p = `You are a SynthV melody composer. Output ONLY a raw JSON array — no markdown, no explanation.
-
-══ PROJECT INFO ══
-Voice: ${activePart.voiceName} (${activePart.language})   BPM: ${bpm.toFixed(1)}
-Operation: ${isReplace ? 'REPLACE' : 'EXTEND'}   Style: ${style}
-Bars to write: ${bars}   Start onset: ${startNs} ns (= ${nsToSec(startNs)}s)
-Pitch range: MIDI ${minP}–${maxP}
+══ PROJECT ══
+Voice: ${activePart.vname}  BPM: ${bp.toFixed(1)}  Style: ${st}
+Operation: ${isR?'REPLACE':'EXTEND'}  Bars: ${bars}
+Start: ${sNs} ns (=${(sNs/NS).toFixed(3)}s)
+Pitch: MIDI ${mnP}–${mxP}
 
 ══ TIMING (nanoseconds) ══
-1 beat  = ${Math.round(bN)} ns  1 bar = ${Math.round(baN)} ns
-Use mostly eighth/quarter notes; avoid notes longer than a half note.
+1 beat = ${bN} ns  1 bar = ${baN} ns
+Use eighth/quarter notes. NEVER longer than a half note.
 
-Example bar starts:
-`;
-        for (let b = 0; b < bars && b < 8; b++) p += `  Bar ${b+1}: onset_ns = ${Math.round(startNs + b * baN)}\n`;
-        p += '\n' + phonemeRulesBlock(activePart) + naturalSpeechRules(activePart);
-        if (!isReplace && notes.length) {
-            p += `══ EXISTING MELODY (context) ══\n`;
-            notes.slice(-8).forEach(n => p += `  onset_ns=${n.onset} dur_ns=${n.duration} pitch=${n.pitch} lyric="${n.lyric}"\n`);
-            p += '\n';
-        }
-        const crossCtx = document.getElementById('crossCtx').value.trim();
-        if (crossCtx) p += `OTHER SINGER CONTEXT:\n${crossCtx}\n\n`;
-        p += `══ OUTPUT FORMAT ══
-Return a JSON array. Each object: { "onset_ns": <integer>, "dur_ns": <integer min ${Math.round(bN/8)}>, "pitch": <MIDI>, "lyric": "<kana>" }
-DO NOT include a "phoneme" field! SynthV will pronounce it automatically.
-First onset_ns = ${startNs}. No text outside JSON.`;
-        return p;
-    };
+══ MELODY ══
+Notes MUST be consecutive — NO gaps:
+  onset_ns[i+1] = onset_ns[i] + dur_ns[i]
 
-    const genLyricsPrompt = () => {
-        if (!activePart || !activeFile) return '(select a part first)';
-        const notes = getNotesFromPart(activePart);
-        const bpm = getBPM(activeFile.svpData), bN = beatNs(bpm);
-        let p = `Rewrite ONLY lyrics for ${notes.length} notes. Keep timing/pitch.\nTheme: ${document.getElementById('lyricsTheme').value||'any'}\nVoice: ${activePart.voiceName}\n\n` + phonemeRulesBlock(activePart);
-        notes.forEach((n, i) => {
-            const bar = Math.floor(n.onset / (bN * 4)) + 1, beat = ((n.onset % (bN * 4)) / bN + 1).toFixed(1);
-            p += `  [${bar}.${beat}] onset_ns=${n.onset} dur_ns=${n.duration} pitch=${n.pitch} lyric="${n.lyric}"\n`;
-        });
-        p += `\nReturn exactly ${notes.length} objects with "lyric" (kana). No phoneme field.`;
-        return p;
-    };
+══ PHONEME ══
+DO NOT include a phoneme field! SynthV reads kana directly.
 
-    const refreshPrompt = () => {
-        const box = document.getElementById('promptBox');
-        if (!activePart) { box.textContent = '(select a part first)'; return; }
-        box.textContent = currentMode === 'lyrics' ? genLyricsPrompt() : genMelodyPrompt();
-    };
-    const copyPrompt = () => navigator.clipboard.writeText(document.getElementById('promptBox').textContent).then(() => showToast('Prompt copied', 'success')).catch(() => showToast('Copy failed', 'error'));
+Example starts:
+`;for(let b=0;b<bars&&b<8;b++)p+=`  Bar ${b+1}: onset_ns = ${sNs+b*baN}\n`;p+='\n';if(!isR&&ns.length){p+=`══ EXISTING (context) ══\n`;ns.slice(-6).forEach(n=>p+=`  onset_ns=${blick2ns(n.onB,bp)} dur_ns=${blick2ns(n.durB,bp)} pitch=${n.pitch} lyric="${n.lyric}"\n`);p+='\n'}p+=`══ OUTPUT ══
+Each: { "onset_ns": <int>, "dur_ns": <int min ${Math.round(bN/8)}>, "pitch": <MIDI>, "lyric": "<kana>" }
+NO phoneme. First onset_ns = ${sNs}. No text outside JSON.`;return p}
+function refPrompt(){document.getElementById('promptBox').textContent=genPrompt()}
+function copyPrompt(){navigator.clipboard.writeText(document.getElementById('promptBox').textContent).then(()=>toast('Copied')).catch(()=>toast('Copy failed','err'))}
 
-    const parseAndPreview = () => {
-        const raw = document.getElementById('aiResponseInput').value.trim(), st = document.getElementById('parseStatus'), input = document.getElementById('aiResponseInput');
-        input.classList.remove('error-flash'); st.style.color = '';
-        if (!activePart) { st.textContent = '⚠ Select a part first'; st.style.color = 'var(--coral)'; return; }
-        if (!raw) { st.textContent = '⚠ Paste AI response first'; st.style.color = 'var(--coral)'; return; }
-        try {
-            let arr = sanitizeJSON(raw);
-            if (!Array.isArray(arr) || !arr.length) throw new Error('Empty or invalid array');
-            const bpm = getBPM(activeFile.svpData), bN = beatNs(bpm), defaultDur = Math.round(bN);
-            if (currentMode === 'lyrics') {
-                const existing = getNotesFromPart(activePart);
-                if (arr.length !== existing.length) throw new Error(`Need exactly ${existing.length} entries, got ${arr.length}`);
-                pendingNotes = arr.map((n, i) => ({ onset: existing[i].onset, duration: existing[i].duration, pitch: existing[i].pitch, detune: existing[i].detune || 0, lyric: String(n.lyric || n.y || existing[i].lyric), phoneme: '' }));
-            } else {
-                arr = detectAndNormaliseOnsets(arr);
-                arr = detectAndNormaliseDurations(arr);
-                pendingNotes = arr.map(n => {
-                    const onsetNs = n._onset_ns_resolved !== undefined ? n._onset_ns_resolved : Math.round(parseFloat(n.onset_ns ?? n.onset ?? 0));
-                    const durNs = n._dur_ns_resolved !== undefined ? n._dur_ns_resolved : Math.round(parseFloat(n.dur_ns ?? n.duration ?? defaultDur));
-                    return { onset: Math.max(0, onsetNs), duration: Math.max(Math.round(bN / 8), durNs), pitch: parseInt(n.pitch ?? n.n) || 60, detune: 0, lyric: String(n.lyric ?? n.y ?? 'a'), phoneme: '' };
-                });
-                pendingNotes.sort((a, b) => a.onset - b.onset);
-            }
-            renderPreview(pendingNotes);
-            st.textContent = `✔ ${pendingNotes.length} notes ready (auto‑phoneme)`;
-            st.style.color = 'var(--teal)';
-        } catch (e) {
-            st.textContent = '✖ ' + e.message; st.style.color = 'var(--coral)';
-            input.classList.add('error-flash'); setTimeout(() => input.classList.remove('error-flash'), 800);
-            discardPreview();
-        }
-    };
+function closeGaps(ns){for(let i=1;i<ns.length;i++)ns[i].onB=ns[i-1].onB+ns[i-1].durB;return ns}
+function preview(){const raw=document.getElementById('aiInput').value.trim(),st=document.getElementById('parseStatus'),inp=document.getElementById('aiInput');inp.classList.remove('err');st.style.color='';if(!activePart){st.textContent='⚠ Select a part';return}if(!raw){st.textContent='⚠ Paste JSON';return}try{let a=sanitize(raw);if(!Array.isArray(a)||!a.length)throw new Error('Empty');const bp=bpm(activeFile.svpData);const minD=Math.round(BLICKS/8),defD=BLICKS;pending=a.map(n=>{const on=Math.max(0,parseFloat(n.onset_ns??n.onset??0));const dur=Math.max(blick2ns(minD,bp)/NS,parseFloat(n.dur_ns??n.duration??blick2ns(defD,bp)/NS));return{onB:ns2blick(on,bp),durB:Math.max(minD,ns2blick(dur*NS,bp)),pitch:parseInt(n.pitch??n.n)||60,det:0,lyric:String(n.lyric??n.y??'あ')}});pending.sort((a,b)=>a.onB-b.onB);pending=closeGaps(pending);renderPrev(pending);st.textContent=`✔ ${pending.length} notes (gaps closed)`;st.style.color='var(--teal)'}catch(e){st.textContent='✖ '+e.message;st.style.color='var(--coral)';inp.classList.add('err');setTimeout(()=>inp.classList.remove('err'),800);discard()}}
+function autoFix(){const raw=document.getElementById('aiInput').value.trim();if(!raw){document.getElementById('parseStatus').textContent='⚠ Nothing to fix';return}try{let a=sanitize(raw);const bp=activeFile?bpm(activeFile.svpData):DEF_BPM;const bN=Math.round(NS*60/bp);const f=a.map(n=>{const on=Math.max(0,Math.round(parseFloat(n.onset_ns??n.onset??0)));const dur=Math.max(Math.round(bN/8),Math.round(parseFloat(n.dur_ns??n.duration??bN)));return{onset_ns:on,dur_ns:dur,pitch:parseInt(n.pitch??n.n)||60,lyric:String(n.lyric??n.y??'あ')}});f.sort((a,b)=>a.onset_ns-b.onset_ns);for(let i=1;i<f.length;i++)f[i].onset_ns=f[i-1].onset_ns+f[i-1].dur_ns;document.getElementById('aiInput').value=JSON.stringify(f,null,2);toast('Auto-fixed');preview()}catch(e){toast('Auto-fix failed: '+e.message,'err')}}
+function renderPrev(ns){const bp=bpm(activeFile?.svpData||{});const beatB=BLICKS;const ls=ns.map(n=>{const be=n.onB/beatB,bar=Math.floor(be/4)+1,bt=((be%4)+1).toFixed(1);return`[${bar}.${bt}] ${mname(n.pitch).padEnd(4)} dur=${blick2sec(n.durB,bp).toFixed(3)}s "${n.lyric}"`});document.getElementById('prevNotes').textContent=ls.join('\n');document.getElementById('prevCount').textContent=`${ns.length} notes`;document.getElementById('prevEmpty').style.display='none';document.getElementById('prevSection').style.display='flex'}
+function discard(){pending=[];document.getElementById('prevSection').style.display='none';document.getElementById('prevEmpty').style.display='flex';document.getElementById('parseStatus').textContent=''}
+function doCommit(){if(!activePart||!pending.length)return toast('Nothing to apply','err');pushU();if(mode==='append'){pending.forEach(n=>storeNote(activePart,n.onB,n.durB,n.pitch,0,n.lyric));toast(`Added ${pending.length} notes`)}else if(mode==='replace'){activePart.notes.length=0;pending.forEach(n=>storeNote(activePart,n.onB,n.durB,n.pitch,0,n.lyric));toast('Replaced all notes')}pending=[];document.getElementById('aiInput').value='';discard();refreshAll()}
+function setMode(m){mode=m;['append','replace'].forEach(x=>{const el=document.getElementById('mode'+x[0].toUpperCase()+x.slice(1));if(el)el.className='mode-btn'+(x===m?' act-'+x:'')});document.getElementById('modeInfo').textContent=m==='append'?'AI adds notes after existing melody.':'AI replaces all notes.';discard();refPrompt()}
+async function generate(){if(genBusy)return;if(!activePart)return toast('Select a part first','err');const pr=document.getElementById('promptBox').textContent;if(!pr||pr.startsWith('(select'))return toast('Prompt empty','err');genBusy=true;const btn=document.getElementById('generateBtn');btn.textContent='⏳...';btn.disabled=true;try{const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4000,system:'You are a SynthV assistant. Return raw JSON ONLY. onset_ns/dur_ns in nanoseconds. Include ONLY "onset_ns","dur_ns","pitch","lyric". lyric is kana. NO phoneme. Consecutive: onset_ns[i+1]=onset_ns[i]+dur_ns[i].',messages:[{role:'user',content:pr}]})});if(!r.ok)throw new Error((await r.json().catch(()=>({}))).error?.message||'HTTP '+r.status);const d=await r.json();const t=d.content.filter(b=>b.type==='text').map(b=>b.text).join('');document.getElementById('aiInput').value=t;toast('Generated!');autoFix()}catch(e){toast('API: '+e.message,'err')}finally{genBusy=false;btn.textContent='✨ Generate with Claude';btn.disabled=false}}
 
-    const autoFixAndPreview = () => {
-        const input = document.getElementById('aiResponseInput'), raw = input.value.trim();
-        if (!raw) { document.getElementById('parseStatus').textContent = '⚠ Nothing to fix'; return; }
-        try {
-            let arr = sanitizeJSON(raw);
-            arr = detectAndNormaliseOnsets(arr); arr = detectAndNormaliseDurations(arr);
-            const bpm = activeFile ? getBPM(activeFile.svpData) : DEFAULT_BPM, bN = beatNs(bpm);
-            const fixed = arr.map(n => {
-                const onsetNs = n._onset_ns_resolved !== undefined ? n._onset_ns_resolved : Math.round(parseFloat(n.onset_ns ?? n.onset ?? 0));
-                const durNs = n._dur_ns_resolved !== undefined ? n._dur_ns_resolved : Math.round(parseFloat(n.dur_ns ?? n.duration ?? bN));
-                return { onset_ns: Math.max(0, onsetNs), dur_ns: Math.max(Math.round(bN / 8), durNs), pitch: parseInt(n.pitch ?? n.n) || 60, lyric: String(n.lyric ?? n.y ?? 'a') };
-            });
-            fixed.sort((a, b) => a.onset_ns - b.onset_ns);
-            input.value = JSON.stringify(fixed, null, 2);
-            showToast('Auto-fix applied', 'success');
-            parseAndPreview();
-        } catch (e) { showToast('Auto-fix failed: ' + e.message, 'error'); }
-    };
+function loadFile(f){const rd=new FileReader();rd.onload=ev=>{let t=ev.target.result;if(t.charCodeAt(0)===0xFEFF)t=t.slice(1);const js=t.indexOf('{'),je=t.lastIndexOf('}');if(js===-1||je===-1){toast('No JSON','err');return}let jc=t.substring(js,je+1);let svp;try{svp=JSON.parse(jc)}catch(e){try{svp=JSON.parse(jc.replace(/,\s*([}\]])/g,'$1'))}catch(e2){toast('Bad JSON','err');return}}if(!svp||typeof svp!=='object'){toast('Invalid','err');return}if(!svp.version&&!svp.tracks&&!svp.library){toast('Not SVP','err');return}const ent={id:Date.now()+Math.random(),name:f.name,svpData:svp,parts:[]};rebuild(ent);if(!ent.parts.length)toast('No parts','err');FILES.push(ent);if(!activeFile){activeFile=ent;if(ent.parts.length)selPart(ent.parts[0])}refreshAll();toast('Loaded: '+f.name)};rd.onerror=()=>toast('Read error','err');rd.readAsText(f)}
+document.getElementById('fileIn').addEventListener('change',e=>{[...e.target.files].forEach(loadFile);e.target.value=''})
+document.addEventListener('dragover',e=>e.preventDefault())
+document.addEventListener('drop',e=>{e.preventDefault();[...e.dataTransfer.files].filter(f=>/\.(svp|json)$/i.test(f.name)).forEach(loadFile)})
+document.addEventListener('keydown',e=>{if(e.target.matches('input,textarea,select,[contenteditable]'))return;if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();delSel()}if((e.ctrlKey||e.metaKey)&&e.key==='z'){e.preventDefault();undo()}if((e.ctrlKey||e.metaKey)&&(e.key==='y'||(e.shiftKey&&e.key==='Z'))){e.preventDefault();redo()}if((e.ctrlKey||e.metaKey)&&e.key==='a'){e.preventDefault();selAll()}if(e.key==='Escape'){document.getElementById('addModal').style.display='none';clrSel()}})
+document.querySelectorAll('.tab').forEach(t=>{t.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));t.classList.add('active');const p=document.getElementById(t.dataset.panel);if(p)p.classList.add('active');if(t.dataset.panel==='pianoRollPanel')drawRoll();if(t.dataset.panel==='aiPanel')refPrompt()})});
+(function(){const r=document.getElementById('gridResizer'),w=document.getElementById('noteGridWrap');let d,sY,sH;r.addEventListener('mousedown',e=>{d=true;sY=e.clientY;sH=w.offsetHeight;document.body.style.cursor='row-resize';e.preventDefault()});document.addEventListener('mousemove',e=>{if(!d)return;w.style.height=Math.max(50,Math.min(500,sH+(sY-e.clientY)))+'px';drawRoll()});document.addEventListener('mouseup',()=>{d=false;document.body.style.cursor=''})})();
+(function(){const h=document.getElementById('dockHead'),b=document.getElementById('dockBody');let d,sY,sH;h.addEventListener('mousedown',e=>{if(e.target.closest('button'))return;d=true;sY=e.clientY;sH=b.offsetHeight;document.body.style.cursor='row-resize';e.preventDefault()});document.addEventListener('mousemove',e=>{if(!d)return;b.style.height=Math.max(100,Math.min(500,sH+(sY-e.clientY)))+'px'});document.addEventListener('mouseup',()=>{d=false;document.body.style.cursor=''})})();
 
-    const renderPreview = notes => {
-        const bpm = getBPM(activeFile?.svpData || {}), bN = beatNs(bpm);
-        const lines = notes.map(n => {
-            const bar = Math.floor(n.onset / (bN * 4)) + 1, beat = ((n.onset % (bN * 4)) / bN + 1).toFixed(1);
-            return `[${bar}.${beat}] ${midiName(n.pitch).padEnd(4)} dur=${nsToSec(n.duration)}s "${n.lyric}"`;
-        });
-        document.getElementById('previewNotes').textContent = lines.join('\n');
-        document.getElementById('previewCount').textContent = `${notes.length} notes`;
-        document.getElementById('previewEmpty').style.display = 'none';
-        document.getElementById('previewSection').style.display = 'flex';
-    };
-    const discardPreview = () => { pendingNotes = []; document.getElementById('previewSection').style.display = 'none'; document.getElementById('previewEmpty').style.display = 'flex'; document.getElementById('parseStatus').textContent = ''; };
+function updFC(){const n=FILES.length;document.getElementById('fileCount').textContent=n?`${n} file${n!==1?'s':''}`:'No files';document.getElementById('btnExport').disabled=!n}
+function refreshAll(){renderFiles();renderParts();renderTable();drawRoll();refPrompt();updUB();updFC()}
 
-    const doCommit = () => {
-        if (!activePart || !pendingNotes.length) return showToast('Nothing to apply', 'error');
-        pushUndo();
-        if (currentMode === 'append') {
-            pendingNotes.forEach(n => storeNoteInPart(activePart, n.onset, n.duration, n.pitch, 0, n.lyric, ''));
-            showToast(`Applied: ${pendingNotes.length} notes added`, 'success');
-        } else if (currentMode === 'replace') {
-            activePart.notes.length = 0;
-            pendingNotes.forEach(n => storeNoteInPart(activePart, n.onset, n.duration, n.pitch, 0, n.lyric, ''));
-            showToast('Replaced all notes', 'success');
-        } else if (currentMode === 'lyrics') {
-            const existing = activePart.notes;
-            pendingNotes.forEach((pn, i) => { if (i < existing.length) { existing[i].lyrics = pn.lyric; existing[i].phonemes = ''; } });
-            showToast('Lyrics rewritten', 'success');
-        }
-        pendingNotes = []; document.getElementById('aiResponseInput').value = ''; discardPreview(); refreshAll();
-    };
-
-    const MODE_INFO = { append: 'AI appends new notes after the existing melody.', replace: 'AI replaces all notes.', lyrics: 'AI rewrites lyrics (no phoneme).' };
-    const setMode = mode => {
-        currentMode = mode;
-        ['append','replace','lyrics'].forEach(m => { const el = document.getElementById('mode' + m[0].toUpperCase() + m.slice(1)); if (el) el.className = 'mode-btn' + (m === mode ? ' m-active-' + m : ''); });
-        document.getElementById('modeInfo').textContent = MODE_INFO[mode];
-        document.getElementById('melodyOpts').style.display = mode === 'lyrics' ? 'none' : '';
-        document.getElementById('lyricsOpts').style.display = mode === 'lyrics' ? '' : 'none';
-        discardPreview(); refreshPrompt();
-    };
-    const onStyleChange = () => { document.getElementById('customHintFld').style.display = document.getElementById('extStyle').value === 'custom' ? '' : 'none'; refreshPrompt(); };
-
-    async function generateWithClaude() {
-        if (isGenerating) return;
-        if (!activePart) return showToast('Select a part first', 'error');
-        const prompt = document.getElementById('promptBox').textContent;
-        if (!prompt || prompt.startsWith('(select')) return showToast('Prompt is empty', 'error');
-        isGenerating = true; const btn = document.getElementById('generateBtn');
-        btn.textContent = '⏳ Generating…'; btn.disabled = true;
-        try {
-            const res = await fetch('https://api.anthropic.com/v1/messages', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'anthropic-version': '2023-06-01' },
-                body: JSON.stringify({
-                    model: 'claude-sonnet-4-6',
-                    max_tokens: 4000,
-                    system: 'You are a SynthV assistant. Return raw JSON ONLY. onset_ns/dur_ns in nanoseconds. Include ONLY "onset_ns", "dur_ns", "pitch", "lyric". NO phoneme field.',
-                    messages: [{ role: 'user', content: prompt }]
-                })
-            });
-            if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error?.message || 'HTTP ' + res.status);
-            const data = await res.json();
-            const text = data.content.filter(b => b.type === 'text').map(b => b.text).join('');
-            document.getElementById('aiResponseInput').value = text;
-            showToast('Generated! Running auto-fix…', 'success');
-            autoFixAndPreview();
-        } catch (e) { showToast('API error: ' + e.message, 'error'); }
-        finally { isGenerating = false; btn.textContent = '✨ Generate with Claude'; btn.disabled = false; }
-    }
-
-    const renderTimeline = () => {
-        const canvas = document.getElementById('tlCanvas'), ctx = canvas.getContext('2d'), wrap = document.getElementById('tlWrap');
-        canvas.width = wrap.clientWidth || 600; canvas.height = wrap.clientHeight || 200;
-        if (!FILES.length) return;
-        const zoom = parseFloat(document.getElementById('tlZoom').value) || 0.1, pxPerSec = 1 / zoom;
-        let maxSec = 0;
-        FILES.forEach(f => f.parts.forEach(p => { const n = getNotesFromPart(p); if (n.length) maxSec = Math.max(maxSec, (Math.max(...n.map(x => x.onset + x.duration)) + (f.offsetNs || 0)) / NS_PER_SECOND); }));
-        if (!maxSec) maxSec = 10;
-        const ROW = 30, HDR = 22, KEY = 150, totalRows = FILES.reduce((a, f) => a + f.parts.length, 0);
-        const W = Math.max(KEY + maxSec * pxPerSec + 80, canvas.width), H = HDR + totalRows * ROW + 10;
-        canvas.width = W; canvas.height = H;
-        ctx.fillStyle = '#08080f'; ctx.fillRect(0, 0, W, H);
-        for (let s = 0; s <= Math.ceil(maxSec) + 1; s++) { const x = KEY + s * pxPerSec; ctx.strokeStyle = s % 4 === 0 ? '#1e1e34' : '#141422'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); if (s % 4 === 0 && x < W) { ctx.fillStyle = '#252540'; ctx.font = '9px system-ui'; ctx.fillText(s + 's', x + 2, 12); } }
-        let row = 0;
-        FILES.forEach((f, fi) => {
-            const color = FILE_COLORS[fi % FILE_COLORS.length];
-            f.parts.forEach(part => {
-                const y = HDR + row * ROW;
-                ctx.fillStyle = row % 2 ? '#0b0b14' : '#0d0d18'; ctx.fillRect(0, y, W, ROW);
-                ctx.fillStyle = color; ctx.fillRect(0, y + 4, 3, ROW - 8);
-                ctx.fillStyle = color; ctx.font = '10px system-ui'; ctx.fillText((f.name + ' / ' + part.name).slice(0, 30), 8, y + 18);
-                getNotesFromPart(part).forEach(n => {
-                    const x = KEY + ((n.onset + (f.offsetNs || 0)) / NS_PER_SECOND) * pxPerSec;
-                    const w = Math.max(2, (n.duration / NS_PER_SECOND) * pxPerSec - 1);
-                    ctx.fillStyle = color; ctx.fillRect(x, y + 6, w, ROW - 12);
-                });
-                row++;
-            });
-        });
-        const ob = document.getElementById('tlOffsets'); ob.innerHTML = '';
-        FILES.forEach((f, fi) => {
-            const chip = document.createElement('div');
-            chip.style.cssText = 'display:flex;align-items:center;gap:8px;padding:5px 12px;background:var(--bg3);border:1px solid var(--border2);border-radius:6px';
-            chip.innerHTML = `<span style="font-size:11px;color:var(--text2)">${esc(f.name)}</span><span style="font-size:10px;color:var(--text3)">offset (s)</span><input type="number" value="${nsToSec(f.offsetNs||0)}" step="0.001" style="width:80px;background:var(--bg2);border:1px solid var(--border2);color:var(--text);padding:3px 6px;border-radius:4px;font-size:11px" onchange="FILES[${fi}].offsetNs=secToNs(this.value);App.renderTimeline()">`;
-            ob.appendChild(chip);
-        });
-    };
-
-    const loadSvpFile = file => {
-        const reader = new FileReader();
-        reader.onload = ev => {
-            let rawText = ev.target.result;
-            if (rawText.charCodeAt(0) === 0xFEFF) rawText = rawText.slice(1);
-            const jsonStart = rawText.indexOf('{'), jsonEnd = rawText.lastIndexOf('}');
-            if (jsonStart === -1 || jsonEnd === -1) { showToast('No JSON object found', 'error'); return; }
-            let jsonCandidate = rawText.substring(jsonStart, jsonEnd + 1);
-            let svpData;
-            try { svpData = JSON.parse(jsonCandidate); } catch (e) {
-                try { svpData = JSON.parse(jsonCandidate.replace(/,\s*([}\]])/g, '$1')); } catch (e2) { showToast('JSON parse error', 'error'); return; }
-            }
-            if (!svpData || typeof svpData !== 'object') { showToast('Invalid data', 'error'); return; }
-            if (!svpData.version && !svpData.tracks && !svpData.library) { showToast('Not a valid SVP file', 'error'); return; }
-            const entry = { id: Date.now() + Math.random(), name: file.name, svpData, parts: [], offsetNs: 0 };
-            rebuildFileParts(entry);
-            if (!entry.parts.length) showToast('No note parts found in ' + file.name, 'warning');
-            FILES.push(entry);
-            if (!activeFile) { activeFile = entry; if (entry.parts.length) selectPart(entry.parts[0]); }
-            refreshAll();
-            showToast('Loaded: ' + file.name, 'success');
-        };
-        reader.onerror = () => showToast('Read error', 'error');
-        reader.readAsText(file);
-    };
-    document.getElementById('fileIn').addEventListener('change', e => { [...e.target.files].forEach(loadSvpFile); e.target.value = ''; });
-    document.addEventListener('dragover', e => e.preventDefault());
-    document.addEventListener('drop', e => { e.preventDefault(); [...e.dataTransfer.files].filter(f => /\.(svp|json)$/i.test(f.name)).forEach(loadSvpFile); });
-    document.addEventListener('keydown', e => {
-        if (e.target.matches('input,textarea,select,[contenteditable]')) return;
-        if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); deleteSelected(); }
-        if ((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); undo(); }
-        if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.shiftKey && e.key === 'Z'))) { e.preventDefault(); redo(); }
-        if ((e.ctrlKey || e.metaKey) && e.key === 'a') { e.preventDefault(); selectAll(); }
-        if (e.key === 'Escape') { closeModal('addModal'); closeModal('phonemeRef'); clearSelection(); }
-    });
-    document.querySelectorAll('.tab').forEach(tab => {
-        tab.addEventListener('click', () => {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-            tab.classList.add('active');
-            const panel = document.getElementById(tab.dataset.panel);
-            if (panel) panel.classList.add('active');
-            if (tab.dataset.panel === 'timelinePanel') renderTimeline();
-            if (tab.dataset.panel === 'pianoRollPanel') drawPianoRoll();
-            if (tab.dataset.panel === 'aiBridgePanel') refreshPrompt();
-        });
-    });
-    (function() {
-        const resizer = document.getElementById('gridResizer'), ngw = document.getElementById('noteGridWrap');
-        let dragging, startY, startH;
-        resizer.addEventListener('mousedown', e => { dragging = true; startY = e.clientY; startH = ngw.offsetHeight; document.body.style.cursor = 'row-resize'; e.preventDefault(); });
-        document.addEventListener('mousemove', e => { if (!dragging) return; ngw.style.height = Math.max(60, Math.min(600, startH + (startY - e.clientY))) + 'px'; drawPianoRoll(); });
-        document.addEventListener('mouseup', () => { dragging = false; document.body.style.cursor = ''; });
-    })();
-    (function() {
-        const header = document.getElementById('dock-header'), body = document.getElementById('dock-body');
-        let dragging, startY, startH;
-        header.addEventListener('mousedown', e => { if (e.target.closest('button')) return; dragging = true; startY = e.clientY; startH = body.offsetHeight; document.body.style.cursor = 'row-resize'; e.preventDefault(); });
-        document.addEventListener('mousemove', e => { if (!dragging) return; body.style.height = Math.max(120, Math.min(600, startH + (startY - e.clientY))) + 'px'; });
-        document.addEventListener('mouseup', () => { dragging = false; document.body.style.cursor = ''; });
-    })();
-
-    const populatePhRef = () => {
-        const silent = [
-            { kana:'DO NOT use', rom:'', ph:'Leave phoneme empty!' },
-        ];
-        const vowels = ['あ','い','う','え','お'].map(v => ({ kana:v, rom:v, ph:'(auto)' }));
-        const kRow = ['か','き','く','け','こ','きゃ','きゅ','きょ'].map(v => ({ kana:v, rom:v, ph:'(auto)' }));
-        const sRow = ['さ','し','す','せ','そ','しゃ','しゅ','しょ'].map(v => ({ kana:v, rom:v, ph:'(auto)' }));
-        const tRow = ['た','ち','つ','て','と','ちゃ','ちゅ','ちょ'].map(v => ({ kana:v, rom:v, ph:'(auto)' }));
-        const nhm = ['な','に','ぬ','ね','の','は','ひ','ふ','へ','ほ','ま','み','む','め','も','や','ゆ','よ','ら','り','る','れ','ろ','わ','を','ん'].map(v => ({ kana:v, rom:v, ph:'(auto)' }));
-        const gem = ['っ'].map(v => ({ kana:v, rom:'small tsu', ph:'(auto)' }));
-        const cells = (data, id) => { const el = document.getElementById(id); if (el) el.innerHTML = data.map(d => `<div class="phref-cell"><div class="phref-kana">${d.kana}</div><div class="phref-rom">${d.rom}</div><div class="phref-ph">${d.ph}</div></div>`).join(''); };
-        cells(silent, 'phref-silent'); cells(vowels, 'phref-vowels'); cells(kRow, 'phref-k'); cells(sRow, 'phref-s'); cells(tRow, 'phref-t'); cells(nhm, 'phref-nhmyrw'); cells(gem, 'phref-gem');
-    };
-    const updateFileCount = () => {
-        const n = FILES.length;
-        document.getElementById('fileCount').textContent = n ? `${n} file${n!==1?'s':''} loaded` : 'No files loaded';
-        document.getElementById('btnExport').disabled = !n;
-    };
-    const refreshAll = () => { renderSidebar(); renderPartList(); renderNoteTable(); drawPianoRoll(); refreshPrompt(); renderTimeline(); updateUndoButtons(); updateFileCount(); };
-
-    window.App = { undo, redo, deleteSelected, selectNote, selectAll, clearSelection, editNote, deleteSingleNote, openAddNote, commitAdd, doExport, rollZoomIn, rollZoomOut, rollZoomFit, setMode, onStyleChange, refreshPrompt, parseAndPreview, autoFixAndPreview, doCommit, discardPreview, generateWithClaude, copyPrompt, renderTimeline };
-    populatePhRef(); drawPianoRoll(); updateUndoButtons(); updateFileCount();
+window.App={undo,redo,delSel,selNote,selAll,clrSel,editN,delN,openAdd,commitAdd,doExport,zoomIn,zoomOut,zoomFit,setMode,refPrompt,preview,autoFix,doCommit,discard,generate,copyPrompt};
+drawRoll();updUB();updFC();
 </script>
 </body>
 </html>

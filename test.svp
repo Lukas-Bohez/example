@@ -57,13 +57,99 @@
       "notes": [
         {
           "musicalType": "singing",
-          "onset": 17259540480,
+          "onset": 107399940480,
           "duration": 352800000,
-          "lyrics": "あ",
+          "lyrics": "は",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923076942563057,
+            "tF0Right": 0.0923076942563057,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          }
+        },
+        {
+          "musicalType": "singing",
+          "onset": 107752740480,
+          "duration": 352800000,
+          "lyrics": "る",
+          "accent": "",
+          "pitch": 62,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923076942563057,
+            "tF0Right": 0.0923076942563057,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          }
+        },
+        {
+          "musicalType": "singing",
+          "onset": 108105540480,
+          "duration": 705600001,
+          "lyrics": "の",
           "accent": "",
           "pitch": 59,
           "detune": 0,
-          "instantMode": true,
+          "instantMode": false,
           "attributes": {
             "dF0Vbr": 0,
             "evenSyllableDuration": true
@@ -100,185 +186,99 @@
         },
         {
           "musicalType": "singing",
-          "onset": 17612340480,
-          "duration": 705599999,
-          "lyrics": "の",
-          "accent": "",
-          "pitch": 60,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 19376340481,
-          "duration": 352799999,
-          "lyrics": "ち",
-          "accent": "",
-          "pitch": 60,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 19729140479,
+          "onset": 108811140481,
           "duration": 352800000,
+          "lyrics": "か",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923076942563057,
+            "tF0Right": 0.0923076942563057,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          }
+        },
+        {
+          "musicalType": "singing",
+          "onset": 109163940481,
+          "duration": 352800000,
+          "lyrics": "ぜ",
+          "accent": "",
+          "pitch": 62,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923076942563057,
+            "tF0Right": 0.0923076942563057,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          }
+        },
+        {
+          "musicalType": "singing",
+          "onset": 109516740481,
+          "duration": 705600001,
           "lyrics": "が",
           "accent": "",
-          "pitch": 61,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 20081940480,
-          "duration": 352800000,
-          "lyrics": "う",
-          "accent": "",
-          "pitch": 61,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 20434740480,
-          "duration": 705599999,
-          "lyrics": "の",
-          "accent": "",
           "pitch": 59,
           "detune": 0,
-          "instantMode": true,
+          "instantMode": false,
           "attributes": {
             "dF0Vbr": 0,
             "evenSyllableDuration": true
@@ -315,1561 +315,13 @@
         },
         {
           "musicalType": "singing",
-          "onset": 22904340480,
-          "duration": 352800000,
-          "lyrics": "こ",
-          "accent": "",
-          "pitch": 59,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 23257140480,
-          "duration": 352800000,
-          "lyrics": "れ",
-          "accent": "",
-          "pitch": 59,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 23609940480,
-          "duration": 352800000,
-          "lyrics": "は",
-          "accent": "",
-          "pitch": 58,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 24315540479,
-          "duration": 352800000,
-          "lyrics": "そ",
-          "accent": "",
-          "pitch": 59,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 24668340480,
-          "duration": 705600001,
-          "lyrics": "の",
-          "accent": "",
-          "pitch": 60,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 25726740479,
-          "duration": 352800000,
-          "lyrics": "ちょ",
-          "accent": "",
-          "pitch": 61,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 26079540480,
-          "duration": 352800000,
-          "lyrics": "っ",
-          "accent": "",
-          "pitch": 61,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 26432340480,
-          "duration": 352800000,
-          "lyrics": "と",
-          "accent": "",
-          "pitch": 60,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 27137940481,
-          "duration": 352799999,
-          "lyrics": "あ",
-          "accent": "",
-          "pitch": 60,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 27490740480,
-          "duration": 352800000,
-          "lyrics": "つ",
-          "accent": "",
-          "pitch": 61,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 27843540480,
-          "duration": 352800000,
-          "lyrics": "く",
-          "accent": "",
-          "pitch": 59,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 28196340480,
-          "duration": 705599999,
-          "lyrics": "て",
-          "accent": "",
-          "pitch": 59,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 31371540480,
-          "duration": 352800000,
-          "lyrics": "い",
-          "accent": "",
-          "pitch": 61,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 31724340481,
-          "duration": 352799999,
-          "lyrics": "や",
-          "accent": "",
-          "pitch": 61,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 32077140480,
-          "duration": 352800000,
-          "lyrics": "そ",
-          "accent": "",
-          "pitch": 62,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 32429940480,
-          "duration": 352800000,
-          "lyrics": "う",
-          "accent": "",
-          "pitch": 62,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 32782740480,
-          "duration": 352800000,
-          "lyrics": "じゃ",
-          "accent": "",
-          "pitch": 60,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 33135540481,
-          "duration": 352799999,
-          "lyrics": "な",
-          "accent": "",
-          "pitch": 60,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 33488340479,
-          "duration": 352800000,
-          "lyrics": "く",
-          "accent": "",
-          "pitch": 59,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 33841140480,
-          "duration": 705600001,
-          "lyrics": "て",
-          "accent": "",
-          "pitch": 59,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 37016340480,
-          "duration": 352800000,
-          "lyrics": "きゃ",
-          "accent": "",
-          "pitch": 64,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 37369140480,
-          "duration": 705599999,
-          "lyrics": "あ",
-          "accent": "",
-          "pitch": 64,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 38427540480,
-          "duration": 352800000,
-          "lyrics": "み",
-          "accent": "",
-          "pitch": 62,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 38780340480,
-          "duration": 352800000,
-          "lyrics": "な",
-          "accent": "",
-          "pitch": 61,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 39133140480,
-          "duration": 352799999,
-          "lyrics": "い",
-          "accent": "",
-          "pitch": 60,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 39485940479,
-          "duration": 705600001,
-          "lyrics": "で",
-          "accent": "",
-          "pitch": 59,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 42661140479,
-          "duration": 352800000,
-          "lyrics": "あ",
-          "accent": "",
-          "pitch": 59,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 43013940480,
-          "duration": 352800000,
-          "lyrics": "の",
-          "accent": "",
-          "pitch": 59,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 43366740480,
-          "duration": 705599999,
-          "lyrics": "ね",
-          "accent": "",
-          "pitch": 60,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 44425140480,
-          "duration": 352800000,
-          "lyrics": "ほ",
-          "accent": "",
-          "pitch": 60,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 44777940480,
-          "duration": 352800000,
-          "lyrics": "ん",
-          "accent": "",
-          "pitch": 60,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 45130740480,
-          "duration": 352800000,
-          "lyrics": "と",
-          "accent": "",
-          "pitch": 59,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 45483540481,
-          "duration": 705599999,
-          "lyrics": "は",
-          "accent": "",
-          "pitch": 59,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 48305940480,
-          "duration": 352799999,
-          "lyrics": "ご",
-          "accent": "",
-          "pitch": 61,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 48658740479,
-          "duration": 352800000,
-          "lyrics": "め",
-          "accent": "",
-          "pitch": 62,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 49011540480,
-          "duration": 705600001,
-          "lyrics": "ん",
-          "accent": "",
-          "pitch": 62,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 51128340480,
+          "onset": 110222340482,
           "duration": 352800000,
           "lyrics": "ふ",
           "accent": "",
-          "pitch": 60,
+          "pitch": 62,
           "detune": 0,
-          "instantMode": true,
+          "instantMode": false,
           "attributes": {
             "dF0Vbr": 0,
             "evenSyllableDuration": true
@@ -1906,13 +358,13 @@
         },
         {
           "musicalType": "singing",
-          "onset": 51481140481,
-          "duration": 352799999,
+          "onset": 110575140482,
+          "duration": 352800000,
           "lyrics": "く",
           "accent": "",
           "pitch": 60,
           "detune": 0,
-          "instantMode": true,
+          "instantMode": false,
           "attributes": {
             "dF0Vbr": 0,
             "evenSyllableDuration": true
@@ -1949,13 +401,99 @@
         },
         {
           "musicalType": "singing",
-          "onset": 51833940479,
+          "onset": 110927940482,
+          "duration": 705600001,
+          "lyrics": "ま",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923076942563057,
+            "tF0Right": 0.0923076942563057,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          }
+        },
+        {
+          "musicalType": "singing",
+          "onset": 111633540483,
           "duration": 352800000,
+          "lyrics": "ち",
+          "accent": "",
+          "pitch": 62,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923076942563057,
+            "tF0Right": 0.0923076942563057,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          }
+        },
+        {
+          "musicalType": "singing",
+          "onset": 111986340483,
+          "duration": 705600001,
           "lyrics": "を",
           "accent": "",
           "pitch": 59,
           "detune": 0,
-          "instantMode": true,
+          "instantMode": false,
           "attributes": {
             "dF0Vbr": 0,
             "evenSyllableDuration": true
@@ -1992,13 +530,13 @@
         },
         {
           "musicalType": "singing",
-          "onset": 53950740480,
+          "onset": 112691940484,
           "duration": 352800000,
-          "lyrics": "が",
+          "lyrics": "ゆ",
           "accent": "",
-          "pitch": 60,
+          "pitch": 62,
           "detune": 0,
-          "instantMode": true,
+          "instantMode": false,
           "attributes": {
             "dF0Vbr": 0,
             "evenSyllableDuration": true
@@ -2035,486 +573,13 @@
         },
         {
           "musicalType": "singing",
-          "onset": 54303540480,
-          "duration": 352800000,
-          "lyrics": "っ",
-          "accent": "",
-          "pitch": 60,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 54656340481,
-          "duration": 352799999,
-          "lyrics": "こ",
-          "accent": "",
-          "pitch": 61,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 55009140480,
-          "duration": 352800000,
-          "lyrics": "う",
-          "accent": "",
-          "pitch": 61,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 55361940480,
-          "duration": 352800000,
-          "lyrics": "に",
-          "accent": "",
-          "pitch": 59,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 56773140480,
-          "duration": 352800000,
-          "lyrics": "も",
-          "accent": "",
-          "pitch": 60,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 57125940480,
-          "duration": 352800000,
-          "lyrics": "っ",
-          "accent": "",
-          "pitch": 60,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 57478740480,
-          "duration": 352799999,
-          "lyrics": "て",
-          "accent": "",
-          "pitch": 61,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 57831540479,
+          "onset": 113044740484,
           "duration": 352800000,
           "lyrics": "く",
           "accent": "",
-          "pitch": 61,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 58184340480,
-          "duration": 352800000,
-          "lyrics": "る",
-          "accent": "",
-          "pitch": 59,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 58537140480,
-          "duration": 352800000,
-          "lyrics": "の",
-          "accent": "",
-          "pitch": 59,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 59595540480,
-          "duration": 352800000,
-          "lyrics": "わ",
-          "accent": "",
-          "pitch": 59,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 59948340480,
-          "duration": 352800000,
-          "lyrics": "す",
-          "accent": "",
           "pitch": 60,
           "detune": 0,
-          "instantMode": true,
+          "instantMode": false,
           "attributes": {
             "dF0Vbr": 0,
             "evenSyllableDuration": true
@@ -2551,13 +616,13 @@
         },
         {
           "musicalType": "singing",
-          "onset": 60301140480,
+          "onset": 113397540484,
           "duration": 352800000,
-          "lyrics": "れ",
+          "lyrics": "さ",
           "accent": "",
-          "pitch": 60,
+          "pitch": 62,
           "detune": 0,
-          "instantMode": true,
+          "instantMode": false,
           "attributes": {
             "dF0Vbr": 0,
             "evenSyllableDuration": true
@@ -2594,13 +659,13 @@
         },
         {
           "musicalType": "singing",
-          "onset": 60653940481,
-          "duration": 352799999,
-          "lyrics": "た",
+          "onset": 113750340484,
+          "duration": 352800000,
+          "lyrics": "く",
           "accent": "",
-          "pitch": 59,
+          "pitch": 64,
           "detune": 0,
-          "instantMode": true,
+          "instantMode": false,
           "attributes": {
             "dF0Vbr": 0,
             "evenSyllableDuration": true
@@ -2637,13 +702,13 @@
         },
         {
           "musicalType": "singing",
-          "onset": 61006740479,
+          "onset": 114103140484,
           "duration": 705600001,
-          "lyrics": "の",
+          "lyrics": "ら",
           "accent": "",
-          "pitch": 59,
+          "pitch": 62,
           "detune": 0,
-          "instantMode": true,
+          "instantMode": false,
           "attributes": {
             "dF0Vbr": 0,
             "evenSyllableDuration": true
@@ -2680,142 +745,13 @@
         },
         {
           "musicalType": "singing",
-          "onset": 65240340481,
-          "duration": 352799999,
-          "lyrics": "ほ",
-          "accent": "",
-          "pitch": 61,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 65593140479,
-          "duration": 352800000,
-          "lyrics": "ん",
-          "accent": "",
-          "pitch": 61,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 65945940480,
-          "duration": 352800000,
-          "lyrics": "と",
-          "accent": "",
-          "pitch": 61,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 66298740480,
-          "duration": 352800000,
-          "lyrics": "に",
+          "onset": 114808740485,
+          "duration": 705600001,
+          "lyrics": "ば",
           "accent": "",
           "pitch": 60,
           "detune": 0,
-          "instantMode": true,
+          "instantMode": false,
           "attributes": {
             "dF0Vbr": 0,
             "evenSyllableDuration": true
@@ -2852,228 +788,13 @@
         },
         {
           "musicalType": "singing",
-          "onset": 66651540480,
-          "duration": 352799999,
-          "lyrics": "ご",
-          "accent": "",
-          "pitch": 59,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 67004340479,
-          "duration": 352800000,
-          "lyrics": "め",
-          "accent": "",
-          "pitch": 60,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 67357140480,
-          "duration": 352800000,
-          "lyrics": "ん",
-          "accent": "",
-          "pitch": 60,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 67709940480,
+          "onset": 115514340486,
           "duration": 352800000,
           "lyrics": "な",
           "accent": "",
           "pitch": 59,
           "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 68062740480,
-          "duration": 352800000,
-          "lyrics": "さ",
-          "accent": "",
-          "pitch": 59,
-          "detune": 0,
-          "instantMode": true,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 68415540481,
-          "duration": 705599999,
-          "lyrics": "い",
-          "accent": "",
-          "pitch": 58,
-          "detune": 0,
-          "instantMode": true,
+          "instantMode": false,
           "attributes": {
             "dF0Vbr": 0,
             "evenSyllableDuration": true
@@ -3176,16 +897,17 @@
           "points": []
         },
         "database": {
-          "name": "Kasane Teto (Lite)",
+          "name": "Kyomachi Seika AI (Lite)",
           "language": "japanese",
           "phoneset": "romaji",
           "languageOverride": "",
           "phonesetOverride": "",
           "backendType": "SVR2AI",
-          "version": "100"
+          "version": "101"
         },
         "dictionary": "",
         "voice": {
+          "paramGender": 0,
           "vocalModeInherited": true,
           "vocalModePreset": "",
           "vocalModeParams": {}
@@ -3216,7 +938,7 @@
           "groupID": "e1913690-9805-4997-b3da-4bd73f40c9bd",
           "blickAbsoluteBegin": 0,
           "blickAbsoluteEnd": -1,
-          "blickOffset": -17259540480,
+          "blickOffset": -107399940480,
           "pitchOffset": 0,
           "isInstrumental": false,
           "systemPitchDelta": {
