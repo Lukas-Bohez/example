@@ -56,10 +56,10 @@
       "vocalModes": {},
       "notes": [
         {
-          "musicalType": "singing",
+          "musicalType": "rap",
           "onset": 107399940480,
-          "duration": 352800000,
-          "lyrics": "は",
+          "duration": 705600000705599900,
+          "lyrics": "check",
           "accent": "",
           "pitch": 60,
           "detune": 0,
@@ -70,8 +70,8 @@
           },
           "systemAttributes": {
             "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
             "dF0Left": 0,
             "dF0Right": 0,
             "dF0Vbr": 0,
@@ -96,13 +96,150 @@
                 "liked": false
               }
             ]
-          }
+          },
+          "rapTone": 0,
+          "rapIntonation": 0.1
         },
         {
-          "musicalType": "singing",
-          "onset": 107752740480,
-          "duration": 352800000,
-          "lyrics": "る",
+          "musicalType": "rap",
+          "onset": 705600108105540400,
+          "duration": 705600000705599900,
+          "lyrics": "the",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": -0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 1411200108811140000,
+          "duration": 705600000705599900,
+          "lyrics": "flow",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0.5,
+          "rapIntonation": 0.2
+        },
+        {
+          "musicalType": "rap",
+          "onset": 2116800109516740000,
+          "duration": 705600000705599900,
+          "lyrics": "now",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -0.5,
+          "rapIntonation": -0.3
+        },
+        {
+          "musicalType": "rap",
+          "onset": 2822400110222340000,
+          "duration": 705600000705599900,
+          "lyrics": "i",
           "accent": "",
           "pitch": 62,
           "detune": 0,
@@ -113,8 +250,8 @@
           },
           "systemAttributes": {
             "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
             "dF0Left": 0,
             "dF0Right": 0,
             "dF0Vbr": 0,
@@ -139,13 +276,375 @@
                 "liked": false
               }
             ]
-          }
+          },
+          "rapTone": 0,
+          "rapIntonation": 0
         },
         {
-          "musicalType": "singing",
-          "onset": 108105540480,
-          "duration": 705600001,
-          "lyrics": "の",
+          "musicalType": "rap",
+          "onset": 3528000110927940000,
+          "duration": 705600000705599900,
+          "lyrics": "will",
+          "accent": "",
+          "pitch": 62,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": 0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 4233600111633540000,
+          "duration": 705600000705599900,
+          "lyrics": "spit",
+          "accent": "",
+          "pitch": 62,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0.5,
+          "rapIntonation": -0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 4939200112339140000,
+          "duration": 705600000705599900,
+          "lyrics": "it",
+          "accent": "",
+          "pitch": 62,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -1,
+          "rapIntonation": -0.4
+        },
+        {
+          "musicalType": "rap",
+          "onset": 5644800113044739000,
+          "duration": 352800000352799940,
+          "lyrics": "keep",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": 0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 5997600113397539000,
+          "duration": 352800000352799940,
+          "lyrics": "it",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": -0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 6350400113750339000,
+          "duration": 705600000705599900,
+          "lyrics": "mo",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": 0
+        },
+        {
+          "musicalType": "rap",
+          "onset": 7056000114455938000,
+          "duration": 705600000705599900,
+          "lyrics": "ving",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -0.5,
+          "rapIntonation": -0.2
+        },
+        {
+          "musicalType": "rap",
+          "onset": 7761600115161538000,
+          "duration": 705600000705599900,
+          "lyrics": "fast",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 1,
+          "rapIntonation": 0.3
+        },
+        {
+          "musicalType": "rap",
+          "onset": 8467200115867137000,
+          "duration": 705600000705599900,
+          "lyrics": "to",
           "accent": "",
           "pitch": 59,
           "detune": 0,
@@ -156,8 +655,8 @@
           },
           "systemAttributes": {
             "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
             "dF0Left": 0,
             "dF0Right": 0,
             "dF0Vbr": 0,
@@ -182,99 +681,15 @@
                 "liked": false
               }
             ]
-          }
+          },
+          "rapTone": -0.5,
+          "rapIntonation": 0.1
         },
         {
-          "musicalType": "singing",
-          "onset": 108811140481,
-          "duration": 352800000,
-          "lyrics": "か",
-          "accent": "",
-          "pitch": 60,
-          "detune": 0,
-          "instantMode": false,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 109163940481,
-          "duration": 352800000,
-          "lyrics": "ぜ",
-          "accent": "",
-          "pitch": 62,
-          "detune": 0,
-          "instantMode": false,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 109516740481,
-          "duration": 705600001,
-          "lyrics": "が",
+          "musicalType": "rap",
+          "onset": 9172800116572737000,
+          "duration": 705600000705599900,
+          "lyrics": "the",
           "accent": "",
           "pitch": 59,
           "detune": 0,
@@ -285,8 +700,8 @@
           },
           "systemAttributes": {
             "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
             "dF0Left": 0,
             "dF0Right": 0,
             "dF0Vbr": 0,
@@ -311,185 +726,15 @@
                 "liked": false
               }
             ]
-          }
+          },
+          "rapTone": -0.5,
+          "rapIntonation": -0.1
         },
         {
-          "musicalType": "singing",
-          "onset": 110222340482,
-          "duration": 352800000,
-          "lyrics": "ふ",
-          "accent": "",
-          "pitch": 62,
-          "detune": 0,
-          "instantMode": false,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 110575140482,
-          "duration": 352800000,
-          "lyrics": "く",
-          "accent": "",
-          "pitch": 60,
-          "detune": 0,
-          "instantMode": false,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 110927940482,
-          "duration": 705600001,
-          "lyrics": "ま",
-          "accent": "",
-          "pitch": 60,
-          "detune": 0,
-          "instantMode": false,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 111633540483,
-          "duration": 352800000,
-          "lyrics": "ち",
-          "accent": "",
-          "pitch": 62,
-          "detune": 0,
-          "instantMode": false,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 111986340483,
-          "duration": 705600001,
-          "lyrics": "を",
+          "musicalType": "rap",
+          "onset": 9878400117278337000,
+          "duration": 705600000705599900,
+          "lyrics": "ver",
           "accent": "",
           "pitch": 59,
           "detune": 0,
@@ -500,8 +745,8 @@
           },
           "systemAttributes": {
             "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
             "dF0Left": 0,
             "dF0Right": 0,
             "dF0Vbr": 0,
@@ -526,15 +771,17 @@
                 "liked": false
               }
             ]
-          }
+          },
+          "rapTone": 0,
+          "rapIntonation": 0.2
         },
         {
-          "musicalType": "singing",
-          "onset": 112691940484,
-          "duration": 352800000,
-          "lyrics": "ゆ",
+          "musicalType": "rap",
+          "onset": 10584000117983937000,
+          "duration": 705600000705599900,
+          "lyrics": "ry",
           "accent": "",
-          "pitch": 62,
+          "pitch": 59,
           "detune": 0,
           "instantMode": false,
           "attributes": {
@@ -543,8 +790,8 @@
           },
           "systemAttributes": {
             "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
             "dF0Left": 0,
             "dF0Right": 0,
             "dF0Vbr": 0,
@@ -569,99 +816,15 @@
                 "liked": false
               }
             ]
-          }
+          },
+          "rapTone": 0,
+          "rapIntonation": -0.3
         },
         {
-          "musicalType": "singing",
-          "onset": 113044740484,
-          "duration": 352800000,
-          "lyrics": "く",
-          "accent": "",
-          "pitch": 60,
-          "detune": 0,
-          "instantMode": false,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 113397540484,
-          "duration": 352800000,
-          "lyrics": "さ",
-          "accent": "",
-          "pitch": 62,
-          "detune": 0,
-          "instantMode": false,
-          "attributes": {
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "systemAttributes": {
-            "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
-            "dF0Left": 0,
-            "dF0Right": 0,
-            "dF0Vbr": 0,
-            "evenSyllableDuration": true
-          },
-          "pitchTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          },
-          "timbreTakes": {
-            "activeTakeId": 0,
-            "takes": [
-              {
-                "id": 0,
-                "expr": 0,
-                "liked": false
-              }
-            ]
-          }
-        },
-        {
-          "musicalType": "singing",
-          "onset": 113750340484,
-          "duration": 352800000,
-          "lyrics": "く",
+          "musicalType": "rap",
+          "onset": 11289600118689536000,
+          "duration": 705600000705599900,
+          "lyrics": "end",
           "accent": "",
           "pitch": 64,
           "detune": 0,
@@ -672,8 +835,8 @@
           },
           "systemAttributes": {
             "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
             "dF0Left": 0,
             "dF0Right": 0,
             "dF0Vbr": 0,
@@ -698,13 +861,150 @@
                 "liked": false
               }
             ]
-          }
+          },
+          "rapTone": 0.5,
+          "rapIntonation": 0.2
         },
         {
-          "musicalType": "singing",
-          "onset": 114103140484,
-          "duration": 705600001,
-          "lyrics": "ら",
+          "musicalType": "rap",
+          "onset": 11995200119395135000,
+          "duration": 705600000705599900,
+          "lyrics": "of",
+          "accent": "",
+          "pitch": 64,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": -0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 12700800120100735000,
+          "duration": 705600000705599900,
+          "lyrics": "the",
+          "accent": "",
+          "pitch": 64,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": 0
+        },
+        {
+          "musicalType": "rap",
+          "onset": 13406400120806334000,
+          "duration": 705600000705599900,
+          "lyrics": "track",
+          "accent": "",
+          "pitch": 64,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -1,
+          "rapIntonation": -0.5
+        },
+        {
+          "musicalType": "rap",
+          "onset": 14112000121511934000,
+          "duration": 705600000705599900,
+          "lyrics": "drop",
           "accent": "",
           "pitch": 62,
           "detune": 0,
@@ -715,8 +1015,8 @@
           },
           "systemAttributes": {
             "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
             "dF0Left": 0,
             "dF0Right": 0,
             "dF0Vbr": 0,
@@ -741,13 +1041,150 @@
                 "liked": false
               }
             ]
-          }
+          },
+          "rapTone": 0,
+          "rapIntonation": 0.1
         },
         {
-          "musicalType": "singing",
-          "onset": 114808740485,
-          "duration": 705600001,
-          "lyrics": "ば",
+          "musicalType": "rap",
+          "onset": 14817600122217533000,
+          "duration": 705600000705599900,
+          "lyrics": "the",
+          "accent": "",
+          "pitch": 62,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": -0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 15523200122923133000,
+          "duration": 705600000705599900,
+          "lyrics": "beat",
+          "accent": "",
+          "pitch": 62,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0.5,
+          "rapIntonation": 0.2
+        },
+        {
+          "musicalType": "rap",
+          "onset": 16228800123628732000,
+          "duration": 705600000705599900,
+          "lyrics": "one",
+          "accent": "",
+          "pitch": 62,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -0.5,
+          "rapIntonation": -0.2
+        },
+        {
+          "musicalType": "rap",
+          "onset": 16934400124334332000,
+          "duration": 352800000352799940,
+          "lyrics": "time",
           "accent": "",
           "pitch": 60,
           "detune": 0,
@@ -758,8 +1195,8 @@
           },
           "systemAttributes": {
             "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
             "dF0Left": 0,
             "dF0Right": 0,
             "dF0Vbr": 0,
@@ -784,13 +1221,1275 @@
                 "liked": false
               }
             ]
-          }
+          },
+          "rapTone": 0,
+          "rapIntonation": 0.1
         },
         {
-          "musicalType": "singing",
-          "onset": 115514340486,
-          "duration": 352800000,
-          "lyrics": "な",
+          "musicalType": "rap",
+          "onset": 17287200124687133000,
+          "duration": 352800000352799940,
+          "lyrics": "for",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": -0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 17640000125039933000,
+          "duration": 705600000705599900,
+          "lyrics": "the",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": 0
+        },
+        {
+          "musicalType": "rap",
+          "onset": 18345600125745533000,
+          "duration": 705600000705599900,
+          "lyrics": "mind",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0.5,
+          "rapIntonation": 0.2
+        },
+        {
+          "musicalType": "rap",
+          "onset": 19051200126451134000,
+          "duration": 705600000705599900,
+          "lyrics": "state",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -1,
+          "rapIntonation": -0.4
+        },
+        {
+          "musicalType": "rap",
+          "onset": 19756800127156736000,
+          "duration": 705600000705599900,
+          "lyrics": "make",
+          "accent": "",
+          "pitch": 62,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": 0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 20462400127862338000,
+          "duration": 705600000705599900,
+          "lyrics": "it",
+          "accent": "",
+          "pitch": 62,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": -0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 21168000128567940000,
+          "duration": 705600000705599900,
+          "lyrics": "loud",
+          "accent": "",
+          "pitch": 62,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0.5,
+          "rapIntonation": 0.2
+        },
+        {
+          "musicalType": "rap",
+          "onset": 21873600129273540000,
+          "duration": 705600000705599900,
+          "lyrics": "clear",
+          "accent": "",
+          "pitch": 62,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -0.5,
+          "rapIntonation": -0.3
+        },
+        {
+          "musicalType": "rap",
+          "onset": 22579200129979142000,
+          "duration": 705600000705599900,
+          "lyrics": "feel",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": 0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 23284800130684744000,
+          "duration": 705600000705599900,
+          "lyrics": "the",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": -0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 23990400131390345000,
+          "duration": 705600000705599900,
+          "lyrics": "sound",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0.5,
+          "rapIntonation": 0.3
+        },
+        {
+          "musicalType": "rap",
+          "onset": 24696000132095947000,
+          "duration": 705600000705599900,
+          "lyrics": "wave",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -1,
+          "rapIntonation": -0.4
+        },
+        {
+          "musicalType": "rap",
+          "onset": 25401600132801550000,
+          "duration": 705600000705599900,
+          "lyrics": "break",
+          "accent": "",
+          "pitch": 61,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": 0.2
+        },
+        {
+          "musicalType": "rap",
+          "onset": 26107200133507150000,
+          "duration": 705600000705599900,
+          "lyrics": "ing",
+          "accent": "",
+          "pitch": 61,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": -0.2
+        },
+        {
+          "musicalType": "rap",
+          "onset": 26812800134212750000,
+          "duration": 705600000705599900,
+          "lyrics": "new",
+          "accent": "",
+          "pitch": 61,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0.5,
+          "rapIntonation": 0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 27518400134918353000,
+          "duration": 705600000705599900,
+          "lyrics": "ground",
+          "accent": "",
+          "pitch": 61,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -0.5,
+          "rapIntonation": -0.5
+        },
+        {
+          "musicalType": "rap",
+          "onset": 28224000135623954000,
+          "duration": 705600000705599900,
+          "lyrics": "step",
+          "accent": "",
+          "pitch": 63,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": 0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 28929600136329556000,
+          "duration": 705600000705599900,
+          "lyrics": "up",
+          "accent": "",
+          "pitch": 63,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0.5,
+          "rapIntonation": 0.2
+        },
+        {
+          "musicalType": "rap",
+          "onset": 29635200137035158000,
+          "duration": 705600000705599900,
+          "lyrics": "to",
+          "accent": "",
+          "pitch": 63,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -0.5,
+          "rapIntonation": -0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 30340800137740760000,
+          "duration": 705600000705599900,
+          "lyrics": "the",
+          "accent": "",
+          "pitch": 63,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -0.5,
+          "rapIntonation": -0.2
+        },
+        {
+          "musicalType": "rap",
+          "onset": 31046400138446360000,
+          "duration": 705600000705599900,
+          "lyrics": "front",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": 0.3
+        },
+        {
+          "musicalType": "rap",
+          "onset": 31752000139151962000,
+          "duration": 705600000705599900,
+          "lyrics": "line",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -0.5,
+          "rapIntonation": -0.4
+        },
+        {
+          "musicalType": "rap",
+          "onset": 32457600139857564000,
+          "duration": 705600000705599900,
+          "lyrics": "show",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": 0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 33163200140563165000,
+          "duration": 705600000705599900,
+          "lyrics": "them",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": -0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 33868800141268767000,
+          "duration": 705600000705599900,
+          "lyrics": "how",
+          "accent": "",
+          "pitch": 62,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0.5,
+          "rapIntonation": 0.2
+        },
+        {
+          "musicalType": "rap",
+          "onset": 34574400141974370000,
+          "duration": 705600000705599900,
+          "lyrics": "we",
+          "accent": "",
+          "pitch": 62,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": 0
+        },
+        {
+          "musicalType": "rap",
+          "onset": 35280000142679970000,
+          "duration": 705600000705599900,
+          "lyrics": "align",
+          "accent": "",
+          "pitch": 62,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -1,
+          "rapIntonation": -0.3
+        },
+        {
+          "musicalType": "rap",
+          "onset": 35985600143385570000,
+          "duration": 705600000705599900,
+          "lyrics": "rhymes",
+          "accent": "",
+          "pitch": 62,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0.5,
+          "rapIntonation": 0.4
+        },
+        {
+          "musicalType": "rap",
+          "onset": 36691200144091173000,
+          "duration": 705600000705599900,
+          "lyrics": "hit",
           "accent": "",
           "pitch": 59,
           "detune": 0,
@@ -801,8 +2500,8 @@
           },
           "systemAttributes": {
             "tF0Offset": 0,
-            "tF0Left": 0.0923076942563057,
-            "tF0Right": 0.0923076942563057,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
             "dF0Left": 0,
             "dF0Right": 0,
             "dF0Vbr": 0,
@@ -827,7 +2526,3474 @@
                 "liked": false
               }
             ]
-          }
+          },
+          "rapTone": 0,
+          "rapIntonation": 0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 37396800144796770000,
+          "duration": 705600000705599900,
+          "lyrics": "like",
+          "accent": "",
+          "pitch": 59,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": -0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 38102400145502370000,
+          "duration": 705600000705599900,
+          "lyrics": "a",
+          "accent": "",
+          "pitch": 59,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -0.5,
+          "rapIntonation": 0
+        },
+        {
+          "musicalType": "rap",
+          "onset": 38808000146207970000,
+          "duration": 705600000705599900,
+          "lyrics": "drum",
+          "accent": "",
+          "pitch": 59,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -0.5,
+          "rapIntonation": -0.2
+        },
+        {
+          "musicalType": "rap",
+          "onset": 39513600146913575000,
+          "duration": 705600000705599900,
+          "lyrics": "kick",
+          "accent": "",
+          "pitch": 64,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0.5,
+          "rapIntonation": 0.3
+        },
+        {
+          "musicalType": "rap",
+          "onset": 40219200147619180000,
+          "duration": 705600000705599900,
+          "lyrics": "sweet",
+          "accent": "",
+          "pitch": 64,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": -0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 40924800148324780000,
+          "duration": 705600000705599900,
+          "lyrics": "sound",
+          "accent": "",
+          "pitch": 64,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": -0.2
+        },
+        {
+          "musicalType": "rap",
+          "onset": 41630400149030380000,
+          "duration": 705600000705599900,
+          "lyrics": "fill",
+          "accent": "",
+          "pitch": 64,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -1,
+          "rapIntonation": -0.4
+        },
+        {
+          "musicalType": "rap",
+          "onset": 42336000149735980000,
+          "duration": 705600000705599900,
+          "lyrics": "ing",
+          "accent": "",
+          "pitch": 62,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": 0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 43041600150441580000,
+          "duration": 705600000705599900,
+          "lyrics": "up",
+          "accent": "",
+          "pitch": 62,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0.5,
+          "rapIntonation": 0.2
+        },
+        {
+          "musicalType": "rap",
+          "onset": 43747200151147184000,
+          "duration": 705600000705599900,
+          "lyrics": "the",
+          "accent": "",
+          "pitch": 62,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -0.5,
+          "rapIntonation": -0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 44452800151852786000,
+          "duration": 705600000705599900,
+          "lyrics": "whole",
+          "accent": "",
+          "pitch": 62,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -0.5,
+          "rapIntonation": -0.3
+        },
+        {
+          "musicalType": "rap",
+          "onset": 45158400152558390000,
+          "duration": 705600000705599900,
+          "lyrics": "room",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": 0.4
+        },
+        {
+          "musicalType": "rap",
+          "onset": 45864000153263990000,
+          "duration": 705600000705599900,
+          "lyrics": "there",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": -0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 46569600153969590000,
+          "duration": 705600000705599900,
+          "lyrics": "is",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0.5,
+          "rapIntonation": 0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 47275200154675190000,
+          "duration": 705600000705599900,
+          "lyrics": "no",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -0.5,
+          "rapIntonation": -0.2
+        },
+        {
+          "musicalType": "rap",
+          "onset": 47980800155380790000,
+          "duration": 705600000705599900,
+          "lyrics": "more",
+          "accent": "",
+          "pitch": 61,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0.5,
+          "rapIntonation": 0.3
+        },
+        {
+          "musicalType": "rap",
+          "onset": 48686400156086395000,
+          "duration": 705600000705599900,
+          "lyrics": "space",
+          "accent": "",
+          "pitch": 61,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -1,
+          "rapIntonation": -0.5
+        },
+        {
+          "musicalType": "rap",
+          "onset": 49392000156792000000,
+          "duration": 705600000705599900,
+          "lyrics": "to",
+          "accent": "",
+          "pitch": 63,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": 0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 50097600157497600000,
+          "duration": 705600000705599900,
+          "lyrics": "breathe",
+          "accent": "",
+          "pitch": 63,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0.5,
+          "rapIntonation": 0.2
+        },
+        {
+          "musicalType": "rap",
+          "onset": 50803200158203200000,
+          "duration": 705600000705599900,
+          "lyrics": "this",
+          "accent": "",
+          "pitch": 63,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -0.5,
+          "rapIntonation": -0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 51508800158908800000,
+          "duration": 705600000705599900,
+          "lyrics": "is",
+          "accent": "",
+          "pitch": 63,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -0.5,
+          "rapIntonation": -0.3
+        },
+        {
+          "musicalType": "rap",
+          "onset": 52214400159614400000,
+          "duration": 705600000705599900,
+          "lyrics": "the",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": 0
+        },
+        {
+          "musicalType": "rap",
+          "onset": 52920000160320004000,
+          "duration": 705600000705599900,
+          "lyrics": "new",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0.5,
+          "rapIntonation": 0.3
+        },
+        {
+          "musicalType": "rap",
+          "onset": 53625600161025606000,
+          "duration": 705600000705599900,
+          "lyrics": "pace",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -1,
+          "rapIntonation": -0.4
+        },
+        {
+          "musicalType": "rap",
+          "onset": 54331200161731210000,
+          "duration": 705600000705599900,
+          "lyrics": "that",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": 0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 55036800162436810000,
+          "duration": 705600000705599900,
+          "lyrics": "we",
+          "accent": "",
+          "pitch": 62,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": -0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 55742400163142410000,
+          "duration": 705600000705599900,
+          "lyrics": "leave",
+          "accent": "",
+          "pitch": 62,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0.5,
+          "rapIntonation": 0.2
+        },
+        {
+          "musicalType": "rap",
+          "onset": 56448000163848010000,
+          "duration": 705600000705599900,
+          "lyrics": "be",
+          "accent": "",
+          "pitch": 62,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -0.5,
+          "rapIntonation": -0.2
+        },
+        {
+          "musicalType": "rap",
+          "onset": 57153600164553610000,
+          "duration": 705600000705599900,
+          "lyrics": "hind",
+          "accent": "",
+          "pitch": 62,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": 0.4
+        },
+        {
+          "musicalType": "rap",
+          "onset": 57859200165259215000,
+          "duration": 705600000705599900,
+          "lyrics": "for",
+          "accent": "",
+          "pitch": 62,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -0.5,
+          "rapIntonation": -0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 58564800165964820000,
+          "duration": 705600000705599900,
+          "lyrics": "all",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": 0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 59270400166670420000,
+          "duration": 705600000705599900,
+          "lyrics": "the",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": -0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 59976000167376020000,
+          "duration": 705600000705599900,
+          "lyrics": "world",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0.5,
+          "rapIntonation": 0.3
+        },
+        {
+          "musicalType": "rap",
+          "onset": 60681600168081620000,
+          "duration": 705600000705599900,
+          "lyrics": "to",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -0.5,
+          "rapIntonation": -0.2
+        },
+        {
+          "musicalType": "rap",
+          "onset": 61387200168787220000,
+          "duration": 705600000705599900,
+          "lyrics": "find",
+          "accent": "",
+          "pitch": 64,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 1,
+          "rapIntonation": 0.5
+        },
+        {
+          "musicalType": "rap",
+          "onset": 62092800169492820000,
+          "duration": 705600000705599900,
+          "lyrics": "right",
+          "accent": "",
+          "pitch": 64,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": -0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 62798400170198426000,
+          "duration": 705600000705599900,
+          "lyrics": "here",
+          "accent": "",
+          "pitch": 64,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -0.5,
+          "rapIntonation": -0.3
+        },
+        {
+          "musicalType": "rap",
+          "onset": 63504000170904030000,
+          "duration": 705600000705599900,
+          "lyrics": "and",
+          "accent": "",
+          "pitch": 64,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -0.5,
+          "rapIntonation": -0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 64209600171609630000,
+          "duration": 705600000705599900,
+          "lyrics": "now",
+          "accent": "",
+          "pitch": 62,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": 0.4
+        },
+        {
+          "musicalType": "rap",
+          "onset": 64915200172315230000,
+          "duration": 705600000705599900,
+          "lyrics": "the",
+          "accent": "",
+          "pitch": 62,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": -0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 65620800173020830000,
+          "duration": 705600000705599900,
+          "lyrics": "fu",
+          "accent": "",
+          "pitch": 62,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0.5,
+          "rapIntonation": 0.2
+        },
+        {
+          "musicalType": "rap",
+          "onset": 66326400173726430000,
+          "duration": 705600000705599900,
+          "lyrics": "ture",
+          "accent": "",
+          "pitch": 62,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -0.5,
+          "rapIntonation": -0.2
+        },
+        {
+          "musicalType": "rap",
+          "onset": 67032000174432035000,
+          "duration": 705600000705599900,
+          "lyrics": "is",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": 0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 67737600175137640000,
+          "duration": 705600000705599900,
+          "lyrics": "ours",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -1,
+          "rapIntonation": -0.5
+        },
+        {
+          "musicalType": "rap",
+          "onset": 68443200175843240000,
+          "duration": 705600000705599900,
+          "lyrics": "with",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": 0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 69148800176548840000,
+          "duration": 705600000705599900,
+          "lyrics": "all",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": -0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 69854400177254440000,
+          "duration": 705600000705599900,
+          "lyrics": "of",
+          "accent": "",
+          "pitch": 61,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0.5,
+          "rapIntonation": 0.2
+        },
+        {
+          "musicalType": "rap",
+          "onset": 70560000177960040000,
+          "duration": 705600000705599900,
+          "lyrics": "these",
+          "accent": "",
+          "pitch": 61,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -0.5,
+          "rapIntonation": -0.2
+        },
+        {
+          "musicalType": "rap",
+          "onset": 71265600178665640000,
+          "duration": 705600000705599900,
+          "lyrics": "bright",
+          "accent": "",
+          "pitch": 61,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0.5,
+          "rapIntonation": 0.3
+        },
+        {
+          "musicalType": "rap",
+          "onset": 71971200179371246000,
+          "duration": 705600000705599900,
+          "lyrics": "new",
+          "accent": "",
+          "pitch": 61,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -1,
+          "rapIntonation": -0.4
+        },
+        {
+          "musicalType": "rap",
+          "onset": 72676800180076850000,
+          "duration": 705600000705599900,
+          "lyrics": "powers",
+          "accent": "",
+          "pitch": 63,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": 0.5
+        },
+        {
+          "musicalType": "rap",
+          "onset": 73382400180782450000,
+          "duration": 705600000705599900,
+          "lyrics": "we",
+          "accent": "",
+          "pitch": 63,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": -0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 74088000181488040000,
+          "duration": 705600000705599900,
+          "lyrics": "will",
+          "accent": "",
+          "pitch": 63,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0.5,
+          "rapIntonation": 0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 74793600182193640000,
+          "duration": 705600000705599900,
+          "lyrics": "climb",
+          "accent": "",
+          "pitch": 63,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -0.5,
+          "rapIntonation": -0.3
+        },
+        {
+          "musicalType": "rap",
+          "onset": 75499200182899230000,
+          "duration": 705600000705599900,
+          "lyrics": "up",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": 0.2
+        },
+        {
+          "musicalType": "rap",
+          "onset": 76204800183604820000,
+          "duration": 705600000705599900,
+          "lyrics": "high",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -1,
+          "rapIntonation": -0.5
+        },
+        {
+          "musicalType": "rap",
+          "onset": 76910400184310420000,
+          "duration": 705600000705599900,
+          "lyrics": "and",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": 0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 77616000185016010000,
+          "duration": 705600000705599900,
+          "lyrics": "reach",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0.5,
+          "rapIntonation": 0.3
+        },
+        {
+          "musicalType": "rap",
+          "onset": 78321600185721600000,
+          "duration": 705600000705599900,
+          "lyrics": "for",
+          "accent": "",
+          "pitch": 62,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -0.5,
+          "rapIntonation": -0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 79027200186427200000,
+          "duration": 705600000705599900,
+          "lyrics": "the",
+          "accent": "",
+          "pitch": 62,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -0.5,
+          "rapIntonation": -0.2
+        },
+        {
+          "musicalType": "rap",
+          "onset": 79732800187132790000,
+          "duration": 705600000705599900,
+          "lyrics": "sky",
+          "accent": "",
+          "pitch": 62,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": 0.4
+        },
+        {
+          "musicalType": "rap",
+          "onset": 80438400187838380000,
+          "duration": 705600000705599900,
+          "lyrics": "watch",
+          "accent": "",
+          "pitch": 62,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -1,
+          "rapIntonation": -0.4
+        },
+        {
+          "musicalType": "rap",
+          "onset": 81144000188543980000,
+          "duration": 705600000705599900,
+          "lyrics": "us",
+          "accent": "",
+          "pitch": 59,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": 0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 81849600189249570000,
+          "duration": 705600000705599900,
+          "lyrics": "grow",
+          "accent": "",
+          "pitch": 59,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0.5,
+          "rapIntonation": 0.3
+        },
+        {
+          "musicalType": "rap",
+          "onset": 82555200189955160000,
+          "duration": 705600000705599900,
+          "lyrics": "as",
+          "accent": "",
+          "pitch": 59,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -0.5,
+          "rapIntonation": -0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 83260800190660760000,
+          "duration": 705600000705599900,
+          "lyrics": "the",
+          "accent": "",
+          "pitch": 59,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -0.5,
+          "rapIntonation": -0.2
+        },
+        {
+          "musicalType": "rap",
+          "onset": 83966400191366350000,
+          "duration": 705600000705599900,
+          "lyrics": "days",
+          "accent": "",
+          "pitch": 64,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": 0.4
+        },
+        {
+          "musicalType": "rap",
+          "onset": 84672000192071940000,
+          "duration": 705600000705599900,
+          "lyrics": "go",
+          "accent": "",
+          "pitch": 64,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -1,
+          "rapIntonation": -0.4
+        },
+        {
+          "musicalType": "rap",
+          "onset": 85377600192777540000,
+          "duration": 705600000705599900,
+          "lyrics": "by",
+          "accent": "",
+          "pitch": 64,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": 0.5
+        },
+        {
+          "musicalType": "rap",
+          "onset": 86083200193483130000,
+          "duration": 705600000705599900,
+          "lyrics": "yea",
+          "accent": "",
+          "pitch": 64,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -0.5,
+          "rapIntonation": -0.5
+        },
+        {
+          "musicalType": "rap",
+          "onset": 86788800194188720000,
+          "duration": 705600000705599900,
+          "lyrics": "this",
+          "accent": "",
+          "pitch": 62,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": 0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 87494400194894320000,
+          "duration": 705600000705599900,
+          "lyrics": "is",
+          "accent": "",
+          "pitch": 62,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0.5,
+          "rapIntonation": 0.2
+        },
+        {
+          "musicalType": "rap",
+          "onset": 88200000195599910000,
+          "duration": 705600000705599900,
+          "lyrics": "the",
+          "accent": "",
+          "pitch": 62,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -0.5,
+          "rapIntonation": -0.1
+        },
+        {
+          "musicalType": "rap",
+          "onset": 88905600196305500000,
+          "duration": 705600000705599900,
+          "lyrics": "end",
+          "accent": "",
+          "pitch": 62,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -0.5,
+          "rapIntonation": -0.3
+        },
+        {
+          "musicalType": "rap",
+          "onset": 89611200197011100000,
+          "duration": 705600000705599900,
+          "lyrics": "of",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0,
+          "rapIntonation": 0
+        },
+        {
+          "musicalType": "rap",
+          "onset": 90316800197716690000,
+          "duration": 705600000705599900,
+          "lyrics": "the",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": 0.5,
+          "rapIntonation": 0.3
+        },
+        {
+          "musicalType": "rap",
+          "onset": 91022400198422280000,
+          "duration": 827904000705600000,
+          "lyrics": "line",
+          "accent": "",
+          "pitch": 60,
+          "detune": 0,
+          "instantMode": false,
+          "attributes": {
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "systemAttributes": {
+            "tF0Offset": 0,
+            "tF0Left": 0.0923077,
+            "tF0Right": 0.0923077,
+            "dF0Left": 0,
+            "dF0Right": 0,
+            "dF0Vbr": 0,
+            "evenSyllableDuration": true
+          },
+          "pitchTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "timbreTakes": {
+            "activeTakeId": 0,
+            "takes": [
+              {
+                "id": 0,
+                "expr": 0,
+                "liked": false
+              }
+            ]
+          },
+          "rapTone": -1,
+          "rapIntonation": -0.5
         }
       ]
     }
@@ -897,13 +6063,13 @@
           "points": []
         },
         "database": {
-          "name": "Kyomachi Seika AI (Lite)",
+          "name": "Koharu Rikka (Lite)",
           "language": "japanese",
           "phoneset": "romaji",
           "languageOverride": "",
           "phonesetOverride": "",
-          "backendType": "SVR2AI",
-          "version": "101"
+          "backendType": "SVR2Standard",
+          "version": "100"
         },
         "dictionary": "",
         "voice": {
