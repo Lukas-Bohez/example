@@ -3,1043 +3,1057 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SVP Studio — AI Bridge</title>
+<title>SVP Studio</title>
 <style>
-:root {
-  --bg:      #0b0b14;
-  --bg2:     #101020;
-  --bg3:     #17172a;
-  --bg4:     #1e1e36;
-  --bg5:     #252545;
-  --border:  #1a1a30;
-  --border2: #25254a;
-  --border3: #32328a;
-  --text:    #ddddf5;
-  --text2:   #8888c0;
-  --text3:   #44446a;
-  --accent:  #7ec8ff;
-  --teal:    #3fe8b5;
-  --coral:   #f56c7a;
-  --amber:   #eab040;
-  --violet:  #b48dff;
-  --pink:    #ff7ec8;
-  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-  --mono: 'Cascadia Code', 'Fira Code', Consolas, monospace;
-  --r: 6px; --r2: 10px;
-  --ease: cubic-bezier(0.16, 1, 0.3, 1);
-}
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; overflow: hidden; }
-body { font-family: var(--font); background: var(--bg); color: var(--text); font-size: 12.5px; display: flex; flex-direction: column; }
 
-/* ── Top bar ── */
-#topbar {
-  height: 46px; flex-shrink: 0; display: flex; align-items: center; gap: 8px;
-  padding: 0 14px; background: var(--bg2); border-bottom: 1px solid var(--border);
-}
-.logo { font-size: 14px; font-weight: 800; letter-spacing: -0.02em; color: var(--accent); user-select: none; }
-.logo span { color: var(--teal); }
-.spacer { flex: 1; }
-
-/* ── Main layout ── */
-#workspace { display: flex; flex: 1; overflow: hidden; }
-
-/* ── Left sidebar: file + part list ── */
-#sidebar {
-  width: 230px; flex-shrink: 0; display: flex; flex-direction: column;
-  background: var(--bg2); border-right: 1px solid var(--border); overflow: hidden;
-}
-#sidebar-body { flex: 1; overflow-y: auto; padding: 4px 0; }
-.sb-sect { border-bottom: 1px solid var(--border); padding: 4px 0; }
-.sb-head {
-  padding: 8px 14px 5px; font-size: 9.5px; font-weight: 800;
-  text-transform: uppercase; letter-spacing: 0.1em; color: var(--text3);
-  display: flex; justify-content: space-between; align-items: center;
-}
-.sb-act {
-  color: var(--accent); cursor: pointer; font-size: 10px;
-  background: none; border: none; font-weight: 700; padding: 0;
-}
-.sb-act:hover { opacity: .75; }
-
-.file-row, .part-row {
-  display: flex; align-items: center; gap: 8px; padding: 6px 12px;
-  border-radius: var(--r); cursor: pointer; margin: 1px 6px;
-  border: 1px solid transparent; transition: .12s;
-}
-.file-row:hover, .part-row:hover { background: var(--bg4); border-color: var(--border2); }
-.file-row.active { background: var(--bg3); border-color: var(--accent); }
-.part-row.active { background: var(--bg3); border-color: var(--teal); }
-
-.dot-f { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
-.dot-p { width: 4px; height: 22px; border-radius: 2px; flex-shrink: 0; }
-.row-info { flex: 1; min-width: 0; font-size: 11px; }
-.row-info .name { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.row-info .meta { font-size: 9.5px; color: var(--text3); margin-top: 1px; }
-
-.lang-badge {
-  font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 8px;
-  display: inline-block; margin-top: 3px; letter-spacing: .04em;
-}
-.lb-jp  { background: #08201a; color: var(--teal);   border: 1px solid #1d4a38; }
-.lb-en  { background: #0b1e3c; color: var(--accent); border: 1px solid #1a3860; }
-.lb-zh  { background: #1a1000; color: var(--amber);  border: 1px solid #4a3000; }
-.lb-es  { background: #1a0010; color: var(--pink);   border: 1px solid #4a0030; }
-.lb-ko  { background: #10001a; color: var(--violet); border: 1px solid #30004a; }
-.lb-rap { background: #1a0000; color: var(--coral);  border: 1px solid #4a0010; }
-
-#sidebar-foot {
-  padding: 10px 14px; border-top: 1px solid var(--border);
-  font-size: 10px; color: var(--text2); background: var(--bg3);
-  line-height: 1.6;
+:root {
+  --ink:    #0f0f14;
+  --ink2:   #16161e;
+  --ink3:   #1d1d28;
+  --ink4:   #252535;
+  --line:   #2a2a40;
+  --line2:  #363655;
+  --dim:    #52527a;
+  --muted:  #8888b0;
+  --text:   #d8d8f0;
+  --bright: #f0f0ff;
+  --blue:   #5b9cf6;
+  --teal:   #34d9aa;
+  --rose:   #f06080;
+  --amber:  #e8a830;
+  --violet: #a878f8;
+  --r: 4px;
+  --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --mono: 'Cascadia Code', 'Fira Code', Consolas, monospace;
 }
 
-/* ── Right: AI Panel ── */
-#main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+body { font-family: var(--font); background: var(--ink); color: var(--text); font-size: 12px; display: flex; flex-direction: column; }
 
-/* ── Part info banner ── */
-#partBanner {
-  flex-shrink: 0; padding: 8px 14px; background: var(--bg3);
-  border-bottom: 1px solid var(--border2);
-  display: flex; align-items: center; gap: 10px;
+/* ── Topbar ── */
+#top {
+  height: 40px; flex-shrink: 0;
+  display: flex; align-items: center; gap: 6px; padding: 0 12px;
+  background: var(--ink2); border-bottom: 1px solid var(--line);
 }
-#partBanner.empty { color: var(--text3); font-size: 11px; font-style: italic; }
-#pbName  { font-weight: 700; font-size: 13px; color: var(--text); }
-#pbMeta  { font-size: 10px; color: var(--text2); }
-.pbTag   { padding: 2px 8px; border-radius: 10px; font-size: 9px; font-weight: 700; }
+.logo { font-size: 13px; font-weight: 700; color: var(--blue); letter-spacing: -0.02em; user-select: none; margin-right: 4px; }
+.logo em { color: var(--teal); font-style: normal; }
+.sp { flex: 1; }
 
-/* ── Three-pane AI layout ── */
-#aiLayout { display: flex; flex: 1; overflow: hidden; }
+/* ── Layout ── */
+#wrap { display: flex; flex: 1; overflow: hidden; }
 
-/* ── Controls (left) ── */
-#ctrlPane {
-  width: 280px; flex-shrink: 0;
-  background: var(--bg2); border-right: 1px solid var(--border);
+/* ── Sidebar ── */
+#side {
+  width: 210px; flex-shrink: 0;
+  background: var(--ink2); border-right: 1px solid var(--line);
   display: flex; flex-direction: column; overflow: hidden;
 }
-#ctrlBody { flex: 1; overflow-y: auto; padding: 16px 16px 8px; }
-#ctrlFoot { padding: 10px 16px; border-top: 1px solid var(--border); background: var(--bg3); display: flex; flex-direction: column; gap: 6px; }
+#side-scroll { flex: 1; overflow-y: auto; }
+.sgroup { border-bottom: 1px solid var(--line); }
+.sgroup-head {
+  padding: 6px 10px 3px;
+  font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--dim); display: flex; justify-content: space-between; align-items: center;
+}
+.sgroup-act {
+  font-size: 9px; color: var(--blue); background: none; border: none; cursor: pointer; font-weight: 700; padding: 0;
+}
+.sgroup-act:hover { color: var(--teal); }
 
-/* ── Prompt (middle) ── */
-#promptPane {
+.frow, .prow {
+  display: flex; align-items: center; gap: 7px;
+  padding: 5px 8px 5px 10px; cursor: pointer; border-left: 2px solid transparent;
+  transition: background .1s; position: relative;
+}
+.frow:hover { background: var(--ink3); }
+.frow.on { background: var(--ink3); border-left-color: var(--blue); }
+.prow:hover { background: var(--ink3); }
+.prow.on { background: var(--ink3); border-left-color: var(--teal); }
+.dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.pdot { width: 3px; height: 18px; border-radius: 2px; flex-shrink: 0; }
+.ri { flex: 1; min-width: 0; }
+.ri .n { font-size: 11px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); }
+.ri .m { font-size: 9px; color: var(--dim); margin-top: 1px; }
+.fdel { opacity: 0; background: none; border: none; color: var(--rose); cursor: pointer; font-size: 12px; padding: 0 2px; line-height: 1; }
+.frow:hover .fdel { opacity: .7; }
+.fdel:hover { opacity: 1 !important; }
+
+.lbadge {
+  font-size: 8px; font-weight: 700; padding: 1px 5px; border-radius: 3px;
+  display: inline-block; margin-top: 2px;
+}
+.lb-jp { background: rgba(52,217,170,.12); color: var(--teal); border: 1px solid rgba(52,217,170,.25); }
+.lb-en { background: rgba(91,156,246,.12); color: var(--blue); border: 1px solid rgba(91,156,246,.25); }
+.lb-zh { background: rgba(232,168,48,.12); color: var(--amber); border: 1px solid rgba(232,168,48,.25); }
+.lb-es { background: rgba(240,96,128,.12); color: var(--rose); border: 1px solid rgba(240,96,128,.25); }
+.lb-ko { background: rgba(168,120,248,.12); color: var(--violet); border: 1px solid rgba(168,120,248,.25); }
+
+#side-foot { padding: 8px 10px; border-top: 1px solid var(--line); font-size: 9px; color: var(--dim); flex-shrink: 0; }
+
+/* ── Note table (bottom of sidebar) ── */
+#ntable-wrap { max-height: 260px; overflow-y: auto; }
+table.nt { width: 100%; border-collapse: collapse; font-size: 9.5px; }
+table.nt thead th {
+  position: sticky; top: 0; background: var(--ink3);
+  padding: 3px 5px; font-size: 8px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .06em; color: var(--dim);
+  border-bottom: 1px solid var(--line); text-align: left;
+}
+table.nt tbody tr:hover td { background: var(--ink3); }
+table.nt td { padding: 2px 5px; border-bottom: 1px solid rgba(255,255,255,.03); }
+.ni { background: none; border: 1px solid transparent; color: var(--text); font-size: 9.5px; width: 100%; padding: 1px 3px; border-radius: 2px; font-family: var(--font); }
+.ni:focus { border-color: var(--blue); background: var(--ink4); outline: none; }
+.ndel { background: none; border: none; color: var(--rose); cursor: pointer; opacity: .4; font-size: 10px; padding: 0; }
+.ndel:hover { opacity: 1; }
+.mode-rap { font-size: 8px; font-weight: 700; color: var(--rose); }
+.mode-sng { font-size: 8px; font-weight: 700; color: var(--teal); }
+
+/* ── Main area ── */
+#main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+/* Part banner */
+#banner {
+  flex-shrink: 0; height: 38px;
+  display: flex; align-items: center; gap: 10px; padding: 0 14px;
+  background: var(--ink3); border-bottom: 1px solid var(--line2);
+}
+#banner.empty { color: var(--dim); font-size: 11px; font-style: italic; }
+#ban-name { font-weight: 700; font-size: 13px; color: var(--bright); }
+#ban-meta { font-size: 10px; color: var(--muted); }
+.chip {
+  padding: 2px 7px; border-radius: 3px; font-size: 9px; font-weight: 700;
+  background: var(--ink4); border: 1px solid var(--line2); color: var(--muted);
+}
+
+/* ── 3-pane AI layout ── */
+#ai { display: flex; flex: 1; overflow: hidden; }
+
+/* Controls */
+#ctrl {
+  width: 252px; flex-shrink: 0;
+  background: var(--ink2); border-right: 1px solid var(--line);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+#ctrl-body { flex: 1; overflow-y: auto; padding: 12px 12px 6px; }
+#ctrl-foot { padding: 8px 12px; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; }
+
+/* Op tabs */
+.ops { display: flex; gap: 2px; margin-bottom: 10px; }
+.op {
+  flex: 1; padding: 6px 3px; text-align: center;
+  border: 1px solid var(--line2); border-radius: var(--r);
+  background: none; color: var(--dim); font-size: 10px; font-weight: 700;
+  cursor: pointer; font-family: var(--font); transition: .12s;
+}
+.op:hover { background: var(--ink3); color: var(--muted); }
+.op.sel-extend  { background: rgba(52,217,170,.1);  color: var(--teal);   border-color: rgba(52,217,170,.3); }
+.op.sel-replace { background: rgba(232,168,48,.1);  color: var(--amber);  border-color: rgba(232,168,48,.3); }
+.op.sel-lyrics  { background: rgba(168,120,248,.1); color: var(--violet); border-color: rgba(168,120,248,.3); }
+
+.op-desc {
+  font-size: 10px; color: var(--muted); line-height: 1.5;
+  padding: 6px 8px; background: var(--ink3); border-radius: var(--r);
+  border: 1px solid var(--line); margin-bottom: 10px;
+}
+
+/* Field */
+.f { display: flex; flex-direction: column; gap: 3px; margin-bottom: 9px; }
+.f label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--dim); }
+.f select, .f input[type=number], .f input[type=text] {
+  font-size: 11px; padding: 5px 7px;
+  background: var(--ink3); border: 1px solid var(--line2);
+  border-radius: var(--r); color: var(--text); outline: none; font-family: var(--font);
+}
+.f select:focus, .f input:focus { border-color: var(--blue); }
+.f select option { background: var(--ink3); }
+.f textarea {
+  font-size: 10.5px; padding: 5px 7px; resize: vertical; outline: none;
+  background: var(--ink3); border: 1px solid var(--line2);
+  border-radius: var(--r); color: var(--text); font-family: var(--font);
+  min-height: 70px; line-height: 1.5;
+}
+.f textarea:focus { border-color: var(--violet); }
+
+/* Pitch mode */
+.pmodes { display: flex; gap: 2px; }
+.pm {
+  flex: 1; padding: 5px; text-align: center; border-radius: var(--r);
+  border: 1px solid var(--line2); background: none; color: var(--dim);
+  font-size: 10px; font-weight: 700; cursor: pointer; font-family: var(--font); transition: .12s;
+}
+.pm:hover { background: var(--ink3); }
+.pm.sing { background: rgba(91,156,246,.1); color: var(--blue); border-color: rgba(91,156,246,.3); }
+.pm.rap  { background: rgba(240,96,128,.1); color: var(--rose); border-color: rgba(240,96,128,.3); }
+
+/* Slider */
+.srow { display: flex; align-items: center; gap: 6px; }
+.srow input[type=range] { flex: 1; accent-color: var(--blue); }
+.sv { font-weight: 700; min-width: 20px; text-align: right; color: var(--text); }
+
+.divl { border: none; border-top: 1px solid var(--line); margin: 8px 0; }
+
+/* ── Prompt pane ── */
+#prompt-pane {
   flex: 1; min-width: 0; display: flex; flex-direction: column;
-  background: var(--bg); border-right: 1px solid var(--border); overflow: hidden;
+  background: var(--ink); border-right: 1px solid var(--line); overflow: hidden;
 }
-#promptHead {
-  flex-shrink: 0; padding: 8px 12px; background: var(--bg2);
-  border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px;
+.pane-head {
+  flex-shrink: 0; height: 30px;
+  display: flex; align-items: center; gap: 8px; padding: 0 10px;
+  background: var(--ink2); border-bottom: 1px solid var(--line);
 }
-#promptHead label { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; color: var(--text3); }
-#promptBox {
-  flex: 1; overflow-y: auto; padding: 12px 14px;
-  font-family: var(--mono); font-size: 10.5px; color: var(--text2);
-  white-space: pre; line-height: 1.6; cursor: text;
+.pane-head span { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; color: var(--dim); }
+#prompt-box {
+  flex: 1; overflow-y: auto; padding: 10px 12px;
+  font-family: var(--mono); font-size: 10px; color: var(--muted);
+  white-space: pre; line-height: 1.65; outline: none;
 }
-#promptBox[contenteditable]:focus { outline: none; }
 
-/* ── Response (right) ── */
-#respPane {
-  width: 320px; flex-shrink: 0; display: flex; flex-direction: column;
-  background: var(--bg2); overflow: hidden;
+/* ── Response pane ── */
+#resp-pane {
+  width: 300px; flex-shrink: 0; display: flex; flex-direction: column;
+  background: var(--ink2); overflow: hidden;
 }
-#respHead {
-  flex-shrink: 0; padding: 8px 12px; background: var(--bg3);
-  border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px;
+#resp-body { flex: 1; display: flex; flex-direction: column; gap: 7px; overflow-y: auto; padding: 10px; }
+
+#ai-input {
+  min-height: 90px; max-height: 200px; resize: vertical;
+  background: var(--ink3); border: 1px solid var(--line2);
+  border-radius: var(--r); padding: 7px 8px;
+  font-family: var(--mono); font-size: 10px; color: var(--text);
+  outline: none; line-height: 1.5;
 }
-#respHead label { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; color: var(--text3); }
-#respBody { flex: 1; overflow-y: auto; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
+#ai-input:focus { border-color: var(--blue); }
+#ai-input.err { border-color: var(--rose) !important; box-shadow: 0 0 0 2px rgba(240,96,128,.15); }
 
-#aiInput {
-  flex: 1; min-height: 100px; max-height: 220px;
-  background: var(--bg3); border: 1px solid var(--border2);
-  border-radius: var(--r2); padding: 8px 10px;
-  font-family: var(--mono); font-size: 10.5px; color: var(--text);
-  resize: vertical; outline: none;
-}
-#aiInput:focus { border-color: var(--accent); }
-#aiInput.err { border-color: var(--coral) !important; box-shadow: 0 0 0 2px rgba(245,108,122,.2); }
+#parse-st { font-size: 9.5px; min-height: 13px; }
 
-#parseStatus { font-size: 10px; min-height: 14px; }
+/* Preview */
+#prev-sec { display: none; flex-direction: column; border: 1px solid var(--line2); border-radius: var(--r); overflow: hidden; }
+.prev-head { display: flex; align-items: center; justify-content: space-between; padding: 5px 8px; background: var(--ink3); border-bottom: 1px solid var(--line); }
+.prev-body { max-height: 140px; overflow-y: auto; padding: 6px 8px; font-family: var(--mono); font-size: 9px; color: var(--muted); white-space: pre; line-height: 1.7; }
+#prev-count { font-size: 9px; font-weight: 700; color: var(--teal); }
 
-/* Preview section */
-#prevSection { display: none; flex-direction: column; border: 1px solid var(--border2); border-radius: var(--r2); overflow: hidden; }
-.prev-head {
-  padding: 6px 10px; background: var(--bg4); border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between;
-}
-#prevCount { font-size: 9px; background: rgba(63,232,181,.15); color: var(--teal); border-radius: 10px; padding: 1px 8px; font-weight: 700; }
-.prev-body { max-height: 160px; overflow-y: auto; padding: 8px 10px; font-family: var(--mono); font-size: 10px; color: var(--text2); white-space: pre; line-height: 1.6; }
+#gen-log { font-size: 9px; color: var(--dim); font-family: var(--mono); min-height: 12px; }
 
-/* ── UI Components ── */
+/* ── Buttons ── */
 .btn {
-  display: inline-flex; align-items: center; gap: 5px;
-  padding: 5px 12px; border: 1px solid var(--border2); border-radius: var(--r);
-  background: transparent; color: var(--text); font-size: 10.5px; font-weight: 500;
-  cursor: pointer; transition: .15s; white-space: nowrap; font-family: var(--font);
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 5px 10px; border: 1px solid var(--line2); border-radius: var(--r);
+  background: none; color: var(--text); font-size: 10.5px; font-weight: 500;
+  cursor: pointer; font-family: var(--font); transition: .12s; white-space: nowrap;
 }
-.btn:hover { background: var(--bg5); border-color: var(--border3); }
+.btn:hover { background: var(--ink4); border-color: var(--line2); }
 .btn:active { transform: scale(.97); }
 .btn:disabled { opacity: .3; pointer-events: none; }
-.btn.pri  { background: var(--accent);  border-color: var(--accent);  color: #000; font-weight: 700; }
-.btn.pri:hover  { background: #a0dcff; }
-.btn.teal { background: var(--teal);   border-color: var(--teal);   color: #000; font-weight: 700; }
-.btn.teal:hover { background: #60f5c5; }
-.btn.danger { border-color: var(--coral); color: var(--coral); }
-.btn.danger:hover { background: rgba(245,108,122,.1); }
-.btn.sm { font-size: 9.5px; padding: 3px 8px; }
-.btn.xs { font-size: 9px; padding: 2px 7px; }
+.btn.blue  { background: var(--blue);   border-color: var(--blue);   color: #000; font-weight: 700; }
+.btn.blue:hover  { background: #7ab0ff; }
+.btn.teal  { background: var(--teal);   border-color: var(--teal);   color: #000; font-weight: 700; }
+.btn.teal:hover  { background: #50e8bc; }
+.btn.rose  { border-color: var(--rose); color: var(--rose); }
+.btn.rose:hover  { background: rgba(240,96,128,.1); }
+.btn.sm { font-size: 9px; padding: 3px 7px; }
+.btn.xs { font-size: 8.5px; padding: 2px 6px; }
+.btn.w100 { width: 100%; justify-content: center; }
 
-.fld { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
-.fld label { font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .07em; color: var(--text3); }
-.fld select, .fld input[type=text], .fld input[type=number] {
-  font-size: 11.5px; padding: 6px 8px; background: var(--bg3);
-  border: 1px solid var(--border2); border-radius: var(--r);
-  color: var(--text); outline: none; font-family: var(--font);
+/* ── Status bar ── */
+#status {
+  height: 24px; flex-shrink: 0;
+  display: flex; align-items: center; gap: 10px; padding: 0 10px;
+  background: var(--ink2); border-top: 1px solid var(--line);
+  font-size: 9.5px; color: var(--dim);
 }
-.fld select:focus, .fld input:focus { border-color: var(--accent); }
-.fld select option { background: var(--bg3); }
+.sd { width: 5px; height: 5px; border-radius: 50%; background: var(--line2); }
+.sd.ok { background: var(--teal); }
+.sd.busy { background: var(--amber); animation: blink .7s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:1}50%{opacity:.25} }
 
-/* Operation mode tabs */
-.op-tabs { display: flex; gap: 3px; margin-bottom: 12px; }
-.op-tab {
-  flex: 1; padding: 8px 6px; border-radius: var(--r); border: 1px solid var(--border2);
-  background: transparent; color: var(--text3); font-size: 10.5px; font-weight: 700;
-  cursor: pointer; text-align: center; transition: .15s; font-family: var(--font);
-}
-.op-tab:hover { background: var(--bg4); color: var(--text2); }
-.op-tab.a-extend  { background: rgba(63,232,181,.12); color: var(--teal);   border-color: #1d4a38; }
-.op-tab.a-replace { background: rgba(234,176,64,.12);  color: var(--amber);  border-color: #6b4e08; }
-.op-tab.a-lyrics  { background: rgba(180,141,255,.12); color: var(--violet); border-color: #4a2080; }
-
-.mode-info {
-  background: var(--bg3); border: 1px solid var(--border2); border-radius: var(--r);
-  padding: 8px 10px; font-size: 10px; color: var(--text2); margin-bottom: 12px;
-  line-height: 1.5;
-}
-
-/* Pitch mode switcher */
-.pitch-switch { display: flex; gap: 4px; }
-.ps-btn {
-  flex: 1; padding: 5px 4px; border-radius: var(--r); border: 1px solid var(--border2);
-  background: transparent; color: var(--text3); font-size: 10px; font-weight: 700;
-  cursor: pointer; text-align: center; transition: .15s; font-family: var(--font);
-}
-.ps-btn:hover { background: var(--bg4); }
-.ps-btn.act-sing { background: rgba(126,200,255,.12); color: var(--accent); border-color: #1a3860; }
-.ps-btn.act-rap  { background: rgba(245,108,122,.12); color: var(--coral);  border-color: #4a1020; }
-
-/* Slider row */
-.slider-row { display: flex; align-items: center; gap: 8px; }
-.slider-row input[type=range] { flex: 1; accent-color: var(--accent); }
-.slider-val { font-weight: 700; min-width: 24px; text-align: right; font-size: 11px; color: var(--text); }
-
-/* Divider */
-.divider { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
-
-/* Note count badge */
-.nc-badge {
-  display: inline-flex; align-items: center; gap: 4px;
-  padding: 2px 8px; border-radius: 10px; font-size: 9.5px; font-weight: 700;
-  background: var(--bg4); color: var(--text2); border: 1px solid var(--border2);
-}
-
-/* Status bar */
-#statusbar {
-  height: 26px; display: flex; align-items: center; gap: 12px;
-  padding: 0 12px; background: var(--bg2); border-top: 1px solid var(--border);
-  font-size: 10.5px; color: var(--text3); flex-shrink: 0;
-}
-.sb-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border2); }
-.sb-dot.ok { background: var(--teal); }
-.sb-dot.busy { background: var(--amber); animation: pulse .8s ease-in-out infinite; }
-@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
-
-/* Toasts */
-#toastC { position: fixed; bottom: 30px; right: 16px; z-index: 500; display: flex; flex-direction: column; gap: 6px; pointer-events: none; }
+/* ── Toast ── */
+#toasts { position: fixed; bottom: 28px; right: 12px; z-index: 999; display: flex; flex-direction: column; gap: 5px; pointer-events: none; }
 .toast {
-  background: var(--bg2); border: 1px solid var(--border2); padding: 8px 14px;
-  border-radius: var(--r); box-shadow: 0 4px 14px rgba(0,0,0,.5); pointer-events: all;
-  opacity: 0; transform: translateX(12px); transition: .25s var(--ease); max-width: 280px; font-size: 11px;
+  background: var(--ink3); border: 1px solid var(--line2); padding: 7px 12px;
+  border-radius: var(--r); font-size: 11px; color: var(--text);
+  box-shadow: 0 4px 16px rgba(0,0,0,.5); opacity: 0; transform: translateX(10px);
+  transition: .2s; max-width: 260px; pointer-events: all;
 }
-.toast.show { opacity: 1; transform: translateX(0); }
-.toast-ok  { border-left: 3px solid var(--teal); }
-.toast-err { border-left: 3px solid var(--coral); }
-.toast-warn{ border-left: 3px solid var(--amber); }
+.toast.show { opacity: 1; transform: none; }
+.toast.ok   { border-left: 3px solid var(--teal); }
+.toast.err  { border-left: 3px solid var(--rose); }
+.toast.warn { border-left: 3px solid var(--amber); }
+
+/* ── Add note modal ── */
+#add-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 100; align-items: center; justify-content: center; }
+.modal { background: var(--ink2); border: 1px solid var(--line2); border-radius: 6px; width: 340px; box-shadow: 0 8px 32px rgba(0,0,0,.6); }
+.modal-h { padding: 12px 14px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
+.modal-h h3 { font-size: 12px; font-weight: 700; }
+.modal-b { padding: 12px 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.modal-f { padding: 10px 14px; border-top: 1px solid var(--line); display: flex; gap: 5px; justify-content: flex-end; }
 
 /* Scrollbars */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+::-webkit-scrollbar-thumb { background: var(--line2); border-radius: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
 
-/* Generation log */
-#genLog {
-  font-family: var(--mono); font-size: 10px; color: var(--text3);
-  padding: 6px 0; line-height: 1.8; min-height: 30px;
-}
-
-/* Section header */
-.sec-head {
-  font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .1em;
-  color: var(--text3); margin-bottom: 8px; padding-bottom: 4px;
-  border-bottom: 1px solid var(--border);
-}
-
-/* Language info box */
-.lang-info {
-  background: var(--bg3); border: 1px solid var(--border2); border-radius: var(--r);
-  padding: 7px 10px; font-size: 10px; color: var(--text2); margin-bottom: 12px;
-  line-height: 1.5;
-}
-.lang-info b { color: var(--text); }
-
-/* Add note modal */
-#addModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.8); z-index: 100; align-items: center; justify-content: center; }
-.modal { background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--r2); width: 360px; box-shadow: 0 8px 30px rgba(0,0,0,.6); }
-.modal-head { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-.modal-head h2 { font-size: 13px; }
-.modal-body { padding: 16px 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.modal-foot { padding: 12px 18px; border-top: 1px solid var(--border); display: flex; gap: 6px; justify-content: flex-end; }
-
-/* Note grid */
-#noteGridWrap { overflow-y: auto; padding: 6px 12px 12px; }
-table.ng { width: 100%; border-collapse: collapse; font-size: 10.5px; }
-table.ng thead th {
-  position: sticky; top: 0; background: var(--bg4); padding: 4px 6px;
-  font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em;
-  color: var(--text3); border-bottom: 2px solid var(--border2); text-align: left;
-}
-table.ng tbody tr:hover td { background: var(--bg3); }
-.ng-in {
-  background: transparent; border: 1px solid transparent; font-size: 10.5px;
-  color: var(--text); padding: 2px 4px; border-radius: var(--r); width: 100%;
-}
-.ng-in:focus { border-color: var(--accent); background: var(--bg4); outline: none; }
-table.ng td { padding: 3px 6px; border-bottom: 1px solid var(--border); }
-
-/* Info row in right pane */
-.info-chip {
-  display: inline-flex; align-items: center; gap: 4px; padding: 2px 7px;
-  border-radius: 8px; font-size: 9.5px; font-weight: 600;
-  background: var(--bg3); border: 1px solid var(--border2); color: var(--text2);
-}
-
-.flex-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.frow-btns { display: flex; gap: 3px; }
+.hint { font-size: 9px; color: var(--dim); line-height: 1.5; }
 </style>
 </head>
 <body>
-
-<div id="toastC"></div>
+<div id="toasts"></div>
 
 <!-- Add note modal -->
-<div id="addModal">
+<div id="add-modal">
   <div class="modal">
-    <div class="modal-head">
-      <h2>Add Note</h2>
-      <button class="btn xs" onclick="document.getElementById('addModal').style.display='none'">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="fld"><label>Lyric</label><input type="text" id="anY" value="あ"></div>
-      <div class="fld"><label>Pitch (MIDI)</label><input type="number" id="anN" value="60" min="0" max="127"></div>
-      <div class="fld"><label>Onset (s)</label><input type="number" id="anT" value="0" min="0" step="0.001"></div>
-      <div class="fld"><label>Duration (s)</label><input type="number" id="anDur" value="0.461" min="0.001" step="0.001"></div>
-      <div class="fld"><label>Mode</label>
-        <select id="anMode">
-          <option value="singing">Singing</option>
-          <option value="rap">Rap</option>
-        </select>
+    <div class="modal-h"><h3>Add Note</h3><button class="btn xs" onclick="closeAddModal()">✕</button></div>
+    <div class="modal-b">
+      <div class="f"><label>Lyric</label><input type="text" id="an-lyric" value="あ"></div>
+      <div class="f"><label>Pitch (MIDI)</label><input type="number" id="an-pitch" value="60" min="0" max="127"></div>
+      <div class="f"><label>Onset (s)</label><input type="number" id="an-t" value="0" min="0" step="0.001"></div>
+      <div class="f"><label>Duration (s)</label><input type="number" id="an-dur" value="0.461" min="0.001" step="0.001"></div>
+      <div class="f"><label>Type</label>
+        <select id="an-mode"><option value="singing">Singing</option><option value="rap">Rap</option></select>
       </div>
-      <div class="fld"><label>Detune (cents)</label><input type="number" id="anDet" value="0" min="-1200" max="1200"></div>
+      <div class="f"><label>Detune (¢)</label><input type="number" id="an-det" value="0" min="-1200" max="1200"></div>
     </div>
-    <div class="modal-foot">
-      <button class="btn" onclick="document.getElementById('addModal').style.display='none'">Cancel</button>
-      <button class="btn pri" onclick="App.commitAdd()">Add</button>
+    <div class="modal-f">
+      <button class="btn sm" onclick="closeAddModal()">Cancel</button>
+      <button class="btn sm teal" onclick="App.commitAdd()">Add Note</button>
     </div>
   </div>
 </div>
 
-<!-- Top bar -->
-<div id="topbar">
-  <div class="logo">SVP<span>Studio</span></div>
-  <button class="btn sm" onclick="document.getElementById('fileIn').click()">📂 Open SVP</button>
-  <input type="file" id="fileIn" accept=".svp,.json" multiple hidden>
-  <button class="btn sm" id="undoBtn" disabled onclick="App.undo()">↩ Undo</button>
-  <button class="btn sm" id="redoBtn" disabled onclick="App.redo()">↪ Redo</button>
-  <div class="spacer"></div>
-  <button class="btn sm" id="btnAddNote" disabled onclick="App.openAdd()">+ Note</button>
-  <button class="btn pri sm" id="btnExport" disabled onclick="App.doExport()">📥 Export .svp</button>
+<!-- Topbar -->
+<div id="top">
+  <div class="logo">SVP<em>Studio</em></div>
+  <button class="btn sm" onclick="document.getElementById('file-in').click()">Open</button>
+  <input type="file" id="file-in" accept=".svp,.json" multiple hidden>
+  <button class="btn sm" id="undo-btn" disabled onclick="App.undo()">↩</button>
+  <button class="btn sm" id="redo-btn" disabled onclick="App.redo()">↪</button>
+  <div class="sp"></div>
+  <button class="btn sm" id="add-btn" disabled onclick="App.openAdd()">+ Note</button>
+  <button class="btn sm blue" id="exp-btn" disabled onclick="App.doExport()">Export .svp</button>
 </div>
 
 <!-- Workspace -->
-<div id="workspace">
+<div id="wrap">
 
   <!-- Sidebar -->
-  <div id="sidebar">
-    <div id="sidebar-body">
-      <div class="sb-sect">
-        <div class="sb-head">
+  <div id="side">
+    <div id="side-scroll">
+      <div class="sgroup">
+        <div class="sgroup-head">
           <span>Files</span>
-          <button class="sb-act" onclick="document.getElementById('fileIn').click()">+ Open</button>
+          <button class="sgroup-act" onclick="document.getElementById('file-in').click()">+ Open</button>
         </div>
-        <div id="fileList"><div style="font-size:10px;color:var(--text3);padding:8px 14px">Drop .svp files here</div></div>
+        <div id="file-list"><div style="padding:8px 10px;font-size:9.5px;color:var(--dim)">Drop .svp files here</div></div>
       </div>
-      <div class="sb-sect">
-        <div class="sb-head"><span>Parts</span></div>
-        <div id="partList"><div style="font-size:10px;color:var(--text3);padding:8px 14px">Select a file</div></div>
+      <div class="sgroup">
+        <div class="sgroup-head"><span>Parts</span></div>
+        <div id="part-list"><div style="padding:8px 10px;font-size:9.5px;color:var(--dim)">Select a file</div></div>
       </div>
-      <div class="sb-sect">
-        <div class="sb-head"><span>Notes</span></div>
-        <div id="noteGridWrap" style="max-height:280px">
-          <div style="font-size:10px;color:var(--text3);padding:8px 2px">Select a part</div>
-        </div>
+      <div class="sgroup">
+        <div class="sgroup-head"><span>Notes</span></div>
+        <div id="ntable-wrap"><div style="padding:8px 10px;font-size:9.5px;color:var(--dim)">Select a part</div></div>
       </div>
     </div>
-    <div id="sidebar-foot" id="masterInfo">No file loaded</div>
+    <div id="side-foot">No file loaded</div>
   </div>
 
   <!-- Main -->
   <div id="main">
+    <div id="banner" class="empty">Open a .svp file and select a part to begin</div>
 
-    <!-- Part banner -->
-    <div id="partBanner" class="empty">No part selected — open a .svp file and choose a part</div>
-
-    <!-- AI Layout -->
-    <div id="aiLayout">
-
-      <!-- Controls pane -->
-      <div id="ctrlPane">
-        <div id="ctrlBody">
-
-          <!-- Operation -->
-          <div class="sec-head">Operation</div>
-          <div class="op-tabs">
-            <button class="op-tab a-extend" id="opExtend"  onclick="App.setOp('extend')">➕ Extend</button>
-            <button class="op-tab"           id="opReplace" onclick="App.setOp('replace')">↩ Replace</button>
-            <button class="op-tab"           id="opLyrics"  onclick="App.setOp('lyrics')">✏️ Rewrite Lyrics</button>
+    <div id="ai">
+      <!-- Controls -->
+      <div id="ctrl">
+        <div id="ctrl-body">
+          <div class="f"><label>Operation</label></div>
+          <div class="ops">
+            <button class="op sel-extend" id="op-extend"  onclick="App.setOp('extend')">Extend</button>
+            <button class="op"            id="op-replace" onclick="App.setOp('replace')">Replace</button>
+            <button class="op"            id="op-lyrics"  onclick="App.setOp('lyrics')">Lyrics</button>
           </div>
-          <div class="mode-info" id="opInfo">Adds new notes after the existing melody ends.</div>
+          <div class="op-desc" id="op-desc">Adds new notes after the existing melody ends.</div>
 
-          <hr class="divider">
+          <hr class="divl">
 
-          <!-- Pitch mode -->
-          <div class="fld">
+          <div class="f">
             <label>Note Type</label>
-            <div class="pitch-switch">
-              <button class="ps-btn act-sing" id="psSing" onclick="App.setPitch('singing')">🎵 Singing</button>
-              <button class="ps-btn"          id="psRap"  onclick="App.setPitch('rap')">🎤 Rap</button>
+            <div class="pmodes">
+              <button class="pm sing" id="pm-sing" onclick="App.setPitch('singing')">🎵 Singing</button>
+              <button class="pm"      id="pm-rap"  onclick="App.setPitch('rap')">🎤 Rap</button>
             </div>
           </div>
 
-          <!-- Language -->
-          <div class="fld">
+          <div class="f">
             <label>Language</label>
-            <select id="langSel" onchange="App.onLangChange()">
-              <option value="auto">Auto-detect from voice</option>
+            <select id="lang-sel" onchange="App.onLangChange()">
+              <option value="auto">Auto (from voice)</option>
               <option value="japanese">Japanese (kana)</option>
-              <option value="english">English (words)</option>
-              <option value="mandarin">Mandarin Chinese (hanzi/pinyin)</option>
-              <option value="cantonese">Cantonese Chinese</option>
+              <option value="english">English</option>
+              <option value="mandarin">Mandarin Chinese</option>
+              <option value="cantonese">Cantonese</option>
               <option value="spanish">Spanish</option>
               <option value="korean">Korean</option>
             </select>
           </div>
-          <div class="lang-info" id="langInfo">Language will be detected from the voice database.</div>
+          <div class="hint" id="lang-hint" style="margin-bottom:9px"></div>
 
-          <hr class="divider">
+          <hr class="divl">
 
-          <!-- Style & bars (shown for extend/replace) -->
-          <div id="melodyControls">
-            <div class="fld">
+          <div id="melody-ctrl">
+            <div class="f">
               <label>Bars</label>
-              <div class="slider-row">
-                <input type="range" min="2" max="32" step="2" value="8" id="extBars"
-                  oninput="document.getElementById('extBarsVal').textContent=this.value;App.refresh()">
-                <span class="slider-val" id="extBarsVal">8</span>
+              <div class="srow">
+                <input type="range" min="2" max="32" step="2" value="8" id="bars-sl"
+                  oninput="document.getElementById('bars-val').textContent=this.value;App.refresh()">
+                <span class="sv" id="bars-val">8</span>
               </div>
             </div>
 
-            <div class="fld">
-              <label>Style / Mood</label>
-              <select id="stylePreset" onchange="App.refresh()">
+            <div class="f">
+              <label>Style</label>
+              <select id="style-sel" onchange="App.refresh()">
                 <optgroup label="Singing">
-                  <option value="natural">Natural / Conversational</option>
-                  <option value="emotional">Emotional / Expressive</option>
-                  <option value="energetic">Energetic / Upbeat</option>
-                  <option value="melancholy">Melancholy / Slow</option>
-                  <option value="bridge">Bridge (contrast)</option>
+                  <option value="natural">Natural</option>
+                  <option value="emotional">Emotional</option>
+                  <option value="energetic">Energetic</option>
+                  <option value="melancholy">Melancholy</option>
                   <option value="hook">Hook / Chorus</option>
-                  <option value="lullaby">Soft / Lullaby</option>
+                  <option value="bridge">Bridge</option>
                 </optgroup>
                 <optgroup label="Rap">
-                  <option value="rap-chill">Rap – Chill / Lo-fi</option>
-                  <option value="rap-hype">Rap – Hype / Fast</option>
-                  <option value="rap-trap">Rap – Trap / Heavy</option>
-                  <option value="rap-oldschool">Rap – Old School</option>
+                  <option value="rap-chill">Rap — Chill</option>
+                  <option value="rap-hype">Rap — Hype</option>
+                  <option value="rap-trap">Rap — Trap</option>
                 </optgroup>
                 <optgroup label="Talking">
-                  <option value="talk-natural">Talking – Natural</option>
-                  <option value="talk-excited">Talking – Excited</option>
-                  <option value="talk-dramatic">Talking – Dramatic</option>
+                  <option value="talk-natural">Talking — Natural</option>
+                  <option value="talk-dramatic">Talking — Dramatic</option>
                 </optgroup>
               </select>
             </div>
 
-            <!-- Note density (for rap/talk) -->
-            <div class="fld" id="densityField">
+            <div class="f">
               <label>Note Density</label>
-              <select id="densitySel" onchange="App.refresh()">
+              <select id="density-sel" onchange="App.refresh()">
                 <option value="sparse">Sparse (long notes)</option>
                 <option value="medium" selected>Medium</option>
-                <option value="dense">Dense (syllable per beat)</option>
-                <option value="staccato">Staccato (fast syllables)</option>
+                <option value="dense">Dense (one per beat)</option>
+                <option value="staccato">Staccato (fast)</option>
               </select>
             </div>
 
-            <!-- Pitch range -->
-            <div class="fld">
+            <div class="f">
               <label>Pitch Range</label>
-              <select id="pitchRange" onchange="App.refresh()">
+              <select id="range-sel" onchange="App.refresh()">
                 <option value="auto">Auto (match existing)</option>
-                <option value="low">Low (bass / chest)</option>
-                <option value="mid">Mid (comfortable)</option>
-                <option value="high">High (bright / head)</option>
-                <option value="wide">Wide (full range)</option>
+                <option value="low">Low</option>
+                <option value="mid">Mid</option>
+                <option value="high">High</option>
+                <option value="wide">Wide</option>
               </select>
             </div>
           </div>
 
-          <!-- Lyrics hint (shown for lyrics mode) -->
-          <div id="lyricsControls" style="display:none">
-            <div class="fld">
-              <label>New Lyrics Text</label>
-              <textarea id="newLyricsText" rows="5" style="
-                font-size:11.5px;padding:7px 8px;background:var(--bg3);
-                border:1px solid var(--border2);border-radius:var(--r);
-                color:var(--text);outline:none;font-family:var(--font);
-                resize:vertical;width:100%
-              " placeholder="Paste or type the new lyric text here (one line = one phrase)"></textarea>
+          <div id="lyrics-ctrl" style="display:none">
+            <div class="f">
+              <label>New Lyrics</label>
+              <textarea id="new-lyrics" placeholder="Paste new lyric text here. Will be distributed across existing notes."></textarea>
             </div>
           </div>
 
         </div>
-        <div id="ctrlFoot">
-          <button class="btn teal" id="generateBtn" onclick="App.generate()" style="width:100%">✨ Generate with Claude</button>
-          <div style="display:flex;gap:5px">
-            <button class="btn sm" onclick="App.copyPrompt()" style="flex:1">📋 Copy Prompt</button>
-            <button class="btn sm" onclick="App.refresh()" style="flex:1">🔄 Refresh</button>
+        <div id="ctrl-foot">
+          <button class="btn teal w100" id="gen-btn" onclick="App.generate()">✨ Generate with Claude</button>
+          <div style="display:flex;gap:4px">
+            <button class="btn sm" onclick="App.copyPrompt()" style="flex:1">Copy Prompt</button>
+            <button class="btn sm" onclick="App.refresh()" style="flex:1">Refresh</button>
           </div>
         </div>
       </div>
 
-      <!-- Prompt pane -->
-      <div id="promptPane">
-        <div id="promptHead">
-          <label>Generated Prompt</label>
-          <div class="spacer"></div>
-          <span style="font-size:9.5px;color:var(--text3)">Editable — send to AI chatbot or use Generate</span>
+      <!-- Prompt -->
+      <div id="prompt-pane">
+        <div class="pane-head">
+          <span>Prompt</span>
+          <div style="flex:1"></div>
+          <span style="color:var(--dim);font-size:9px;text-transform:none;letter-spacing:0">Editable — send to Claude or use Generate button</span>
         </div>
-        <div id="promptBox" contenteditable="true" spellcheck="false">(select a part first)</div>
+        <div id="prompt-box" contenteditable="true" spellcheck="false">(select a part first)</div>
       </div>
 
-      <!-- Response pane -->
-      <div id="respPane">
-        <div id="respHead">
-          <label>AI Response</label>
-          <div class="spacer"></div>
-          <span style="font-size:9px;color:var(--text3)">Paste → Fix → Apply</span>
-        </div>
-        <div id="respBody">
-          <div>
-            <label style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">JSON Response</label>
+      <!-- Response -->
+      <div id="resp-pane">
+        <div class="pane-head"><span>AI Response</span><div style="flex:1"></div><span style="color:var(--dim);font-size:9px;text-transform:none;letter-spacing:0">Paste → Auto-Fix → Apply</span></div>
+        <div id="resp-body">
+          <div class="f" style="margin-bottom:0">
+            <label>JSON from AI</label>
           </div>
-          <textarea id="aiInput" placeholder='[{"onset_ns":0,"dur_ns":461538462,"pitch":60,"lyric":"あ","mode":"singing"},...]'></textarea>
-          <div class="flex-row">
-            <button class="btn sm teal" onclick="App.autoFix()">🔧 Auto-Fix</button>
-            <button class="btn sm" onclick="App.preview()">▶ Preview</button>
-            <button class="btn sm danger" onclick="App.discard()">✕</button>
+          <textarea id="ai-input" placeholder='[{"onset_ns":0,"dur_ns":461538462,"pitch":60,"lyric":"あ","musicalType":"singing"},...]'></textarea>
+          <div style="display:flex;gap:4px">
+            <button class="btn sm teal" onclick="App.autoFix()">Auto-Fix</button>
+            <button class="btn sm" onclick="App.preview()">Preview</button>
+            <button class="btn sm rose" onclick="App.discard()">Clear</button>
           </div>
-          <div id="parseStatus"></div>
+          <div id="parse-st"></div>
 
-          <!-- Preview -->
-          <div id="prevSection">
+          <div id="prev-sec">
             <div class="prev-head">
-              <span id="prevCount" class="nc-badge"></span>
-              <div style="display:flex;gap:5px">
-                <button class="btn teal xs" onclick="App.doCommit()">✔ Apply</button>
-                <button class="btn danger xs" onclick="App.discard()">✖ Discard</button>
+              <span id="prev-count"></span>
+              <div style="display:flex;gap:4px">
+                <button class="btn xs teal" onclick="App.doCommit()">✔ Apply</button>
+                <button class="btn xs rose" onclick="App.discard()">✖ Discard</button>
               </div>
             </div>
-            <div class="prev-body" id="prevNotes"></div>
+            <div class="prev-body" id="prev-notes"></div>
           </div>
 
-          <!-- Generation log -->
-          <div id="genLog"></div>
+          <div id="gen-log"></div>
         </div>
       </div>
+    </div>
+  </div>
+</div>
 
-    </div><!-- /aiLayout -->
-  </div><!-- /main -->
-</div><!-- /workspace -->
-
-<div id="statusbar">
-  <div class="sb-dot" id="sdot"></div>
-  <span id="stMain">Ready</span>
-  <span id="stVoiceW" style="display:none">· Voice <b id="stVoice"></b></span>
-  <span id="stLangW"  style="display:none">· <b id="stLang"></b></span>
-  <span id="stBpmW"   style="display:none">· <b id="stBpm"></b> BPM</span>
-  <div class="spacer"></div>
-  <span style="color:var(--text3)">Ctrl+Z Undo · Ctrl+A Select All · Del Remove Selected</span>
+<!-- Status bar -->
+<div id="status">
+  <div class="sd" id="s-dot"></div>
+  <span id="s-main">Ready</span>
+  <span id="s-voice" style="display:none">· <b id="s-vn"></b></span>
+  <span id="s-lang"  style="display:none">· <b id="s-ln"></b></span>
+  <span id="s-bpm"   style="display:none">· <b id="s-bv"></b> BPM</span>
+  <div style="flex:1"></div>
+  <span>Ctrl+Z undo · Del delete selected · Ctrl+A select all</span>
 </div>
 
 <script>
 'use strict';
 
-/* ── Constants ── */
-const BLICKS = 705_600_000, NS = 1_000_000_000, DEF_BPM = 130;
-const b2s  = (b, bpm) => (b / BLICKS) * (60 / bpm);
-const s2b  = (s, bpm) => Math.round(Math.max(0, s) * (bpm / 60) * BLICKS);
-const ns2b = (ns, bpm) => Math.round(Math.max(0, ns) / NS * (bpm / 60) * BLICKS);
-const b2ns = (b, bpm) => Math.round((b / BLICKS) * (60 / bpm) * NS);
+/* ─────────────────────────────────────────────
+   BIGINT-SAFE JSON PARSING
+   SVP files use 64-bit integers for onset/duration
+   that exceed JS Number.MAX_SAFE_INTEGER.
+   We pre-process the JSON string to capture these
+   as BigInt before any floating-point rounding occurs.
+───────────────────────────────────────────── */
+
+function svpParse(str) {
+  // Tag bare integer literals ≥16 digits (above MAX_SAFE_INTEGER territory)
+  // before JSON.parse can corrupt them.
+  const tagged = str.replace(/:(\s*)(-?\d{16,})([,\}\]\s])/g, ':$1"__BI__$2"$3');
+  // Run again for adjacent large ints (e.g. in arrays) — but SVP only has them in objects
+  const obj = JSON.parse(tagged);
+  return bigWalk(obj);
+}
+
+function bigWalk(v) {
+  if (typeof v === 'string' && v.startsWith('__BI__')) return BigInt(v.slice(6));
+  if (Array.isArray(v)) return v.map(bigWalk);
+  if (v && typeof v === 'object') {
+    const r = {};
+    for (const [k, val] of Object.entries(v)) r[k] = bigWalk(val);
+    return r;
+  }
+  return v;
+}
+
+function svpStringify(obj) {
+  // JSON.stringify can't handle BigInt natively; replace with plain numbers in output.
+  // We output them as bare numbers (not quoted strings).
+  return JSON.stringify(obj, (k, v) => {
+    if (typeof v === 'bigint') return v.toString() + '__BI__MARKER__';
+    return v;
+  }).replace(/"(-?\d+)__BI__MARKER__"/g, '$1');
+}
+
+/* ─────────────────────────────────────────────
+   CONSTANTS & HELPERS
+───────────────────────────────────────────── */
+const BLICKS = 705_600_000n;          // BigInt
+const BLICKS_N = 705_600_000;         // Number (safe)
+const NS = 1_000_000_000n;
+const NS_N = 1_000_000_000;
+const DEF_BPM = 130;
+
+function bpmOf(svp) { return (svp?.time?.tempo||[]).length ? svp.time.tempo[0].bpm : DEF_BPM; }
+
+// All timing maths stay in BigInt to preserve precision
+function b2ns(blick, bpm) {
+  // blick (BigInt) → nanoseconds (BigInt)
+  const b = typeof blick === 'bigint' ? blick : BigInt(Math.round(blick));
+  const bpmN = Math.round(bpm * 1000);
+  return b * 60000n * NS / BLICKS / BigInt(bpmN);
+}
+function ns2b(ns_val, bpm) {
+  // ns (BigInt or number) → blick (BigInt)
+  const n = typeof ns_val === 'bigint' ? ns_val : BigInt(Math.round(Number(ns_val)));
+  const bpmN = Math.round(bpm * 1000);
+  return n * BLICKS * BigInt(bpmN) / (60000n * NS);
+}
+function b2s(blick, bpm) {
+  // blick → seconds (float)
+  const b = typeof blick === 'bigint' ? Number(blick) : blick;
+  return (b / BLICKS_N) * (60 / bpm);
+}
+function s2b(sec, bpm) {
+  // seconds → blick (BigInt)
+  return BigInt(Math.max(0, Math.round(sec * (bpm / 60) * BLICKS_N)));
+}
+
 const NOTE_NAMES = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
-const COLORS = ['#7ec8ff','#3fe8b5','#f56c7a','#eab040','#b48dff','#ff7ec8'];
 function mname(n) { return NOTE_NAMES[((n%12)+12)%12] + (Math.floor(n/12)-1); }
 function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-function bpm(svp) { return (svp?.time?.tempo||[]).length ? svp.time.tempo[0].bpm : DEF_BPM; }
+const COLORS = ['#5b9cf6','#34d9aa','#f06080','#e8a830','#a878f8','#f87878'];
 
-/* ── Lang helpers ── */
-const LANG_META = {
-  japanese:  { label:'JA', cls:'lb-jp', hint:'Use kana (hiragana/katakana). One mora per note. E.g. "は", "る", "の"', exLyric:'あ' },
-  english:   { label:'EN', cls:'lb-en', hint:'Use English words/syllables. One syllable per note. E.g. "love", "ba", "by"', exLyric:'the' },
-  mandarin:  { label:'ZH', cls:'lb-zh', hint:'Use hanzi or pinyin. One character per note. E.g. "你", "好", "世"', exLyric:'啊' },
-  cantonese: { label:'YUE',cls:'lb-zh', hint:'Use Cantonese hanzi. One character per note. Note: Rap mode not available for Cantonese.', exLyric:'我' },
-  spanish:   { label:'ES', cls:'lb-es', hint:'Use Spanish syllables. One syllable per note. E.g. "co", "ra", "zón". Note: Rap mode not available for Spanish.', exLyric:'la' },
-  korean:    { label:'KO', cls:'lb-ko', hint:'Use Korean syllables (hangul). One block per note. E.g. "나", "는", "서"', exLyric:'나' },
+/* ─────────────────────────────────────────────
+   LANGUAGE METADATA
+───────────────────────────────────────────── */
+const LANG = {
+  japanese:  { label:'JA', cls:'lb-jp', hint:'Kana per note (hiragana/katakana). E.g. "は", "る", "の"', ex:'あ' },
+  english:   { label:'EN', cls:'lb-en', hint:'One syllable per note. E.g. "love", "ba", "by"', ex:'the' },
+  mandarin:  { label:'ZH', cls:'lb-zh', hint:'One hanzi or pinyin syllable per note. E.g. "你", "好"', ex:'啊' },
+  cantonese: { label:'YUE',cls:'lb-zh', hint:'Cantonese hanzi per note.', ex:'我' },
+  spanish:   { label:'ES', cls:'lb-es', hint:'One syllable per note. E.g. "co", "ra", "zón"', ex:'la' },
+  korean:    { label:'KO', cls:'lb-ko', hint:'One hangul block per note. E.g. "나", "는", "서"', ex:'나' },
 };
-function langKey(p) {
-  if (!p) return 'japanese';
-  const l = (p.lang||'').toLowerCase();
-  if (l.includes('english'))  return 'english';
+function langKey(part) {
+  if (!part) return 'japanese';
+  const l = (part.lang||'').toLowerCase();
+  if (l.includes('english'))   return 'english';
   if (l.includes('mandarin') || l.includes('chinese')) return 'mandarin';
   if (l.includes('cantonese')) return 'cantonese';
-  if (l.includes('spanish'))  return 'spanish';
-  if (l.includes('korean'))   return 'korean';
+  if (l.includes('spanish'))   return 'spanish';
+  if (l.includes('korean'))    return 'korean';
   return 'japanese';
 }
 
-/* ── State ── */
+/* ─────────────────────────────────────────────
+   STATE
+───────────────────────────────────────────── */
 let FILES=[], activeFile=null, activePart=null;
 let pending=[], op='extend', pitchMode='singing';
-let undoS=[], redoS=[], genBusy=false;
-let selSet = new Set();
+let undoStack=[], redoStack=[], genBusy=false;
+let selSet=new Set();
 
-/* ── Toast ── */
-function toast(m, t='ok') {
-  const c=document.getElementById('toastC'), d=document.createElement('div');
-  d.className=`toast toast-${t}`; d.textContent=m; c.appendChild(d);
+/* ─────────────────────────────────────────────
+   TOAST
+───────────────────────────────────────────── */
+function toast(msg, type='ok') {
+  const c=document.getElementById('toasts'), d=document.createElement('div');
+  d.className=`toast ${type}`; d.textContent=msg; c.appendChild(d);
   requestAnimationFrame(()=>d.classList.add('show'));
-  setTimeout(()=>{d.classList.remove('show'); setTimeout(()=>d.remove(),300)}, 2800);
+  setTimeout(()=>{d.classList.remove('show');setTimeout(()=>d.remove(),250)},2600);
 }
 
-/* ── Note helpers ── */
-function notesRaw(p) {
-  if (!p?.notes) return [];
-  return p.notes.map((n,i)=>({
-    el:n, idx:i,
-    onB: (n.onset||0)+(p.offB||0),
-    durB: n.duration||BLICKS,
-    pitch: n.pitch||60, det: n.detune||0,
-    lyric: n.lyrics||'', mode: n.musicalType||'singing',
-    rapTone: n.rapTone||0, rapIntonation: n.rapIntonation||0
-  })).sort((a,b)=>a.onB-b.onB);
+/* ─────────────────────────────────────────────
+   NOTE ACCESS (uses BigInt onsets from SVP)
+───────────────────────────────────────────── */
+function notesRaw(part) {
+  if (!part?.notes) return [];
+  return part.notes.map((n,i)=>{
+    const onsetRaw = n.onset;  // BigInt or number
+    const durRaw   = n.duration;
+    const onB  = typeof onsetRaw === 'bigint' ? onsetRaw : BigInt(Math.round(Number(onsetRaw)||0));
+    const durB = typeof durRaw   === 'bigint' ? durRaw   : BigInt(Math.max(1, Math.round(Number(durRaw)||BLICKS_N)));
+    const netOnB = onB + BigInt(Math.round(Number(part.offB)||0));
+    return { el:n, idx:i, onB:netOnB, durB, pitch:n.pitch||60, det:n.detune||0, lyric:n.lyrics||'', mode:n.musicalType||'singing', rapTone:n.rapTone||0, rapIntonation:n.rapIntonation||0 };
+  }).sort((a,b)=>{ const d=a.onB-b.onB; return d<0n?-1:d>0n?1:0; });
 }
-function mkNote(onB, durB, pitch, det, lyric, mode='singing', rapTone=0, rapIntonation=0) {
-  const base = {
+
+function mkNote(onB, durB, pitch, det, lyric, mode='singing', rapTone=0, rapInt=0) {
+  // onB, durB as BigInt
+  const n = {
     musicalType: mode==='rap'?'rap':'singing',
-    onset: Math.max(0, onB), duration: Math.max(1, durB),
-    lyrics: String(lyric||'あ'), phonemes: '', accent: '',
+    onset: onB, duration: durB,
+    lyrics: String(lyric||'あ'), phonemes:'', accent:'',
     pitch: Math.max(0,Math.min(127,Math.round(pitch))),
     detune: Math.max(-1200,Math.min(1200,Math.round(det||0))),
     instantMode: false,
-    attributes: { dF0Vbr: 0, evenSyllableDuration: true },
-    systemAttributes: { tF0Offset:0,tF0Left:.0923077,tF0Right:.0923077,dF0Left:0,dF0Right:0,dF0Vbr:0,evenSyllableDuration:true },
-    pitchTakes: { activeTakeId:0, takes:[{id:0,expr:0,liked:false}] },
-    timbreTakes: { activeTakeId:0, takes:[{id:0,expr:0,liked:false}] }
+    attributes:{dF0Vbr:0,evenSyllableDuration:true},
+    systemAttributes:{tF0Offset:0,tF0Left:.0923077,tF0Right:.0923077,dF0Left:0,dF0Right:0,dF0Vbr:0,evenSyllableDuration:true},
+    pitchTakes:{activeTakeId:0,takes:[{id:0,expr:0,liked:false}]},
+    timbreTakes:{activeTakeId:0,takes:[{id:0,expr:0,liked:false}]}
   };
-  if (mode === 'rap') {
-    base.rapTone = rapTone || 0;
-    base.rapIntonation = rapIntonation || 0;
-  }
-  return base;
-}
-function insertSorted(p, nd) {
-  const i = p.notes.findIndex(n=>n.onset > nd.onset);
-  if (i===-1) p.notes.push(nd); else p.notes.splice(i,0,nd);
-}
-function storeNote(p, netOnB, durB, pitch, det, lyric, mode, rapTone, rapIntonation) {
-  const adj = netOnB - (p.offB||0);
-  insertSorted(p, mkNote(adj, durB, pitch, det, lyric, mode, rapTone, rapIntonation));
-}
-function sanitize(raw) {
-  let s = raw.trim()
-    .replace(/^```(?:json)?\s*/i,'').replace(/\s*```\s*$/i,'').trim();
-  const a=s.indexOf('['), e=s.lastIndexOf(']');
-  if (a===-1||e===-1) throw new Error('No JSON array found');
-  return JSON.parse(s.substring(a,e+1)
-    .replace(/"(\w+)"\s*=\s*/g,'"$1":')
-    .replace(/,\s*([}\]])/g,'$1'));
+  if (mode==='rap') { n.rapTone=rapTone||0; n.rapIntonation=rapInt||0; }
+  return n;
 }
 
-/* ── Undo/Redo ── */
+function insertSorted(part, nd) {
+  const onset = nd.onset;
+  const i = part.notes.findIndex(n=>{
+    const no = typeof n.onset==='bigint'?n.onset:BigInt(Math.round(Number(n.onset)||0));
+    return no > onset;
+  });
+  if (i===-1) part.notes.push(nd); else part.notes.splice(i,0,nd);
+}
+
+function storeNote(part, netOnB, durB, pitch, det, lyric, mode, rapTone, rapInt) {
+  const offB = BigInt(Math.round(Number(part.offB)||0));
+  const adj = netOnB - offB;
+  insertSorted(part, mkNote(adj, durB, pitch, det, lyric, mode, rapTone, rapInt));
+}
+
+/* ─────────────────────────────────────────────
+   UNDO / REDO (serialise BigInts as strings)
+───────────────────────────────────────────── */
 function snap() {
   if (!activeFile) return null;
-  return { fid:activeFile.id, json:JSON.stringify(activeFile.svpData), pidx: activeFile.parts.indexOf(activePart) };
+  return {
+    fid: activeFile.id,
+    json: svpStringify(activeFile.svpData),
+    pidx: activeFile.parts.indexOf(activePart)
+  };
 }
 function restore(sn) {
-  const f=FILES.find(x=>x.id===sn.fid); if (!f) return;
-  try { f.svpData=JSON.parse(sn.json); } catch(e){return;}
-  rebuild(f); activeFile=f;
+  const f = FILES.find(x=>x.id===sn.fid); if(!f) return;
+  try { f.svpData = svpParse(sn.json); } catch(e){ return; }
+  f._built=false; rebuild(f);
+  activeFile=f;
   activePart = sn.pidx>=0&&sn.pidx<f.parts.length ? f.parts[sn.pidx] : null;
   selSet.clear(); refreshAll();
 }
-function pushU() { const s=snap(); if(!s)return; undoS.push(s); if(undoS.length>60)undoS.shift(); redoS.length=0; updUB(); }
-function undo() { if(!undoS.length)return; const c=snap(); if(c)redoS.push(c); restore(undoS.pop()); toast('Undo'); }
-function redo() { if(!redoS.length)return; const c=snap(); if(c)undoS.push(c); restore(redoS.pop()); toast('Redo'); }
-function updUB() { document.getElementById('undoBtn').disabled=!undoS.length; document.getElementById('redoBtn').disabled=!redoS.length; }
+function pushU() {
+  const s=snap(); if(!s) return;
+  undoStack.push(s); if(undoStack.length>60) undoStack.shift();
+  redoStack.length=0; updUB();
+}
+function undo() { if(!undoStack.length) return; const c=snap(); if(c) redoStack.push(c); restore(undoStack.pop()); toast('Undo'); }
+function redo() { if(!redoStack.length) return; const c=snap(); if(c) undoStack.push(c); restore(redoStack.pop()); toast('Redo'); }
+function updUB() {
+  document.getElementById('undo-btn').disabled=!undoStack.length;
+  document.getElementById('redo-btn').disabled=!redoStack.length;
+}
 
-/* ── File loading ── */
+/* ─────────────────────────────────────────────
+   FILE LOADING (BigInt-safe)
+───────────────────────────────────────────── */
 function rebuild(f) {
-  if (f._built) return; f._built = true;
+  if (f._built) return; f._built=true;
   const svp=f.svpData, parts=[];
   if (svp.tracks) {
     svp.tracks.forEach((t,ti)=>{
-      const db = t?.mainRef?.database||{};
-      const v = { name:db.name||'Unknown', lang:db.language||'japanese' };
-      const mg = t.mainGroup||{};
-      if (mg.notes?.length) parts.push({ti,track:t,lib:null,notes:mg.notes,offB:0,vname:v.name,lang:v.lang,name:t.name||`Track ${ti+1}`});
+      const db=t?.mainRef?.database||{};
+      const v={name:db.name||'Unknown',lang:db.language||'japanese'};
+      const mg=t.mainGroup||{};
+      if (mg.notes?.length) parts.push({ti,track:t,lib:null,notes:mg.notes,offB:0n,vname:v.name,lang:v.lang,name:t.name||`Track ${ti+1}`});
       (t.groups||[]).forEach((g,gi)=>{
         const l=(svp.library||[]).find(x=>x.uuid===g.groupID);
-        if (l?.notes?.length) parts.push({ti,track:t,lib:l,notes:l.notes,offB:g.blickOffset||0,vname:v.name,lang:v.lang,name:l.name||(t.name+` G${gi+1}`)});
+        if (l?.notes?.length) {
+          const offRaw = g.blickOffset||0;
+          const offB = typeof offRaw==='bigint'?offRaw:BigInt(Math.round(Number(offRaw)||0));
+          parts.push({ti,track:t,lib:l,notes:l.notes,offB,vname:v.name,lang:v.lang,name:l.name||(t.name+` G${gi+1}`)});
+        }
       });
     });
   }
   if (!parts.length && svp.library) {
     svp.library.forEach((l,li)=>{
-      if (l.notes?.length) parts.push({ti:li,track:null,lib:l,notes:l.notes,offB:0,vname:'Unknown',lang:'japanese',name:l.name||`Part ${li+1}`});
+      if (l.notes?.length) parts.push({ti:li,track:null,lib:l,notes:l.notes,offB:0n,vname:'Unknown',lang:'japanese',name:l.name||`Part ${li+1}`});
     });
   }
-  f.parts = parts;
+  f.parts=parts;
 }
+
 function loadFile(f) {
-  const rd = new FileReader();
-  rd.onload = ev => {
-    let t = ev.target.result;
+  const rd=new FileReader();
+  rd.onload=ev=>{
+    let t=ev.target.result;
     if (t.charCodeAt(0)===0xFEFF) t=t.slice(1);
     const js=t.indexOf('{'), je=t.lastIndexOf('}');
-    if (js===-1||je===-1) { toast('No JSON found','err'); return; }
+    if (js===-1||je===-1){toast('No JSON found','err');return;}
     let svp;
-    try { svp=JSON.parse(t.substring(js,je+1)); }
-    catch(e) { try { svp=JSON.parse(t.substring(js,je+1).replace(/,\s*([}\]])/g,'$1')); } catch(e2){toast('Invalid JSON','err');return;} }
-    if (!svp||typeof svp!=='object') { toast('Invalid file','err'); return; }
-    const ent = { id:Date.now()+Math.random(), name:f.name, svpData:svp, parts:[] };
+    try { svp=svpParse(t.substring(js,je+1)); }
+    catch(e){ toast('Parse error: '+e.message,'err'); return; }
+    if (!svp||typeof svp!=='object'||(!svp.tracks&&!svp.library)){toast('Not a valid SVP file','err');return;}
+    const ent={id:Date.now()+Math.random(),name:f.name,svpData:svp,parts:[],_built:false};
     rebuild(ent);
-    if (!ent.parts.length) toast('No parts found in this file','warn');
+    if (!ent.parts.length) toast('No note parts found','warn');
     FILES.push(ent);
-    if (!activeFile) { activeFile=ent; if(ent.parts.length) selPart(ent.parts[0]); }
+    if (!activeFile){activeFile=ent; if(ent.parts.length) selPart(ent.parts[0]);}
     refreshAll(); toast('Loaded: '+f.name);
   };
-  rd.onerror = ()=>toast('Read error','err');
+  rd.onerror=()=>toast('Read error','err');
   rd.readAsText(f);
 }
 
-/* ── Part selection ── */
+/* ─────────────────────────────────────────────
+   PART SELECTION
+───────────────────────────────────────────── */
 function selPart(p) {
   activePart=p; activeFile=FILES.find(f=>f.parts.includes(p))||activeFile;
   selSet.clear();
-  const lk = langKey(p);
-  const lm = LANG_META[lk]||LANG_META.japanese;
-  // Auto-set pitch mode based on style or notes
-  const hasRap = p.notes.some(n=>n.musicalType==='rap');
-  if (hasRap) setPitch('rap', false);
-  // Set lang selector
-  const sel = document.getElementById('langSel');
-  if (lk!=='auto') sel.value = lk; else sel.value='auto';
+  const lk=langKey(p), lm=LANG[lk]||LANG.japanese;
+  const hasRap=p.notes.some(n=>n.musicalType==='rap');
+  if (hasRap) setPitch('rap',false);
+  const lsel=document.getElementById('lang-sel');
+  if (lk!=='auto') lsel.value=lk; else lsel.value='auto';
   onLangChange(false);
-  // Update banner
-  const banner = document.getElementById('partBanner');
+  const bp=bpmOf(activeFile.svpData);
+  const banner=document.getElementById('banner');
   banner.className='';
-  const lmeta = LANG_META[lk]||LANG_META.japanese;
-  banner.innerHTML = `
-    <div style="flex:1;min-width:0">
-      <div id="pbName">${esc(p.name)}</div>
-      <div id="pbMeta">${p.notes.length} notes · ${esc(p.vname)} · ${bpm(activeFile.svpData).toFixed(1)} BPM</div>
-    </div>
-    <span class="lang-badge ${lmeta.cls}">${lmeta.label}</span>
-    <span class="info-chip">${hasRap?'🎤 Has rap':'🎵 Singing'}</span>
-  `;
-  document.getElementById('sdot').className='sb-dot ok';
-  document.getElementById('stMain').textContent=`${p.notes.length} notes`;
-  document.getElementById('stVoice').textContent=p.vname;
-  document.getElementById('stVoiceW').style.display='';
-  document.getElementById('stLang').textContent=lmeta.label;
-  document.getElementById('stLangW').style.display='';
-  document.getElementById('stBpm').textContent=bpm(activeFile.svpData).toFixed(1);
-  document.getElementById('stBpmW').style.display='';
-  document.getElementById('btnAddNote').disabled=false;
+  banner.innerHTML=`<span id="ban-name">${esc(p.name)}</span><span id="ban-meta">${p.notes.length} notes · ${esc(p.vname)} · ${bp.toFixed(1)} BPM</span><span class="chip">${lm.label}</span><span class="chip">${hasRap?'🎤 rap':'🎵 singing'}</span>`;
+  document.getElementById('s-dot').className='sd ok';
+  document.getElementById('s-main').textContent=`${p.notes.length} notes`;
+  document.getElementById('s-vn').textContent=p.vname; document.getElementById('s-voice').style.display='';
+  document.getElementById('s-ln').textContent=lm.label; document.getElementById('s-lang').style.display='';
+  document.getElementById('s-bv').textContent=bp.toFixed(1); document.getElementById('s-bpm').style.display='';
+  document.getElementById('add-btn').disabled=false;
   refreshAll(false);
 }
 
-/* ── Renderers ── */
+/* ─────────────────────────────────────────────
+   RENDERERS
+───────────────────────────────────────────── */
 function renderFiles() {
-  const fl=document.getElementById('fileList');
-  if (!FILES.length) { fl.innerHTML='<div style="font-size:10px;color:var(--text3);padding:8px 14px">Drop .svp files here</div>'; renderParts(); return; }
+  const fl=document.getElementById('file-list');
+  if (!FILES.length){fl.innerHTML='<div style="padding:8px 10px;font-size:9.5px;color:var(--dim)">Drop .svp files here</div>';renderParts();return;}
   fl.innerHTML='';
   FILES.forEach((f,fi)=>{
     const c=COLORS[fi%COLORS.length];
     const tn=f.parts.reduce((a,p)=>a+p.notes.length,0);
-    const r=document.createElement('div');
-    r.className='file-row'+(activeFile?.id===f.id?' active':'');
-    r.innerHTML=`<div class="dot-f" style="background:${c}"></div><div class="row-info"><div class="name">${esc(f.name)}</div><div class="meta">${f.parts.length} part${f.parts.length!==1?'s':''} · ${tn} notes</div></div><button style="opacity:.5;background:none;border:none;color:var(--coral);cursor:pointer;font-size:13px;padding:2px 5px" class="rdel">✕</button>`;
-    r.querySelector('.rdel').onclick=e=>{e.stopPropagation();removeFile(fi);};
+    const r=document.createElement('div'); r.className='frow'+(activeFile?.id===f.id?' on':'');
+    r.innerHTML=`<div class="dot" style="background:${c}"></div><div class="ri"><div class="n">${esc(f.name)}</div><div class="m">${f.parts.length} parts · ${tn} notes</div></div><button class="fdel" title="Remove">✕</button>`;
+    r.querySelector('.fdel').onclick=e=>{e.stopPropagation();rmFile(fi);};
     r.onclick=()=>{activeFile=f;renderParts();};
     fl.appendChild(r);
   });
   renderParts();
 }
-function removeFile(i) {
-  if (activeFile===FILES[i]) { activeFile=null; activePart=null; }
-  FILES.splice(i,1); selSet.clear(); refreshAll(); toast('File removed');
-}
+function rmFile(i){if(activeFile===FILES[i]){activeFile=null;activePart=null;}FILES.splice(i,1);selSet.clear();refreshAll();toast('File removed');}
+
 function renderParts() {
-  const pl=document.getElementById('partList');
-  if (!activeFile) { pl.innerHTML='<div style="font-size:10px;color:var(--text3);padding:8px 14px">Select a file</div>'; return; }
+  const pl=document.getElementById('part-list');
+  if (!activeFile){pl.innerHTML='<div style="padding:8px 10px;font-size:9.5px;color:var(--dim)">Select a file</div>';return;}
   pl.innerHTML='';
   const c=COLORS[FILES.indexOf(activeFile)%COLORS.length];
   activeFile.parts.forEach(p=>{
-    const lk=langKey(p), lm=LANG_META[lk]||LANG_META.japanese;
-    const r=document.createElement('div');
-    r.className='part-row'+(activePart===p?' active':'');
-    r.innerHTML=`<div class="dot-p" style="background:${c}"></div><div class="row-info"><div class="name">${esc(p.name)}</div><div class="meta">${p.notes.length} notes</div><span class="lang-badge ${lm.cls}">${lm.label} · ${esc(p.vname)}</span></div>`;
+    const lk=langKey(p), lm=LANG[lk]||LANG.japanese;
+    const r=document.createElement('div'); r.className='prow'+(activePart===p?' on':'');
+    r.innerHTML=`<div class="pdot" style="background:${c}"></div><div class="ri"><div class="n">${esc(p.name)}</div><div class="m">${p.notes.length} notes</div><span class="lbadge ${lm.cls}">${lm.label} · ${esc(p.vname)}</span></div>`;
     r.onclick=()=>selPart(p);
     pl.appendChild(r);
   });
-  const bp=bpm(activeFile.svpData);
+  const bp=bpmOf(activeFile.svpData);
   const mt=(activeFile.svpData.time?.meter||[{numerator:4,denominator:4}])[0];
-  document.getElementById('sidebar-foot').innerHTML=`<b>${bp.toFixed(1)}</b> BPM · ${mt.numerator}/${mt.denominator} · ${FILES.length} file${FILES.length!==1?'s':''}`;
+  document.getElementById('side-foot').innerHTML=`${bp.toFixed(1)} BPM · ${mt.numerator}/${mt.denominator} · ${FILES.length} file${FILES.length!==1?'s':''}`;
 }
-function renderNoteGrid() {
-  const w=document.getElementById('noteGridWrap');
-  if (!activePart) { w.innerHTML='<div style="font-size:10px;color:var(--text3);padding:8px 2px">Select a part</div>'; return; }
+
+function renderNoteTable() {
+  const w=document.getElementById('ntable-wrap');
+  if (!activePart){w.innerHTML='<div style="padding:8px 10px;font-size:9.5px;color:var(--dim)">Select a part</div>';return;}
   const ns=notesRaw(activePart);
-  if (!ns.length) { w.innerHTML='<div style="padding:8px 2px;font-size:10px;color:var(--text3)">No notes.</div>'; return; }
-  const bp=bpm(activeFile.svpData), beatB=BLICKS;
-  let h=`<table class="ng"><thead><tr><th>#</th><th>Pos</th><th>s</th><th>Lyric</th><th>Mode</th><th></th></tr></thead><tbody>`;
+  if (!ns.length){w.innerHTML='<div style="padding:8px 10px;font-size:9.5px;color:var(--dim)">No notes.</div>';return;}
+  const bp=bpmOf(activeFile.svpData);
+  let h=`<table class="nt"><thead><tr><th>#</th><th>Bar</th><th>Lyric</th><th>Type</th><th></th></tr></thead><tbody>`;
   ns.forEach((n,i)=>{
-    const be=n.onB/beatB, bar=Math.floor(be/4)+1, bt=((be%4)+1).toFixed(1);
-    const modeColor = n.mode==='rap' ? 'color:var(--coral)' : 'color:var(--accent)';
-    h+=`<tr onclick="App.sel(${i},event.shiftKey)">
-      <td style="color:var(--text3)">${i+1}</td>
-      <td>${bar}.${bt}</td>
-      <td><input class="ng-in" style="width:50px" value="${b2s(n.onB,bp).toFixed(2)}" onchange="App.editN(${i},'on',this.value)" onclick="event.stopPropagation()"></td>
-      <td><input class="ng-in" style="width:38px" value="${esc(n.lyric)}" onchange="App.editN(${i},'lyric',this.value)" onclick="event.stopPropagation()"></td>
-      <td style="font-size:9px;${modeColor}">${n.mode==='rap'?'RAP':'SNG'}</td>
-      <td><button style="background:none;border:none;color:var(--coral);cursor:pointer;font-size:11px" onclick="event.stopPropagation();App.delN(${i})">✕</button></td>
+    const be=Number(n.onB)/BLICKS_N, bar=Math.floor(be/4)+1, bt=((be%4)+1).toFixed(1);
+    const mc=n.mode==='rap'?'mode-rap':'mode-sng';
+    const sel=selSet.has(i)?'background:var(--ink4);':'';
+    h+=`<tr onclick="App.sel(${i},event.shiftKey)" style="${sel}cursor:pointer">
+      <td style="color:var(--dim)">${i+1}</td>
+      <td style="color:var(--muted)">${bar}.${bt}</td>
+      <td><input class="ni" value="${esc(n.lyric)}" onchange="App.editN(${i},'lyric',this.value)" onclick="event.stopPropagation()"></td>
+      <td><span class="${mc}">${n.mode==='rap'?'RAP':'SNG'}</span></td>
+      <td><button class="ndel" onclick="event.stopPropagation();App.delN(${i})">✕</button></td>
     </tr>`;
   });
   h+='</tbody></table>';
   w.innerHTML=h;
 }
 
-/* ── Prompt generation ── */
+/* ─────────────────────────────────────────────
+   PROMPT GENERATION
+───────────────────────────────────────────── */
 function genPrompt() {
   if (!activePart||!activeFile) return '(select a part first)';
   const ns=notesRaw(activePart);
-  const bp=bpm(activeFile.svpData);
-  const bN=Math.round(NS*60/bp), baN=bN*4;
-  const bars=parseInt(document.getElementById('extBars').value)||8;
-  const stylePr=document.getElementById('stylePreset').value;
-  const densityPr=document.getElementById('densitySel').value;
-  const pitchRangePr=document.getElementById('pitchRange').value;
-  const isRap = pitchMode==='rap';
-  const isReplace=op==='replace', isExtend=op==='extend', isLyrics=op==='lyrics';
-  const lkSel=document.getElementById('langSel').value;
-  const lk = lkSel==='auto' ? langKey(activePart) : lkSel;
-  const lm = LANG_META[lk]||LANG_META.japanese;
+  const bp=bpmOf(activeFile.svpData);
+  const beatNs=BigInt(Math.round(NS_N*60/bp));
+  const barNs=beatNs*4n;
+  const bars=parseInt(document.getElementById('bars-sl').value)||8;
+  const style=document.getElementById('style-sel').value;
+  const density=document.getElementById('density-sel').value;
+  const pitchRng=document.getElementById('range-sel').value;
+  const isRap=pitchMode==='rap';
+  const lkSel=document.getElementById('lang-sel').value;
+  const lk=lkSel==='auto'?langKey(activePart):lkSel;
+  const lm=LANG[lk]||LANG.japanese;
 
-  const last=ns.length?Math.max(...ns.map(n=>n.onB+n.durB)):0;
-  const startNs = isReplace?0 : b2ns(last,bp);
+  const lastNs = ns.length ? b2ns(ns[ns.length-1].onB+ns[ns.length-1].durB,bp) : 0n;
+  const startNs = op==='replace' ? 0n : lastNs;
 
   const pts=ns.map(n=>n.pitch), mnP=pts.length?Math.min(...pts):52, mxP=pts.length?Math.max(...pts):76;
-  let targetRange = '';
-  if (pitchRangePr==='auto') targetRange=`Match existing: MIDI ${mnP}–${mxP}`;
-  else if (pitchRangePr==='low')  targetRange='Low register: MIDI 48–64 (C3–E4)';
-  else if (pitchRangePr==='mid')  targetRange='Mid register: MIDI 57–72 (A3–C5)';
-  else if (pitchRangePr==='high') targetRange='High register: MIDI 65–79 (F4–G5)';
-  else if (pitchRangePr==='wide') targetRange='Wide range: MIDI 48–79 (C3–G5)';
+  const rangeStr={
+    auto:`MIDI ${mnP}–${mxP} (match existing)`,
+    low:'MIDI 48–64 (low/bass)',
+    mid:'MIDI 57–72 (mid)',
+    high:'MIDI 65–79 (high/bright)',
+    wide:'MIDI 48–79 (full range)'
+  }[pitchRng]||`MIDI ${mnP}–${mxP}`;
 
-  const densityMap={sparse:'Long notes (half/whole).',medium:'Quarter/eighth notes.',dense:'Eighth/sixteenth notes, one syllable per beat.',staccato:'Rapid short syllables, sixteenth notes preferred.'};
-  const densityHint=densityMap[densityPr]||densityMap.medium;
+  const densityStr={
+    sparse:'Long notes (half/whole). Few notes per bar.',
+    medium:'Quarter and eighth notes. Natural pacing.',
+    dense:'Eighth notes. One syllable per beat.',
+    staccato:'Sixteenth notes. Rapid fire syllables.'
+  }[density]||'Quarter/eighth notes.';
 
-  let styleDesc=stylePr;
-  if (stylePr.startsWith('rap-')) styleDesc=`Rap style: ${stylePr.slice(4)}. Use short punchy syllables.`;
-  else if (stylePr.startsWith('talk-')) styleDesc=`Talking/speech style: ${stylePr.slice(5)}. Narrow pitch range, rhythm over melody.`;
-
-  let p = `You are a SynthesizerV composer. Output ONLY a raw JSON array — no markdown, no explanation.
+  let p=`You are a SynthesizerV composer. Output ONLY a raw JSON array — no markdown, no explanation.
 
 ══ PROJECT ══
 Voice: ${activePart.vname}
-Language: ${lk} — ${lm.hint}
+Language: ${lk}  (${lm.hint})
 BPM: ${bp.toFixed(1)}
-Mode per note: ${isRap?'RAP (musicalType="rap")':'SINGING (musicalType="singing")'}
-Operation: ${isExtend?'EXTEND (add notes after existing)':isReplace?'REPLACE (new melody)':'REWRITE LYRICS (keep pitches/timing)'}
-Style: ${styleDesc}
-Bars: ${bars}
-Density: ${densityHint}
-Pitch range: ${targetRange}
-Start onset: ${startNs} ns (= ${(startNs/NS).toFixed(3)}s)
+Operation: ${op.toUpperCase()}  (${op==='extend'?'add after existing':op==='replace'?'replace all':'rewrite lyrics only'})
+Note type: ${isRap?'RAP':'SINGING'}
+Style: ${style}
+Bars to generate: ${bars}
+Density: ${densityStr}
+Pitch range: ${rangeStr}
+Start onset: ${startNs} ns
 
-══ TIMING (nanoseconds) ══
-1 beat = ${bN} ns   1 bar = ${baN} ns
-${densityHint}
-CONSECUTIVE: onset_ns[i+1] = onset_ns[i] + dur_ns[i] — NO gaps, NO overlap.
-
-══ LYRIC RULES ══
-Language: ${lk}
-${lm.hint}
-Example lyric: "${lm.exLyric}"
-DO NOT include phoneme field.
+══ TIMING ══
+1 beat = ${beatNs} ns
+1 bar  = ${barNs} ns
+CONSECUTIVE: onset_ns[i+1] = onset_ns[i] + dur_ns[i]  — no gaps, no overlaps.
 
 `;
 
-  if (isRap) {
-    p += `══ RAP NOTE FIELDS ══
+  if (isRap) p+=`══ RAP FIELDS (required) ══
 "musicalType": "rap"
-"rapTone": float (-5.0 to 1.0) — overall pitch height offset in semitones
-"rapIntonation": float (-0.5 to 0.5) — rising/falling curve within the note
-Keep pitch mostly flat (same MIDI pitch across notes, or vary by 1–2 semitones).
-Fast rhythm is more important than pitch variation in rap.
+"rapTone": float -5.0 to 1.0   (pitch height offset)
+"rapIntonation": float -0.5 to 0.5  (pitch curve within note)
+Pitch changes slowly — vary MIDI pitch by 1-2 semitones max, rely on rapTone for expression.
 
 `;
-  }
 
-  if (!isReplace && ns.length) {
-    p += `══ EXISTING CONTEXT (last ${Math.min(8,ns.length)} notes) ══\n`;
-    ns.slice(-8).forEach(n=>p+=`  onset_ns=${b2ns(n.onB,bp)} dur_ns=${b2ns(n.durB,bp)} pitch=${n.pitch} lyric="${n.lyric}" mode=${n.mode}\n`);
-    p += '\n';
-  }
-
-  if (isLyrics && ns.length) {
-    const newText = document.getElementById('newLyricsText').value.trim();
-    p += `══ LYRICS REWRITE MODE ══
-Keep ALL existing note timings and pitches exactly.
-Only change the "lyric" field of each note.
-New lyrics to distribute across ${ns.length} notes:\n"${newText}"\nSplit into ${ns.length} syllable units, one per note.\n\n`;
-    p += `Existing notes to rewrite:\n`;
+  if (op==='lyrics' && ns.length) {
+    const newText=document.getElementById('new-lyrics').value.trim();
+    p+=`══ LYRICS REWRITE ══
+Keep ALL existing onset_ns, dur_ns, pitch exactly. Only change "lyric".
+Distribute these lyrics across ${ns.length} notes: "${newText}"
+Existing notes:\n`;
     ns.forEach((n,i)=>p+=`  [${i+1}] onset_ns=${b2ns(n.onB,bp)} dur_ns=${b2ns(n.durB,bp)} pitch=${n.pitch}\n`);
-    p += '\n';
+    p+='\n';
+  } else if (op!=='replace' && ns.length) {
+    p+=`══ EXISTING CONTEXT (last ${Math.min(6,ns.length)} notes) ══\n`;
+    ns.slice(-6).forEach(n=>p+=`  onset_ns=${b2ns(n.onB,bp)} dur_ns=${b2ns(n.durB,bp)} pitch=${n.pitch} lyric="${n.lyric}" mode=${n.mode}\n`);
+    p+='\n';
   }
 
-  p += `══ BAR REFERENCE ══\n`;
-  for (let b=0;b<bars&&b<8;b++) p+=`  Bar ${b+1}: onset_ns=${startNs+b*baN}\n`;
+  p+=`══ BAR GRID ══\n`;
+  for (let i=0;i<bars&&i<8;i++) p+=`  Bar ${i+1}: onset_ns=${startNs+BigInt(i)*barNs}\n`;
 
-  p += `\n══ OUTPUT FORMAT ══
-Each object: {
+  p+=`\n══ OUTPUT FORMAT ══
+{
   "onset_ns": <integer>,
-  "dur_ns": <integer, min ${Math.round(bN/8)}>,
-  "pitch": <MIDI 0-127>,
-  "lyric": "<${lk} syllable>",
-  "musicalType": "${isRap?'rap':'singing'}"${isRap?`,\n  "rapTone": <-5.0 to 1.0>,\n  "rapIntonation": <-0.5 to 0.5>`:''}
+  "dur_ns":   <integer, min ${beatNs/8n}>,
+  "pitch":    <MIDI 0-127>,
+  "lyric":    "<${lk} syllable>",
+  "musicalType": "${isRap?'rap':'singing'}"${isRap?`,
+  "rapTone": <-5.0 to 1.0>,
+  "rapIntonation": <-0.5 to 0.5>`:''}
 }
-First onset_ns = ${startNs}. Total notes should span ${bars} bars.
-NO phoneme field. Output ONLY the JSON array.`;
-
+First onset_ns = ${startNs}. Span ${bars} bars. NO phoneme field. Output ONLY the JSON array.`;
   return p;
 }
 
 function refresh(doPrompt=true) {
-  if (doPrompt) document.getElementById('promptBox').textContent=genPrompt();
-  // show/hide density for rap styles
-  const stylePr=document.getElementById('stylePreset').value;
-  const isRapStyle=stylePr.startsWith('rap-')||stylePr.startsWith('talk-')||pitchMode==='rap';
-  document.getElementById('densityField').style.display=isRapStyle?'':'none';
+  if (doPrompt) document.getElementById('prompt-box').textContent=genPrompt();
 }
 
 function onLangChange(doRefresh=true) {
-  const sel=document.getElementById('langSel').value;
-  const lk = sel==='auto' ? langKey(activePart) : sel;
-  const lm = LANG_META[lk]||LANG_META.japanese;
-  document.getElementById('langInfo').innerHTML=`<b>${lm.label}:</b> ${lm.hint}`;
+  const sel=document.getElementById('lang-sel').value;
+  const lk=sel==='auto'?langKey(activePart):sel;
+  const lm=LANG[lk]||LANG.japanese;
+  document.getElementById('lang-hint').textContent=lm.hint;
   if (doRefresh) refresh();
 }
 
 function setOp(o) {
   op=o;
-  const info={extend:'Adds new notes after the existing melody ends.',replace:'Removes all notes and replaces with AI-generated content.',lyrics:'Rewrites only the lyrics — pitch and timing stay the same.'};
-  document.getElementById('opInfo').textContent=info[o];
+  const descs={extend:'Adds new notes after the existing melody ends.',replace:'Clears all notes and generates fresh content.',lyrics:'Keeps pitches and timing — only rewrites the lyric text.'};
+  document.getElementById('op-desc').textContent=descs[o];
   ['extend','replace','lyrics'].forEach(x=>{
-    const btn=document.getElementById('op'+x.charAt(0).toUpperCase()+x.slice(1));
-    if (!btn) return;
-    btn.className='op-tab'+(x===o?' a-'+x:'');
+    const b=document.getElementById('op-'+x);
+    b.className='op'+(x===o?' sel-'+x:'');
   });
-  document.getElementById('melodyControls').style.display=o==='lyrics'?'none':'block';
-  document.getElementById('lyricsControls').style.display=o==='lyrics'?'block':'none';
+  document.getElementById('melody-ctrl').style.display=o==='lyrics'?'none':'block';
+  document.getElementById('lyrics-ctrl').style.display=o==='lyrics'?'block':'none';
   discard(); refresh();
 }
 
 function setPitch(m, doRefresh=true) {
   pitchMode=m;
-  document.getElementById('psSing').className='ps-btn'+(m==='singing'?' act-sing':'');
-  document.getElementById('psRap').className='ps-btn'+(m==='rap'?' act-rap':'');
+  document.getElementById('pm-sing').className='pm'+(m==='singing'?' sing':'');
+  document.getElementById('pm-rap').className='pm'+(m==='rap'?' rap':'');
   if (doRefresh) refresh();
 }
 
-/* ── Auto-fix & preview ── */
+/* ─────────────────────────────────────────────
+   AI RESPONSE HANDLING
+───────────────────────────────────────────── */
+function sanitize(raw) {
+  let s=raw.trim().replace(/^```(?:json)?\s*/i,'').replace(/\s*```\s*$/i,'').trim();
+  const a=s.indexOf('['), e=s.lastIndexOf(']');
+  if (a===-1||e===-1) throw new Error('No JSON array found');
+  return JSON.parse(s.substring(a,e+1).replace(/"(\w+)"\s*=\s*/g,'"$1":').replace(/,\s*([}\]])/g,'$1'));
+}
+
 function preview() {
-  const raw=document.getElementById('aiInput').value.trim();
-  const st=document.getElementById('parseStatus');
-  const inp=document.getElementById('aiInput');
+  const raw=document.getElementById('ai-input').value.trim();
+  const st=document.getElementById('parse-st');
+  const inp=document.getElementById('ai-input');
   inp.classList.remove('err'); st.style.color=''; st.textContent='';
-  if (!activePart) { st.textContent='⚠ Select a part first'; return; }
-  if (!raw) { st.textContent='⚠ Paste JSON response first'; return; }
+  if (!activePart){st.textContent='⚠ Select a part first';return;}
+  if (!raw){st.textContent='⚠ Paste JSON response first';return;}
   try {
-    let a=sanitize(raw);
+    const a=sanitize(raw);
     if (!Array.isArray(a)||!a.length) throw new Error('Empty array');
-    const bp=bpm(activeFile.svpData);
-    const minD=Math.round(BLICKS/8), defD=BLICKS;
+    const bp=bpmOf(activeFile.svpData);
+    const minDur=BLICKS/8n;
     pending=a.map(n=>{
-      const on=Math.max(0, parseFloat(n.onset_ns??n.onset??0));
-      const dur=Math.max(b2ns(minD,bp)/NS, parseFloat(n.dur_ns??n.duration??b2ns(defD,bp)/NS));
+      const onRaw=parseFloat(n.onset_ns??n.onset??0);
+      const durRaw=parseFloat(n.dur_ns??n.duration??Number(BLICKS));
+      const onB=ns2b(onRaw,bp);
+      const durB_ns=BigInt(Math.max(Number(ns2b(minDur,bp)),Math.round(durRaw*BLICKS_N/NS_N)));
+      // durB_ns here is actually in blicks already via the ratio
+      const durB=BigInt(Math.round(durRaw*(bp/60)*BLICKS_N/NS_N));
       return {
-        onB: ns2b(on,bp),
-        durB: Math.max(minD, ns2b(dur*NS,bp)),
-        pitch: parseInt(n.pitch??n.n)||60,
-        det: 0,
-        lyric: String(n.lyric??n.lyrics??n.y??'あ'),
-        mode: n.musicalType??n.mode??'singing',
-        rapTone: parseFloat(n.rapTone??0),
-        rapIntonation: parseFloat(n.rapIntonation??0)
+        onB, durB: (durB<minDur?minDur:durB),
+        pitch:parseInt(n.pitch??n.n)||60,
+        det:0, lyric:String(n.lyric??n.lyrics??n.y??'あ'),
+        mode:n.musicalType??n.mode??pitchMode,
+        rapTone:parseFloat(n.rapTone??0)||0,
+        rapInt:parseFloat(n.rapIntonation??0)||0
       };
     });
-    pending.sort((a,b)=>a.onB-b.onB);
+    pending.sort((a,b)=>a.onB<b.onB?-1:a.onB>b.onB?1:0);
     // Close gaps
     for (let i=1;i<pending.length;i++) pending[i].onB=pending[i-1].onB+pending[i-1].durB;
     renderPreview(pending);
-    st.textContent=`✔ ${pending.length} notes (gaps closed)`;
+    st.textContent=`✔ ${pending.length} notes ready`;
     st.style.color='var(--teal)';
   } catch(e) {
-    st.textContent='✖ '+e.message; st.style.color='var(--coral)';
-    inp.classList.add('err'); setTimeout(()=>inp.classList.remove('err'),800);
+    st.textContent='✖ '+e.message; st.style.color='var(--rose)';
+    inp.classList.add('err'); setTimeout(()=>inp.classList.remove('err'),700);
     discard();
   }
 }
 
 function autoFix() {
-  const raw=document.getElementById('aiInput').value.trim();
-  if (!raw) { document.getElementById('parseStatus').textContent='⚠ Nothing to fix'; return; }
+  const raw=document.getElementById('ai-input').value.trim();
+  if (!raw){document.getElementById('parse-st').textContent='⚠ Nothing to fix';return;}
   try {
-    let a=sanitize(raw);
-    const bp=activeFile?bpm(activeFile.svpData):DEF_BPM;
-    const bN=Math.round(NS*60/bp);
+    const a=sanitize(raw);
+    const bp=activeFile?bpmOf(activeFile.svpData):DEF_BPM;
+    const beatNs=Math.round(NS_N*60/bp);
     const f=a.map(n=>{
       const on=Math.max(0,Math.round(parseFloat(n.onset_ns??n.onset??0)));
-      const dur=Math.max(Math.round(bN/8),Math.round(parseFloat(n.dur_ns??n.duration??bN)));
+      const dur=Math.max(Math.round(beatNs/8),Math.round(parseFloat(n.dur_ns??n.duration??beatNs)));
       return {
         onset_ns:on, dur_ns:dur,
         pitch:parseInt(n.pitch??n.n)||60,
@@ -1051,215 +1065,213 @@ function autoFix() {
     });
     f.sort((a,b)=>a.onset_ns-b.onset_ns);
     for (let i=1;i<f.length;i++) f[i].onset_ns=f[i-1].onset_ns+f[i-1].dur_ns;
-    document.getElementById('aiInput').value=JSON.stringify(f,null,2);
+    document.getElementById('ai-input').value=JSON.stringify(f,null,2);
     toast('Auto-fixed '+f.length+' notes');
     preview();
-  } catch(e) { toast('Auto-fix failed: '+e.message,'err'); }
+  } catch(e){ toast('Auto-fix failed: '+e.message,'err'); }
 }
 
 function renderPreview(ns) {
-  const bp=bpm(activeFile?.svpData||{});
-  const beatB=BLICKS;
+  const bp=bpmOf(activeFile?.svpData||{});
   const ls=ns.map(n=>{
-    const be=n.onB/beatB, bar=Math.floor(be/4)+1, bt=((be%4)+1).toFixed(1);
-    const mTag=n.mode==='rap'?'[RAP]':'[SNG]';
-    return `${mTag} [${bar}.${bt}] ${mname(n.pitch).padEnd(4)} ${b2s(n.durB,bp).toFixed(3)}s "${n.lyric}"`;
+    const be=Number(n.onB)/BLICKS_N, bar=Math.floor(be/4)+1, bt=((be%4)+1).toFixed(1);
+    const mt=n.mode==='rap'?'[R]':'[S]';
+    return `${mt} [${bar}.${bt}] ${mname(n.pitch).padEnd(4)} ${b2s(n.durB,bp).toFixed(3)}s "${n.lyric}"`;
   });
-  document.getElementById('prevNotes').textContent=ls.join('\n');
-  document.getElementById('prevCount').innerHTML=`<span>🎵 ${ns.length} notes</span>`;
-  document.getElementById('prevSection').style.display='flex';
+  document.getElementById('prev-notes').textContent=ls.join('\n');
+  document.getElementById('prev-count').textContent=`${ns.length} notes`;
+  document.getElementById('prev-sec').style.display='flex';
 }
 
 function discard() {
   pending=[];
-  document.getElementById('prevSection').style.display='none';
-  document.getElementById('parseStatus').textContent='';
+  document.getElementById('prev-sec').style.display='none';
+  document.getElementById('parse-st').textContent='';
 }
 
 function doCommit() {
   if (!activePart||!pending.length) return toast('Nothing to apply','err');
   pushU();
   if (op==='extend') {
-    pending.forEach(n=>storeNote(activePart,n.onB,n.durB,n.pitch,n.det,n.lyric,n.mode,n.rapTone,n.rapIntonation));
+    pending.forEach(n=>storeNote(activePart,n.onB,n.durB,n.pitch,n.det,n.lyric,n.mode,n.rapTone,n.rapInt));
     toast(`Added ${pending.length} notes`);
   } else if (op==='replace') {
     activePart.notes.length=0;
-    pending.forEach(n=>storeNote(activePart,n.onB,n.durB,n.pitch,n.det,n.lyric,n.mode,n.rapTone,n.rapIntonation));
+    pending.forEach(n=>storeNote(activePart,n.onB,n.durB,n.pitch,n.det,n.lyric,n.mode,n.rapTone,n.rapInt));
     toast('Replaced all notes');
   } else if (op==='lyrics') {
-    // Rewrite lyrics only, keep timing/pitch
     const existing=notesRaw(activePart);
-    pending.forEach((pn,i)=>{
-      if (i<existing.length) existing[i].el.lyrics=pn.lyric;
-    });
+    pending.forEach((pn,i)=>{ if(i<existing.length) existing[i].el.lyrics=pn.lyric; });
     toast('Lyrics rewritten');
   }
-  pending=[];
-  document.getElementById('aiInput').value='';
-  discard(); refreshAll();
+  pending=[]; document.getElementById('ai-input').value=''; discard(); refreshAll();
 }
 
-/* ── Generate with Claude API ── */
+/* ─────────────────────────────────────────────
+   CLAUDE API GENERATION
+───────────────────────────────────────────── */
 async function generate() {
   if (genBusy) return;
   if (!activePart) return toast('Select a part first','err');
-  const pr=document.getElementById('promptBox').textContent;
+  const pr=document.getElementById('prompt-box').textContent;
   if (!pr||pr.startsWith('(select')) return toast('Prompt is empty','err');
   genBusy=true;
-  const btn=document.getElementById('generateBtn');
+  const btn=document.getElementById('gen-btn');
   btn.textContent='⏳ Generating…'; btn.disabled=true;
-  document.getElementById('sdot').className='sb-dot busy';
-  const log=document.getElementById('genLog');
-  log.textContent='Calling Claude API…';
+  document.getElementById('s-dot').className='sd busy';
+  document.getElementById('gen-log').textContent='Calling Claude…';
   try {
     const r=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
       headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01'},
       body:JSON.stringify({
-        model:'claude-sonnet-4-6',
-        max_tokens:4000,
+        model:'claude-sonnet-4-6', max_tokens:4000,
         system:`You are a SynthesizerV melody composer. Return ONLY a raw JSON array. No markdown. No explanation.
-Each object must have: onset_ns (integer nanoseconds), dur_ns (integer nanoseconds), pitch (MIDI 0-127), lyric (language-appropriate syllable), musicalType ("singing" or "rap").
-For rap notes also include: rapTone (-5 to 1), rapIntonation (-0.5 to 0.5).
-Consecutive notes: onset_ns[i+1] = onset_ns[i] + dur_ns[i]. No gaps. No phoneme field.`,
+Each object: onset_ns (integer ns), dur_ns (integer ns), pitch (MIDI 0-127), lyric (language-appropriate syllable), musicalType ("singing" or "rap").
+For rap also include rapTone (-5 to 1) and rapIntonation (-0.5 to 0.5).
+Consecutive: onset_ns[i+1] = onset_ns[i] + dur_ns[i]. No gaps. No phoneme field.`,
         messages:[{role:'user',content:pr}]
       })
     });
     if (!r.ok) throw new Error((await r.json().catch(()=>({}))).error?.message||'HTTP '+r.status);
     const d=await r.json();
     const text=d.content.filter(b=>b.type==='text').map(b=>b.text).join('');
-    document.getElementById('aiInput').value=text;
-    log.textContent='✔ Response received — running Auto-Fix…';
+    document.getElementById('ai-input').value=text;
+    document.getElementById('gen-log').textContent='✔ Received — running Auto-Fix…';
     toast('Generated!');
     autoFix();
-    log.textContent='';
+    document.getElementById('gen-log').textContent='';
   } catch(e) {
     toast('API error: '+e.message,'err');
-    log.textContent='✖ '+e.message;
+    document.getElementById('gen-log').textContent='✖ '+e.message;
   } finally {
-    genBusy=false;
-    btn.textContent='✨ Generate with Claude';
-    btn.disabled=false;
-    document.getElementById('sdot').className='sb-dot'+(activePart?' ok':'');
+    genBusy=false; btn.textContent='✨ Generate with Claude'; btn.disabled=false;
+    document.getElementById('s-dot').className='sd'+(activePart?' ok':'');
   }
 }
 
-/* ── Export ── */
+/* ─────────────────────────────────────────────
+   EXPORT (BigInt-safe, removes phonemes)
+───────────────────────────────────────────── */
 function doExport() {
   if (!activeFile) return toast('Select a file first','err');
-  const d=JSON.parse(JSON.stringify(activeFile.svpData));
-  delete d._ok; delete d._built;
+  // Deep clone via BigInt-safe stringify/parse
+  const clone=svpParse(svpStringify(activeFile.svpData));
+  delete clone._ok; delete clone._built;
   const clean=n=>{delete n.phonemes;};
-  if (d.tracks) d.tracks.forEach(t=>{
+  if (clone.tracks) clone.tracks.forEach(t=>{
     if (t.mainGroup?.notes) t.mainGroup.notes.forEach(clean);
+    (t.groups||[]).forEach(g=>{/* groups reference library notes */});
   });
-  if (d.library) d.library.forEach(l=>{if(l.notes)l.notes.forEach(clean);});
-  const j=JSON.stringify(d,null,2);
+  if (clone.library) clone.library.forEach(l=>{if(l.notes) l.notes.forEach(clean);});
+  const j=svpStringify(clone);
   const b=new Blob([j],{type:'application/json'});
   const a=document.createElement('a');
-  a.href=URL.createObjectURL(b);
-  a.download=activeFile.name.replace(/\.svp$/i,'')+'_export.svp';
-  a.click();
+  a.href=URL.createObjectURL(b); a.download=activeFile.name.replace(/\.svp$/i,'')+'_export.svp'; a.click();
   setTimeout(()=>URL.revokeObjectURL(a.href),3000);
-  toast('Exported — phonemes removed, SynthV handles pronunciation');
+  toast('Exported');
 }
 
-/* ── Note editing helpers ── */
-function sel(i, multi) {
-  if (multi) { selSet.has(i)?selSet.delete(i):selSet.add(i); }
-  else { selSet.clear(); selSet.add(i); }
-  renderNoteGrid();
+/* ─────────────────────────────────────────────
+   NOTE EDITING
+───────────────────────────────────────────── */
+function sel(i,multi){
+  if(multi){selSet.has(i)?selSet.delete(i):selSet.add(i);}
+  else{selSet.clear();selSet.add(i);}
+  renderNoteTable();
 }
-function editN(i, f, v) {
-  if (!activePart||i>=activePart.notes.length) return;
+function editN(i,field,val){
+  if(!activePart||i>=activePart.notes.length) return;
   pushU();
   const n=activePart.notes[i];
-  const bp=bpm(activeFile.svpData);
-  if (f==='on') n.onset=Math.max(0,s2b(parseFloat(v),bp)-(activePart.offB||0));
-  else if (f==='dur') n.duration=Math.max(1,s2b(parseFloat(v),bp));
-  else if (f==='lyric') n.lyrics=String(v);
+  const bp=bpmOf(activeFile.svpData);
+  if(field==='lyric') n.lyrics=String(val);
+  else if(field==='on'){const b=s2b(parseFloat(val),bp);n.onset=b-BigInt(Math.round(Number(activePart.offB)||0));}
+  else if(field==='dur'){n.duration=BigInt(Math.max(1,Math.round(parseFloat(val)*bp/60*BLICKS_N)));}
 }
-function delN(i) {
-  if (!activePart) return; pushU();
+function delN(i){
+  if(!activePart) return; pushU();
   activePart.notes.splice(i,1); refreshAll(); toast('Note deleted');
 }
-function delSel() {
-  if (!activePart||!selSet.size) return; pushU();
+function delSel(){
+  if(!activePart||!selSet.size) return; pushU();
   [...selSet].sort((a,b)=>b-a).forEach(i=>{if(i>=0&&i<activePart.notes.length)activePart.notes.splice(i,1);});
   selSet.clear(); refreshAll(); toast('Deleted');
 }
-function selAll() {
-  if (!activePart) return;
-  notesRaw(activePart).forEach((_,i)=>selSet.add(i));
-  renderNoteGrid();
-}
-function openAdd() {
-  if (!activePart) return;
+function selAll(){if(!activePart) return; notesRaw(activePart).forEach((_,i)=>selSet.add(i)); renderNoteTable();}
+
+function openAdd(){
+  if(!activePart) return;
   const ns=notesRaw(activePart);
-  const last=ns.length?ns[ns.length-1].onB+ns[ns.length-1].durB:0;
-  const bp=bpm(activeFile.svpData);
-  document.getElementById('anT').value=b2s(last,bp).toFixed(3);
-  document.getElementById('anY').value=LANG_META[langKey(activePart)]?.exLyric||'あ';
-  document.getElementById('anDur').value=b2s(BLICKS,bp).toFixed(3);
-  document.getElementById('anDet').value='0';
-  document.getElementById('anMode').value=pitchMode;
-  document.getElementById('addModal').style.display='flex';
+  const last=ns.length?ns[ns.length-1].onB+ns[ns.length-1].durB:0n;
+  const bp=bpmOf(activeFile.svpData);
+  document.getElementById('an-t').value=b2s(last,bp).toFixed(3);
+  document.getElementById('an-lyric').value=LANG[langKey(activePart)]?.ex||'あ';
+  document.getElementById('an-dur').value=b2s(BLICKS,bp).toFixed(3);
+  document.getElementById('an-det').value='0';
+  document.getElementById('an-mode').value=pitchMode;
+  document.getElementById('add-modal').style.display='flex';
 }
-function commitAdd() {
-  if (!activePart) return; pushU();
-  const bp=bpm(activeFile.svpData);
-  const onB=s2b(parseFloat(document.getElementById('anT').value),bp);
-  const durB=s2b(parseFloat(document.getElementById('anDur').value),bp);
-  const pit=parseInt(document.getElementById('anN').value)||60;
-  const det=parseInt(document.getElementById('anDet').value)||0;
-  const lyr=document.getElementById('anY').value||'あ';
-  const mode=document.getElementById('anMode').value||'singing';
+function closeAddModal(){document.getElementById('add-modal').style.display='none';}
+function commitAdd(){
+  if(!activePart) return; pushU();
+  const bp=bpmOf(activeFile.svpData);
+  const onB=s2b(parseFloat(document.getElementById('an-t').value)||0,bp);
+  const durB=s2b(parseFloat(document.getElementById('an-dur').value)||.461,bp);
+  const pit=parseInt(document.getElementById('an-pitch').value)||60;
+  const det=parseInt(document.getElementById('an-det').value)||0;
+  const lyr=document.getElementById('an-lyric').value||'あ';
+  const mode=document.getElementById('an-mode').value||'singing';
   storeNote(activePart,onB,durB,pit,det,lyr,mode,0,0);
-  document.getElementById('addModal').style.display='none';
-  refreshAll(); toast('Note added');
-}
-function copyPrompt() {
-  navigator.clipboard.writeText(document.getElementById('promptBox').textContent)
-    .then(()=>toast('Prompt copied'))
-    .catch(()=>toast('Copy failed','err'));
+  closeAddModal(); refreshAll(); toast('Note added');
 }
 
-/* ── Master refresh ── */
-function updFC() {
-  const n=FILES.length;
-  document.getElementById('btnExport').disabled=!n;
+function copyPrompt(){
+  navigator.clipboard.writeText(document.getElementById('prompt-box').textContent)
+    .then(()=>toast('Prompt copied')).catch(()=>toast('Copy failed','err'));
 }
-function refreshAll(doPrompt=true) {
-  renderFiles(); renderParts(); renderNoteGrid();
-  if (doPrompt) refresh();
+
+/* ─────────────────────────────────────────────
+   MASTER REFRESH
+───────────────────────────────────────────── */
+function updFC(){
+  document.getElementById('exp-btn').disabled=!FILES.length;
+}
+function refreshAll(doPrompt=true){
+  renderFiles(); renderParts(); renderNoteTable();
+  if(doPrompt) refresh();
   updUB(); updFC();
 }
 
-/* ── Drag & drop ── */
+/* ─────────────────────────────────────────────
+   DRAG & DROP / FILE INPUT
+───────────────────────────────────────────── */
 document.addEventListener('dragover',e=>e.preventDefault());
 document.addEventListener('drop',e=>{
   e.preventDefault();
   [...e.dataTransfer.files].filter(f=>/\.(svp|json)$/i.test(f.name)).forEach(loadFile);
 });
-document.getElementById('fileIn').addEventListener('change',e=>{
-  [...e.target.files].forEach(loadFile); e.target.value='';
-});
+document.getElementById('file-in').addEventListener('change',e=>{[...e.target.files].forEach(loadFile);e.target.value='';});
 
-/* ── Keyboard ── */
+/* ─────────────────────────────────────────────
+   KEYBOARD
+───────────────────────────────────────────── */
 document.addEventListener('keydown',e=>{
-  if (e.target.matches('input,textarea,select,[contenteditable]')) return;
-  if (e.key==='Delete'||e.key==='Backspace') { e.preventDefault(); delSel(); }
-  if ((e.ctrlKey||e.metaKey)&&e.key==='z') { e.preventDefault(); undo(); }
-  if ((e.ctrlKey||e.metaKey)&&(e.key==='y'||(e.shiftKey&&e.key==='Z'))) { e.preventDefault(); redo(); }
-  if ((e.ctrlKey||e.metaKey)&&e.key==='a') { e.preventDefault(); selAll(); }
-  if (e.key==='Escape') { document.getElementById('addModal').style.display='none'; selSet.clear(); renderNoteGrid(); }
+  if(e.target.matches('input,textarea,select,[contenteditable]')) return;
+  if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();delSel();}
+  if((e.ctrlKey||e.metaKey)&&e.key==='z'){e.preventDefault();undo();}
+  if((e.ctrlKey||e.metaKey)&&(e.key==='y'||(e.shiftKey&&e.key==='Z'))){e.preventDefault();redo();}
+  if((e.ctrlKey||e.metaKey)&&e.key==='a'){e.preventDefault();selAll();}
+  if(e.key==='Escape'){closeAddModal();selSet.clear();renderNoteTable();}
 });
 
-/* ── Init ── */
-const App = {
-  undo, redo, setOp, setPitch, onLangChange, refresh,
-  generate, autoFix, preview, doCommit, discard, copyPrompt,
-  sel, editN, delN, delSel, selAll, openAdd, commitAdd, doExport,
+/* ─────────────────────────────────────────────
+   INIT
+───────────────────────────────────────────── */
+const App={
+  undo,redo,setOp,setPitch,onLangChange,refresh,
+  generate,autoFix,preview,doCommit,discard,copyPrompt,
+  sel,editN,delN,delSel,selAll,openAdd,commitAdd,doExport,
 };
 setOp('extend');
 onLangChange(false);
