@@ -1245,50 +1245,207 @@ function buildAccompPrompt(){
     : energy <= 6 ? 'medium — half note chords, bass on beats 1 & 3'
     : 'dense — quarter note chords, active bass on every beat';
 
-  const tracks = [];
-  if(wantMelody) tracks.push({n:'Melody Ref',  ch:0, prog:0,  desc:'Copy the vocal melody pitches and tick positions exactly from the melody context above.'});
-  if(wantChords) tracks.push({n:'Chords',      ch:1, prog:48, desc:`Chord pads. Stack 3–4 notes per chord (full voicing, root + 3rd + 5th + optional 7th). Progression: ${gg.chord}. Half or whole notes (960 or 1920 ticks). ${densityGuide}.`});
-  if(wantBass)   tracks.push({n:'Bass',        ch:2, prog:33, desc:`Bass line. Root notes on beat 1 (tick 0 of each bar), passing tones on beat 3 (tick 960). Single notes only. Velocity ${velBase}–${Math.min(127,velBase+25)}.`});
-  if(wantArp)    tracks.push({n:'Arp',         ch:3, prog:81, desc:`Arpeggio or counter-melody. Quarter or eighth notes (480 or 240 ticks). Follow chord tones from the chord track.`});
+  // Per-genre concrete instrument assignments with GM program numbers
+  const genreInstruments = {
+    jpop: {
+      melody: {prog:0,  name:'Acoustic Piano',   ch:0},
+      chords: {prog:48, name:'String Ensemble',   ch:1},
+      bass:   {prog:32, name:'Acoustic Bass',     ch:2},
+      arp:    {prog:11, name:'Vibraphone',         ch:3},
+    },
+    rnb: {
+      melody: {prog:4,  name:'Electric Piano',    ch:0},
+      chords: {prog:48, name:'String Ensemble',   ch:1},
+      bass:   {prog:36, name:'Slap Bass',         ch:2},
+      arp:    {prog:65, name:'Alto Sax',           ch:3},
+    },
+    trap: {
+      melody: {prog:0,  name:'Acoustic Piano',    ch:0},
+      chords: {prog:89, name:'Warm Pad',          ch:1},
+      bass:   {prog:38, name:'Synth Bass 1',      ch:2},
+      arp:    {prog:81, name:'Synth Lead',        ch:3},
+    },
+    ballad: {
+      melody: {prog:0,  name:'Acoustic Piano',    ch:0},
+      chords: {prog:48, name:'String Ensemble',   ch:1},
+      bass:   {prog:32, name:'Acoustic Bass',     ch:2},
+      arp:    {prog:73, name:'Flute',             ch:3},
+    },
+    rock: {
+      melody: {prog:26, name:'Jazz Guitar',       ch:0},
+      chords: {prog:29, name:'Overdriven Guitar', ch:1},
+      bass:   {prog:33, name:'Electric Bass',     ch:2},
+      arp:    {prog:26, name:'Jazz Guitar',       ch:3},
+    },
+    edm: {
+      melody: {prog:81, name:'Synth Lead',        ch:0},
+      chords: {prog:88, name:'New Age Pad',       ch:1},
+      bass:   {prog:38, name:'Synth Bass 1',      ch:2},
+      arp:    {prog:81, name:'Synth Lead 2',      ch:3},
+    },
+    lofi: {
+      melody: {prog:4,  name:'Electric Piano',    ch:0},
+      chords: {prog:4,  name:'Electric Piano 2',  ch:1},
+      bass:   {prog:32, name:'Acoustic Bass',     ch:2},
+      arp:    {prog:11, name:'Vibraphone',        ch:3},
+    },
+    anime: {
+      melody: {prog:0,  name:'Acoustic Piano',    ch:0},
+      chords: {prog:48, name:'String Ensemble',   ch:1},
+      bass:   {prog:32, name:'Acoustic Bass',     ch:2},
+      arp:    {prog:73, name:'Flute',             ch:3},
+    },
+  };
+  const gi = genreInstruments[genre] || genreInstruments.jpop;
 
-  return `You are a professional MIDI composer writing accompaniment for a SynthesizerV vocal.
-Output ONLY a raw JSON object — no markdown, no explanation.
+  // Concrete chord voicings for the detected key / suggestion
+  const chordRoot = (gg.chord.split('–')[0]||'C').trim();
+  const noteMap = {'C':60,'C#':61,'D':62,'D#':63,'Eb':63,'E':64,'F':65,'F#':66,'Gb':66,'G':67,'G#':68,'Ab':68,'A':69,'A#':70,'Bb':70,'B':71};
+  const root = noteMap[chordRoot] || 60;
+  const bassOct = root - 24; // two octaves down for bass
+
+  // Build per-track sections with concrete note examples
+  const trackSections = [];
+
+  if (wantMelody) {
+    trackSections.push(`━━ TRACK 1: MELODY REFERENCE ━━
+Name: "Melody Ref"
+Channel: ${gi.melody.ch}
+Program: ${gi.melody.prog}  (${gi.melody.name})
+Instructions:
+  Copy the vocal melody from the VOCAL MELODY table above, note for note.
+  Same tick positions, same pitches, same durations.
+  This is a reference — it helps FL Studio users see the melody.
+  Velocity: 65 for all notes (quieter than the other tracks).
+Example (first 2 notes from melody table, copy ALL of them):
+  { "tick": 0,   "dur": 240, "pitch": ${root}, "velocity": 65 }
+  { "tick": 240, "dur": 240, "pitch": ${root+2}, "velocity": 65 }`);
+  }
+
+  if (wantChords) {
+    const chordDur = energy <= 4 ? 1920 : energy <= 7 ? 960 : 480;
+    const chordDurName = energy <= 4 ? 'whole notes (1920)' : energy <= 7 ? 'half notes (960)' : 'quarter notes (480)';
+    trackSections.push(`━━ TRACK ${trackSections.length+1}: CHORD PADS ━━
+Name: "Chords"
+Channel: ${gi.chords.ch}
+Program: ${gi.chords.prog}  (${gi.chords.name})
+Instructions:
+  Play FULL chord voicings — always 3 or 4 notes at the SAME tick value.
+  Chord progression: ${gg.chord}  (repeat this progression every ${Math.min(4,totalBars)} bars)
+  Note duration: ${chordDurName}
+  DO NOT play single notes. EVERY chord entry = multiple notes with identical "tick".
+  Use close voicing in the range MIDI 55–79 (G3 to G5).
+  Vary velocity bar by bar: 70, 75, 65, 80, 70 …
+Example — C major chord at tick 0 (4 notes, same tick):
+  { "tick": 0,    "dur": ${chordDur}, "pitch": 60, "velocity": 72 }
+  { "tick": 0,    "dur": ${chordDur}, "pitch": 64, "velocity": 70 }
+  { "tick": 0,    "dur": ${chordDur}, "pitch": 67, "velocity": 68 }
+  { "tick": 0,    "dur": ${chordDur}, "pitch": 72, "velocity": 65 }
+Example — G major chord at tick ${chordDur}:
+  { "tick": ${chordDur}, "dur": ${chordDur}, "pitch": 62, "velocity": 75 }
+  { "tick": ${chordDur}, "dur": ${chordDur}, "pitch": 67, "velocity": 72 }
+  { "tick": ${chordDur}, "dur": ${chordDur}, "pitch": 71, "velocity": 70 }
+  { "tick": ${chordDur}, "dur": ${chordDur}, "pitch": 74, "velocity": 68 }
+Generate chords for ALL ${totalBars} bars. Follow the ${gg.chord} progression repeating.`);
+  }
+
+  if (wantBass) {
+    const bassRhythm = energy <= 3
+      ? `Root on beat 1 only (tick 0 of each bar), dur=1920 (whole note).`
+      : energy <= 6
+      ? `Root on beat 1 (tick 0) dur=480, passing tone on beat 3 (tick 960) dur=480. Occasional beat 4 fill (tick 1440) dur=240.`
+      : `Root tick 0 dur=240, repeat tick 480 dur=240, passing tone tick 960 dur=240, fill tick 1440 dur=120 + tick 1560 dur=120. Active driving bass.`;
+    trackSections.push(`━━ TRACK ${trackSections.length+1}: BASS LINE ━━
+Name: "Bass"
+Channel: ${gi.bass.ch}
+Program: ${gi.bass.prog}  (${gi.bass.name})
+Instructions:
+  Single notes ONLY — never stack notes (this is not chords, it is bass).
+  Play in the range MIDI 36–52 (C2–E3). Low register only.
+  Rhythm pattern: ${bassRhythm}
+  Follow the chord root of each bar: ${gg.chord} (repeating).
+  Velocity: 90–105 (bass should punch through).
+  MUST be a completely different pattern from the chord track.
+Example — bar 1 (key of ${chordRoot}, root = MIDI ${bassOct}):
+  { "tick": 0,    "dur": 480, "pitch": ${bassOct},   "velocity": 100 }
+  { "tick": 960,  "dur": 480, "pitch": ${bassOct+7}, "velocity": 90  }
+  { "tick": 1440, "dur": 240, "pitch": ${bassOct+5}, "velocity": 85  }
+  { "tick": 1680, "dur": 240, "pitch": ${bassOct+3}, "velocity": 80  }
+Generate bass for ALL ${totalBars} bars. Vary the rhythm slightly each bar.`);
+  }
+
+  if (wantArp) {
+    const arpDur = energy <= 5 ? 480 : 240;
+    const arpDurName = energy <= 5 ? 'quarter notes (480)' : 'eighth notes (240)';
+    trackSections.push(`━━ TRACK ${trackSections.length+1}: ARPEGGIO / COUNTER-MELODY ━━
+Name: "Arp"
+Channel: ${gi.arp.ch}
+Program: ${gi.arp.prog}  (${gi.arp.name})
+Instructions:
+  Arpeggiate the chord tones OR play a counter-melody line.
+  Single notes only. Duration: ${arpDurName}.
+  Range: MIDI 60–84 (C4–C6). Higher than bass, different from chord pads.
+  Pattern: cycle through root, 3rd, 5th, octave of each chord.
+  This MUST sound different from the melody, chords, and bass. It fills the gaps.
+  Velocity: 60–75 (subtle, background texture).
+Example — C major arpeggio pattern (bar 1):
+  { "tick": 0,    "dur": ${arpDur}, "pitch": 72, "velocity": 65 }
+  { "tick": ${arpDur},   "dur": ${arpDur}, "pitch": 76, "velocity": 62 }
+  { "tick": ${arpDur*2}, "dur": ${arpDur}, "pitch": 79, "velocity": 65 }
+  { "tick": ${arpDur*3}, "dur": ${arpDur}, "pitch": 84, "velocity": 60 }
+  { "tick": ${arpDur*4}, "dur": ${arpDur}, "pitch": 79, "velocity": 63 }
+  { "tick": ${arpDur*5}, "dur": ${arpDur}, "pitch": 76, "velocity": 61 }
+Generate arpeggios for ALL ${totalBars} bars. Follow the ${gg.chord} chord tones.`);
+  }
+
+  const totalTracks = trackSections.length;
+
+  return `You are a professional MIDI arranger. Your job is to write a complete ${totalTracks}-track MIDI accompaniment.
+Output ONLY a valid JSON object. No markdown. No explanation. No code fences.
 ${melodyContext}
-══ SETTINGS ══
-Genre:    ${genre} — ${gg.prog}
+══ PROJECT ══
+Genre:    ${genre}
 Key:      ${keyStr}
 BPM:      ${bp.toFixed(1)}
-Energy:   ${energy}/10 (${densityGuide})
-Duration: ${totalBars} bars = ${totalTicks} ticks total
-Chord suggestion: ${gg.chord}
-Instruments: ${gg.instr}
-${extraNotes ? `\nExtra: ${extraNotes}` : ''}
-══ TICK REFERENCE (TPB = 480) ══
-1 bar    = 1920 ticks
-1 beat   = 480 ticks
-½ beat   = 240 ticks (eighth note)
-¼ beat   = 120 ticks (sixteenth note)
+Energy:   ${energy}/10
+Duration: ${totalBars} bars = ${totalTicks} ticks
+Chord progression: ${gg.chord}  (repeating)
+${extraNotes ? `Extra notes: ${extraNotes}` : ''}
 
-Bar  1 = tick       0
-Bar  2 = tick    1920
-Bar  3 = tick    3840
-Bar  4 = tick    5760
-Bar  5 = tick    7680
-Bar  8 = tick   13440
-Bar ${Math.ceil(totalBars/2)} = tick ${(Math.ceil(totalBars/2)-1)*1920}
-Bar ${totalBars} = tick ${(totalBars-1)*1920}   ← last bar, must end by tick ${totalTicks}
+══ TICK MATH (memorise this) ══
+TPB = 480 ticks per beat. 4/4 time.
+1 whole note   = 1920 ticks
+1 half note    = 960 ticks
+1 quarter note = 480 ticks
+1 eighth note  = 240 ticks
+1 sixteenth    = 120 ticks
 
-══ TRACKS ══
-${tracks.map((t,i)=>`${i+1}. "${t.n}" — channel ${t.ch}, program ${t.prog}\n   ${t.desc}`).join('\n\n')}
+Bar 1  starts at tick 0
+Bar 2  starts at tick 1920
+Bar 3  starts at tick 3840
+Bar 4  starts at tick 5760
+Bar 5  starts at tick 7680
+Bar 6  starts at tick 9600
+Bar 7  starts at tick 11520
+Bar 8  starts at tick 13440
+(each bar = previous + 1920)
+Bar ${totalBars} starts at tick ${(totalBars-1)*1920}. Last tick = ${totalTicks}.
 
-══ REQUIREMENTS ══
-• Fill ALL ${totalBars} bars — do not stop early.
-• Chord voicings: use inversions, not always root position.
-• Vary note velocities (60–110) for dynamics.
-• Bass: don't play the same rhythm every bar — add variation.
-• If melody context is provided: the accompaniment MUST match its length exactly.
+══ TRACK SPECIFICATIONS ══
+You MUST generate exactly ${totalTracks} tracks, each with its own distinct role, instrument, and rhythm.
+DO NOT put everything on one instrument. Each track MUST have different pitches, rhythms, and velocities.
 
-══ OUTPUT ══
+${trackSections.join('\n\n')}
+
+══ STRICT RULES ══
+1. Every track MUST cover ALL ${totalBars} bars (ticks 0 to ${totalTicks}).
+2. Each track MUST use the channel and program number specified — do not change them.
+3. Chord track: always 3–4 simultaneous notes. Bass track: always single notes. Arp: always single notes.
+4. Do NOT put bass notes in the chord track or chord notes in the bass track.
+5. Velocities must VARY — do not use the same velocity for every note.
+6. The output must have exactly ${totalTracks} objects in the "tracks" array.
+
+══ JSON OUTPUT FORMAT ══
 {
   "bpm": ${bp.toFixed(1)},
   "tracks": [
@@ -1297,19 +1454,19 @@ ${tracks.map((t,i)=>`${i+1}. "${t.n}" — channel ${t.ch}, program ${t.prog}\n  
       "channel": 0,
       "program": 0,
       "notes": [
-        { "tick": 0,    "dur": 1920, "pitch": 60, "velocity": 80 },
-        { "tick": 1920, "dur": 960,  "pitch": 62, "velocity": 75 }
+        { "tick": 0, "dur": 1920, "pitch": 60, "velocity": 80 },
+        { "tick": 0, "dur": 1920, "pitch": 64, "velocity": 75 }
       ]
     }
   ]
 }
 
-• "tick" = start in ticks (integer ≥ 0)
-• "dur"  = duration in ticks (integer ≥ 60)
-• "pitch" = MIDI 0–127
-• "velocity" = 1–127
-• Chord: multiple notes with the SAME "tick" value
-• Output ONLY the JSON object — nothing else.`;
+"tick" = integer, start position in ticks (≥ 0)
+"dur"  = integer, duration in ticks (≥ 60)
+"pitch" = integer, MIDI note number 0–127
+"velocity" = integer, MIDI velocity 1–127
+
+Output ONLY the JSON object. Start your response with { and end with }. Nothing else.`;
 }
 
 function refreshAccompPrompt(){
