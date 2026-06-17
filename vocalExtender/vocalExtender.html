@@ -357,8 +357,9 @@ hr.rule { border:none; border-top:1px solid var(--b1); margin:10px 0; }
   <div class="div-v"></div>
   <button class="btn sm" id="add-btn" disabled onclick="App.openAdd()">+ Note</button>
   <div class="sp"></div>
-  <button class="btn sm btn-ghost-cyn" id="midi-export-btn" disabled onclick="App.exportMidi()">⬇ Export MIDI</button>
-  <button class="btn sm btn-ghost-grn" id="exp-btn" disabled onclick="App.doExport()">⬇ Export SVP</button>
+  <button class="btn sm btn-ghost-cyn" id="midi-export-btn" disabled onclick="App.exportMidi()">⬇ MIDI</button>
+  <button class="btn sm btn-ghost-grn" id="sub-export-btn" disabled onclick="App.exportSubtitles()">⬇ Subtitles</button>
+  <button class="btn sm btn-ghost-grn" id="exp-btn" disabled onclick="App.doExport()">⬇ SVP</button>
 </div>
 
 <!-- WORKSPACE -->
@@ -889,6 +890,7 @@ function selPart(p){
   document.getElementById('s-bv').textContent=bp.toFixed(1);document.getElementById('s-bpm').style.display='';
   document.getElementById('add-btn').disabled=false;
   document.getElementById('midi-export-btn').disabled=false;
+  document.getElementById('sub-export-btn').disabled=false;
   refreshAll(false);
 }
 
@@ -1164,128 +1166,129 @@ function getAccompParams(){
 }
 
 function buildAccompPrompt(){
-  const{genre,energy,keyChoice,wantMelody,wantChords,wantBass,wantArp,extraNotes,bp}=getAccompParams();
+  // Works with just a file loaded — no active part required
+  const hasFile = !!activeFile;
+  const hasPart = !!activePart;
 
-  // Derive exact length from the loaded SVP part
-  let totalTicks=1920*16; // default 16 bars
-  let totalBars=16;
-  let melodyContext='';
-  let svpStartTick=0;
+  const{genre,energy,keyChoice,wantMelody,wantChords,wantBass,wantArp,extraNotes}=getAccompParams();
+  const bp = hasPart ? bpmOf(activeFile.svpData) : (hasFile ? bpmOf(activeFile.svpData) : DEF_BPM);
 
-  if(activePart){
-    const ns=notesRaw(activePart);
-    if(ns.length){
-      // Convert SVP blick positions to MIDI ticks
-      const firstOnB=ns[0].onB;
-      const lastOnB=ns[ns.length-1].onB;
-      const lastDurB=ns[ns.length-1].durB;
-      const totalBlicks=lastOnB+lastDurB-firstOnB;
-      // blicks → seconds → ticks
-      const totalSec=Number(totalBlicks)/BLK*(60/bp);
-      totalTicks=Math.round(totalSec*bp/60*TPB);
-      // Round up to nearest bar (1920 ticks)
-      const barTicks=1920;
-      totalBars=Math.ceil(totalTicks/barTicks);
-      totalTicks=totalBars*barTicks;
-
-      // Build detailed melody context with tick positions
-      melodyContext=`\n══ VOCAL MELODY (full — ${ns.length} notes) ══\n`;
-      melodyContext+=`SVP starts at beat 1. All tick values below are relative to bar 1 beat 1.\n`;
-      melodyContext+=`Format: tick | MIDI pitch (note name) | lyric\n`;
-      const firstSec=b2s(firstOnB,bp);
-      ns.forEach((n,i)=>{
-        const tOffset=Math.round((b2s(n.onB,bp)-firstSec)*bp/60*TPB);
-        const durT=Math.max(1,Math.round(b2s(n.durB,bp)*bp/60*TPB));
-        if(i<40||i>=ns.length-4) // show first 40 + last 4
-          melodyContext+=`  tick=${tOffset.toString().padStart(6)} dur=${durT.toString().padStart(5)}  pitch=${n.pitch} (${mname(n.pitch).padEnd(3)})  "${n.lyric}"\n`;
-        else if(i===40)
-          melodyContext+=`  … (${ns.length-44} more notes) …\n`;
-      });
-    }
+  // Collect ALL notes from ALL parts of the active file if no single part selected
+  let allNotes = [];
+  let sourceName = 'Unknown';
+  if (hasPart) {
+    allNotes = notesRaw(activePart);
+    sourceName = activePart.vname;
+  } else if (hasFile && activeFile.parts.length) {
+    // Merge all parts, sorted by onset
+    activeFile.parts.forEach(p => {
+      allNotes = allNotes.concat(notesRaw(p));
+    });
+    allNotes.sort((a,b) => a.onB < b.onB ? -1 : a.onB > b.onB ? 1 : 0);
+    sourceName = activeFile.parts[0].vname || 'Unknown';
   }
 
-  const barTicks=1920; // 4 beats * 480 ticks
-  const beatTicks=480;
-  const totalDurationSec=(totalTicks/TPB)*(60/bp);
+  // Derive exact duration from SVP content
+  let totalTicks = 1920 * 16;
+  let totalBars = 16;
+  let melodyContext = '';
 
-  // Genre-specific chord progression and instrument suggestions
-  const genreGuides={
-    jpop:{prog:'I–V–vi–IV (e.g. C–G–Am–F), bright pop progression',chordProg:'C–G–Am–F or A–E–F#m–D',instr:'Piano (prog 0) for chords, Acoustic Bass (prog 32) for bass, Strings (prog 48) for pads'},
-    rnb:{prog:'ii–V–I with 7ths and 9ths, or I–IV–I–V soul progression',chordProg:'Dm7–G7–Cmaj7 or Am7–D7–Gmaj7',instr:'Electric Piano (prog 4) for chords, Slap Bass (prog 36) for bass, Strings pad (prog 48)'},
-    trap:{prog:'Minor progression: i–bVII–bVI–bVII or i–iv–bVII–i',chordProg:'Am–G–F–G or Cm–Bb–Ab–Bb',instr:'Piano (prog 0) for sparse chords, Synth Bass (prog 38) for 808 bass, Synth Pad (prog 89)'},
-    ballad:{prog:'I–IV–V–vi slow, with sus chords for tension',chordProg:'C–F–G–Am or G–C–D–Em',instr:'Acoustic Piano (prog 0), Acoustic Bass (prog 32), Strings (prog 48), Pad (prog 89)'},
-    rock:{prog:'I–IV–V or I–bVII–IV (power chord rock)',chordProg:'E–A–B or G–F–C',instr:'Overdriven Guitar (prog 29) for chords, Electric Bass (prog 33) for bass'},
-    edm:{prog:'i–bVII–bVI–bVII or I–V–vi–IV with pads',chordProg:'Am–G–F–G or C–G–Am–F',instr:'Synth Lead (prog 81) for arp, Synth Pad (prog 88) for chords, Synth Bass (prog 38)'},
-    lofi:{prog:'ii–V–I with 7ths, jazz-influenced, lazy feel',chordProg:'Dm7–G7–Cmaj7 or Am7–Em7–Fmaj7–E7',instr:'Electric Piano (prog 4) for chords, Acoustic Bass (prog 32), Vibraphone (prog 11) for counter-melody'},
-    anime:{prog:'I–V–vi–iii–IV–I–IV–V emotional anime progression',chordProg:'C–G–Am–Em–F–C–F–G or A–E–F#m–C#m–D–A–D–E',instr:'Strings (prog 48) for pads, Piano (prog 0) for melody, Orchestra Hit (prog 55)'},
+  if (allNotes.length) {
+    const firstOnB = allNotes[0].onB;
+    const lastNote = allNotes[allNotes.length - 1];
+    const totalBlicks = lastNote.onB + lastNote.durB - firstOnB;
+    const totalSec = Number(totalBlicks) / BLK * (60 / bp);
+    const rawTicks = Math.round(totalSec * bp / 60 * TPB);
+    totalBars = Math.max(4, Math.ceil(rawTicks / 1920));
+    totalTicks = totalBars * 1920;
+
+    melodyContext = `\n══ VOCAL MELODY (${allNotes.length} notes — use for key, mood, and timing) ══\n`;
+    melodyContext += `Voice: ${sourceName}\n`;
+    melodyContext += `tick | dur  | MIDI pitch (note) | lyric\n`;
+    const firstSec = b2s(firstOnB, bp);
+    const showNotes = allNotes.length <= 60 ? allNotes : [...allNotes.slice(0, 40), null, ...allNotes.slice(-6)];
+    showNotes.forEach((n, i) => {
+      if (!n) { melodyContext += `  … (${allNotes.length - 46} more notes omitted) …\n`; return; }
+      const tOff = Math.round((b2s(n.onB, bp) - firstSec) * bp / 60 * TPB);
+      const durT = Math.max(1, Math.round(b2s(n.durB, bp) * bp / 60 * TPB));
+      melodyContext += `  ${String(tOff).padStart(6)}  ${String(durT).padStart(4)}  ${n.pitch} (${mname(n.pitch).padEnd(3)})  "${n.lyric}"\n`;
+    });
+  } else {
+    melodyContext = '\n(No SVP melody loaded — composing from genre/key settings only)\n';
+    totalBars = parseInt(document.getElementById('acmp-bars-sl')?.value || 16);
+    totalTicks = totalBars * 1920;
+  }
+
+  const genreGuides = {
+    jpop:   {prog:'I–V–vi–IV',  chord:'C–G–Am–F',   instr:'Piano (prog 0) chords, Acoustic Bass (prog 32), Strings pad (prog 48)'},
+    rnb:    {prog:'ii7–V7–Imaj7',chord:'Dm7–G7–Cmaj7',instr:'Electric Piano (prog 4), Slap Bass (prog 36), Strings (prog 48)'},
+    trap:   {prog:'i–bVII–bVI–bVII',chord:'Am–G–F–G',instr:'Piano (prog 0) sparse, Synth Bass (prog 38), Synth Pad (prog 89)'},
+    ballad: {prog:'I–IV–V–vi',  chord:'C–F–G–Am',   instr:'Acoustic Piano (prog 0), Acoustic Bass (prog 32), Strings (prog 48)'},
+    rock:   {prog:'I–IV–V',     chord:'E–A–B',       instr:'Overdriven Guitar (prog 29), Electric Bass (prog 33)'},
+    edm:    {prog:'i–bVII–bVI–bVII',chord:'Am–G–F–G',instr:'Synth Pad (prog 88), Synth Bass (prog 38), Synth Lead (prog 81)'},
+    lofi:   {prog:'ii7–V7–Imaj7',chord:'Dm7–G7–Cmaj7',instr:'Electric Piano (prog 4), Acoustic Bass (prog 32), Vibraphone (prog 11)'},
+    anime:  {prog:'I–V–vi–iii–IV',chord:'C–G–Am–Em–F',instr:'Strings (prog 48), Piano (prog 0), Orchestra Hit (prog 55)'},
   };
-  const gg=genreGuides[genre]||genreGuides.jpop;
+  const gg = genreGuides[genre] || genreGuides.jpop;
 
-  // Key inference from melody if auto
-  let keyStr=keyChoice;
-  if(keyStr==='auto'&&activePart){
-    const ns=notesRaw(activePart);
-    if(ns.length){
-      const pitchClasses=ns.map(n=>n.pitch%12);
-      const counts=Array(12).fill(0);pitchClasses.forEach(p=>counts[p]++);
-      const rootIdx=counts.indexOf(Math.max(...counts));
-      const rootNames=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
-      keyStr=`${rootNames[rootIdx]} major or minor (auto-detected from melody — choose the most fitting)`;
-    }
+  let keyStr = keyChoice;
+  if (keyStr === 'auto' && allNotes.length) {
+    const counts = Array(12).fill(0);
+    allNotes.forEach(n => counts[n.pitch % 12]++);
+    const rootIdx = counts.indexOf(Math.max(...counts));
+    const rootNames = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+    keyStr = `${rootNames[rootIdx]} (auto-detected — choose major or minor based on the melody's mood)`;
   }
 
-  // Energy → velocity range and density guide
-  const velBase=40+energy*8; // 48–120
-  const velHigh=Math.min(127,velBase+20);
-  const densityGuide=energy<=3?'sparse — long chords (whole/half notes), minimal bass movement'
-    :energy<=6?'medium — quarter/half note chords, steady bass on beats 1 and 3'
-    :'dense — eighth note chords or arps, active bass line on every beat';
+  const velBase = 40 + energy * 8;
+  const densityGuide = energy <= 3 ? 'sparse — whole/half note chords, minimal bass'
+    : energy <= 6 ? 'medium — half note chords, bass on beats 1 & 3'
+    : 'dense — quarter note chords, active bass on every beat';
 
-  const tracks=[];
-  if(wantMelody)tracks.push({n:'Melody Ref',ch:0,prog:0,desc:'Mirror the vocal melody exactly — same pitches and tick positions. This is a reference track.'});
-  if(wantChords)tracks.push({n:'Chords',ch:1,prog:48,desc:`${gg.instr.split(',')[0]}. Stack 3–4 notes per chord (full voicing). Use progression: ${gg.chordProg}. Duration: half or whole notes (960 or 1920 ticks). Energy: ${densityGuide}.`});
-  if(wantBass)tracks.push({n:'Bass',ch:2,prog:33,desc:`${gg.instr.split(',')[1]||'Electric Bass (prog 33)'}. Single notes only. Root notes on beats 1 and 3 (ticks 0 and 960 per bar). Occasional passing tones on beat 4. Velocity: ${velBase}–${velHigh}.`});
-  if(wantArp)tracks.push({n:'Arp / Counter',ch:3,prog:81,desc:`Arpeggiated or counter-melody line. Quarter or eighth notes (480 or 240 ticks). Follow the chord tones but move independently of the melody.`});
+  const tracks = [];
+  if(wantMelody) tracks.push({n:'Melody Ref',  ch:0, prog:0,  desc:'Copy the vocal melody pitches and tick positions exactly from the melody context above.'});
+  if(wantChords) tracks.push({n:'Chords',      ch:1, prog:48, desc:`Chord pads. Stack 3–4 notes per chord (full voicing, root + 3rd + 5th + optional 7th). Progression: ${gg.chord}. Half or whole notes (960 or 1920 ticks). ${densityGuide}.`});
+  if(wantBass)   tracks.push({n:'Bass',        ch:2, prog:33, desc:`Bass line. Root notes on beat 1 (tick 0 of each bar), passing tones on beat 3 (tick 960). Single notes only. Velocity ${velBase}–${Math.min(127,velBase+25)}.`});
+  if(wantArp)    tracks.push({n:'Arp',         ch:3, prog:81, desc:`Arpeggio or counter-melody. Quarter or eighth notes (480 or 240 ticks). Follow chord tones from the chord track.`});
 
-  let prompt=`You are a professional MIDI composer. Output ONLY a raw JSON object — no markdown, no commentary.
-
-══ PROJECT ══
-Genre: ${genre} — ${gg.prog}
-Key: ${keyStr}
-BPM: ${bp.toFixed(1)}
-Energy level: ${energy}/10
-Duration: ${totalBars} bars = ${totalTicks} ticks = ${totalDurationSec.toFixed(1)}s
-Chord progression suggestion: ${gg.chordProg}
-Instruments: ${gg.instr}
-${extraNotes?`\nExtra instructions: ${extraNotes}`:''}
+  return `You are a professional MIDI composer writing accompaniment for a SynthesizerV vocal.
+Output ONLY a raw JSON object — no markdown, no explanation.
 ${melodyContext}
-══ TICK REFERENCE ══
-Ticks per beat (TPB): 480
-1 bar   = 1920 ticks (4 beats)
-1 beat  = 480 ticks
-½ beat  = 240 ticks (eighth note)
-¼ beat  = 120 ticks (sixteenth note)
-Bar ${1} starts at tick 0
-Bar ${2} starts at tick 1920
-Bar ${3} starts at tick 3840
-Bar ${4} starts at tick 5760
-… each bar = previous + 1920 …
-Bar ${totalBars} starts at tick ${(totalBars-1)*1920}
-Last note must end at or before tick ${totalTicks}
+══ SETTINGS ══
+Genre:    ${genre} — ${gg.prog}
+Key:      ${keyStr}
+BPM:      ${bp.toFixed(1)}
+Energy:   ${energy}/10 (${densityGuide})
+Duration: ${totalBars} bars = ${totalTicks} ticks total
+Chord suggestion: ${gg.chord}
+Instruments: ${gg.instr}
+${extraNotes ? `\nExtra: ${extraNotes}` : ''}
+══ TICK REFERENCE (TPB = 480) ══
+1 bar    = 1920 ticks
+1 beat   = 480 ticks
+½ beat   = 240 ticks (eighth note)
+¼ beat   = 120 ticks (sixteenth note)
 
-══ TRACKS TO GENERATE ══
-${tracks.map((t,i)=>`Track ${i+1}: "${t.n}" — channel ${t.ch}, MIDI program ${t.prog}
-  ${t.desc}`).join('\n\n')}
+Bar  1 = tick       0
+Bar  2 = tick    1920
+Bar  3 = tick    3840
+Bar  4 = tick    5760
+Bar  5 = tick    7680
+Bar  8 = tick   13440
+Bar ${Math.ceil(totalBars/2)} = tick ${(Math.ceil(totalBars/2)-1)*1920}
+Bar ${totalBars} = tick ${(totalBars-1)*1920}   ← last bar, must end by tick ${totalTicks}
 
-══ QUALITY REQUIREMENTS ══
+══ TRACKS ══
+${tracks.map((t,i)=>`${i+1}. "${t.n}" — channel ${t.ch}, program ${t.prog}\n   ${t.desc}`).join('\n\n')}
+
+══ REQUIREMENTS ══
 • Fill ALL ${totalBars} bars — do not stop early.
-• Chord voicings: use inversions and spread voicings, not just root position.
-• Bass line: vary rhythm — don't just hit the same tick every bar.
-• Make it musically interesting — dynamics (vary velocity 60–100), rhythmic variation.
-• Melody ref: copy the vocal melody pitches precisely from the context above.
+• Chord voicings: use inversions, not always root position.
+• Vary note velocities (60–110) for dynamics.
+• Bass: don't play the same rhythm every bar — add variation.
+• If melody context is provided: the accompaniment MUST match its length exactly.
 
-══ OUTPUT FORMAT ══
-Return exactly this structure:
+══ OUTPUT ══
 {
   "bpm": ${bp.toFixed(1)},
   "tracks": [
@@ -1294,34 +1297,48 @@ Return exactly this structure:
       "channel": 0,
       "program": 0,
       "notes": [
-        { "tick": 0, "dur": 1920, "pitch": 60, "velocity": 80 },
-        { "tick": 1920, "dur": 1920, "pitch": 62, "velocity": 75 }
+        { "tick": 0,    "dur": 1920, "pitch": 60, "velocity": 80 },
+        { "tick": 1920, "dur": 960,  "pitch": 62, "velocity": 75 }
       ]
     }
   ]
 }
 
-Field definitions:
-• "tick"     — start position in ticks (integer, 0 = bar 1 beat 1)
-• "dur"      — duration in ticks (integer, minimum 60)
-• "pitch"    — MIDI note number 0–127
-• "velocity" — MIDI velocity 1–127
-• Chord notes: multiple notes at the same "tick" value
-
-Output ONLY the JSON object. Nothing else.`;
-
-  return prompt;
+• "tick" = start in ticks (integer ≥ 0)
+• "dur"  = duration in ticks (integer ≥ 60)
+• "pitch" = MIDI 0–127
+• "velocity" = 1–127
+• Chord: multiple notes with the SAME "tick" value
+• Output ONLY the JSON object — nothing else.`;
 }
 
 function refreshAccompPrompt(){
-  const box=document.getElementById('acmp-prompt-box');
-  if(!box)return;
-  box.textContent=buildAccompPrompt();
+  const box = document.getElementById('acmp-prompt-box');
+  if (!box) return;
+  if (!activeFile && !activePart) {
+    box.textContent = '(open a .svp file first — no part selection required)';
+    return;
+  }
+  box.textContent = buildAccompPrompt();
 }
+
 function copyAccompPrompt(){
+  if (!activeFile && !activePart) {
+    toast('Open a .svp file first', 'err');
+    return;
+  }
   refreshAccompPrompt();
-  const txt=document.getElementById('acmp-prompt-box').textContent;
-  navigator.clipboard.writeText(txt).then(()=>toast('Accompaniment prompt copied — paste into any AI chatbot')).catch(()=>toast('Copy failed','err'));
+  const txt = document.getElementById('acmp-prompt-box').textContent;
+  if (!txt || txt.startsWith('(open')) { toast('No prompt — open a .svp file first', 'err'); return; }
+  navigator.clipboard.writeText(txt)
+    .then(() => toast('Prompt copied — paste into Claude, ChatGPT, or Gemini'))
+    .catch(() => {
+      // Fallback: select all text in the box
+      const box = document.getElementById('acmp-prompt-box');
+      const sel = window.getSelection(); const range = document.createRange();
+      range.selectNodeContents(box); sel.removeAllRanges(); sel.addRange(range);
+      toast('Could not auto-copy — text selected, press Ctrl+C', 'warn');
+    });
 }
 
 /* ─── PARSE PASTED ACCOMPANIMENT RESPONSE ─── */
@@ -1480,7 +1497,15 @@ function setNT(t,doRefresh=true){
   document.getElementById('nt-r').className='ntype'+(t==='rap'?' rp':'');
   if(doRefresh)refresh();
 }
-function updFC(){const ok=FILES.length>0;document.getElementById('exp-btn').disabled=!ok;document.getElementById('midi-export-btn').disabled=!activePart;}
+function updFC(){
+  const hasFile=FILES.length>0;
+  const hasPart=!!activePart;
+  document.getElementById('exp-btn').disabled=!hasFile;
+  document.getElementById('midi-export-btn').disabled=!hasPart;
+  document.getElementById('sub-export-btn').disabled=!hasPart;
+  // Auto-refresh accomp prompt whenever file state changes
+  if(hasFile) refreshAccompPrompt();
+}
 function refreshAll(doPrompt=true){renderFiles();renderParts();renderNoteTable();if(doPrompt)refresh();updUB();updFC();}
 
 /* ═══════════════════════════════════════════════
@@ -1492,6 +1517,7 @@ document.querySelectorAll('.tab').forEach(tab=>{
     document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
     tab.classList.add('on');
     document.getElementById(tab.dataset.panel).classList.add('on');
+    if(tab.dataset.panel==='midi-panel') refreshAccompPrompt();
   });
 });
 
@@ -1511,9 +1537,100 @@ document.addEventListener('keydown',e=>{
 });
 
 /* ═══════════════════════════════════════════════
+   SUBTITLE EXPORT — SRT (Vegas Pro) + VTT (Premiere Pro)
+   Groups consecutive notes into subtitle lines by
+   detecting natural phrase breaks (long gaps, long notes).
+═══════════════════════════════════════════════ */
+function exportSubtitles(){
+  if(!activePart) return toast('Select a part first','err');
+  const bp=bpmOf(activeFile.svpData);
+  const ns=notesRaw(activePart);
+  if(!ns.length) return toast('No notes in this part','warn');
+
+  // Group notes into subtitle lines.
+  // A new line starts when:
+  //   - gap to next note > 0.3s (breath)
+  //   - line already has 8+ syllables
+  //   - current note is a long note (>1.5 beats) that ends a phrase
+  const BEAT_SEC = 60/bp;
+  const GAP_THRESHOLD = 0.35; // seconds of silence = line break
+  const MAX_SYLLABLES = 9;
+
+  const lines = [];
+  let cur = { syllables:[], start:0, end:0 };
+
+  ns.forEach((n, i) => {
+    const tStart = b2s(n.onB, bp);
+    const tEnd   = b2s(n.onB + n.durB, bp);
+
+    if (cur.syllables.length === 0) {
+      cur.start = tStart;
+    }
+
+    cur.syllables.push(n.lyric || '');
+    cur.end = tEnd;
+
+    const next = ns[i+1];
+    const gapToNext = next ? b2s(next.onB, bp) - tEnd : 999;
+    const isLongNote = b2s(n.durB, bp) > BEAT_SEC * 1.5;
+    const tooMany = cur.syllables.length >= MAX_SYLLABLES;
+    const lastNote = !next;
+
+    if (gapToNext > GAP_THRESHOLD || tooMany || (isLongNote && gapToNext > 0.1) || lastNote) {
+      if (cur.syllables.length > 0) {
+        lines.push({ text: cur.syllables.join(''), start: cur.start, end: cur.end });
+      }
+      cur = { syllables:[], start:0, end:0 };
+    }
+  });
+
+  const baseName = (activeFile.name || 'subtitle').replace(/\.svp$/i,'');
+  const totalLines = lines.length;
+
+  // ── SRT format (Vegas Pro / universal) ──
+  function toSrtTime(sec) {
+    const h = Math.floor(sec/3600);
+    const m = Math.floor((sec%3600)/60);
+    const s = Math.floor(sec%60);
+    const ms = Math.round((sec%1)*1000);
+    return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')},${String(ms).padStart(3,'0')}`;
+  }
+  const srt = lines.map((l,i) =>
+    `${i+1}\n${toSrtTime(l.start)} --> ${toSrtTime(l.end)}\n${l.text}\n`
+  ).join('\n');
+
+  // ── VTT format (Premiere Pro / web) ──
+  function toVttTime(sec) {
+    const h = Math.floor(sec/3600);
+    const m = Math.floor((sec%3600)/60);
+    const s = Math.floor(sec%60);
+    const ms = Math.round((sec%1)*1000);
+    return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${String(ms).padStart(3,'0')}`;
+  }
+  const vtt = 'WEBVTT\n\n' + lines.map((l,i) =>
+    `${i+1}\n${toVttTime(l.start)} --> ${toVttTime(l.end)}\n${l.text}\n`
+  ).join('\n');
+
+  // Download both
+  function dl(content, filename, mime) {
+    const blob = new Blob([content], {type: mime});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+  }
+
+  dl(srt, baseName + '.srt', 'text/srt');
+  setTimeout(() => dl(vtt, baseName + '.vtt', 'text/vtt'), 300);
+
+  toast(`Subtitles: ${totalLines} lines → .srt (Vegas) + .vtt (Premiere)`, 'info');
+}
+
+/* ═══════════════════════════════════════════════
    INIT
 ═══════════════════════════════════════════════ */
-const App={undo,redo,setOp,setNT,refresh,generate,autoFix,preview,doCommit,discard,copyPrompt,sel,editN,delN,delSel,selAll,openAdd,commitAdd,doExport,exportMidi,generateAccomp,downloadAccomp};
+const App={undo,redo,setOp,setNT,refresh,autoFix,preview,doCommit,discard,copyPrompt,sel,editN,delN,delSel,selAll,openAdd,commitAdd,doExport,exportMidi,copyAccompPrompt,refreshAccompPrompt,parseAccomp,clearAccomp,downloadAccomp,exportSubtitles};
 setOp('extend');setNT('singing',false);updateLangHint();refreshAll();
 </script>
 </body>
