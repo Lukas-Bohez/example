@@ -437,8 +437,8 @@ hr.rule { border:none; border-top:1px solid var(--b1); margin:10px 0; }
             <div class="f">
               <label>Bars</label>
               <div class="srow">
-                <input type="range" min="2" max="32" step="2" value="8" id="bars-sl" oninput="document.getElementById('bv').textContent=this.value;App.refresh()">
-                <span class="sv" id="bv">8</span>
+                <input type="range" min="2" max="128" step="2" value="16" id="bars-sl" oninput="document.getElementById('bv').textContent=this.value;App.refresh()">
+                <span class="sv" id="bv">16</span>
               </div>
             </div>
 
@@ -587,9 +587,10 @@ hr.rule { border:none; border-top:1px solid var(--b1); margin:10px 0; }
             <div class="f">
               <label>Bars of accompaniment</label>
               <div class="srow">
-                <input type="range" min="4" max="64" step="4" value="16" id="acmp-bars-sl" oninput="document.getElementById('abv').textContent=this.value">
+                <input type="range" min="4" max="128" step="4" value="16" id="acmp-bars-sl" oninput="document.getElementById('abv').textContent=this.value">
                 <span class="sv" id="abv">16</span>
               </div>
+              <div style="font-size:9px;color:var(--dim);margin-top:2px">Auto-set from SVP length when a file is loaded</div>
             </div>
           </div>
 
@@ -950,100 +951,190 @@ function renderNoteTable(){
 /* ═══════════════════════════════════════════════
    SVP PROMPT GENERATION — high-quality, longer songs
 ═══════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════
+   SVP VOCAL PROMPT — research-backed music theory
+   Sources: repetition+variation (Born To Produce),
+   stepwise+leap balance, phrase breathing, section
+   dynamics, J-Pop specific theory (Royal Road etc.)
+═══════════════════════════════════════════════ */
 function genPrompt(){
-  if(!activePart||!activeFile)return'(select a part first)';
-  const ns=notesRaw(activePart),bp=bpmOf(activeFile.svpData);
-  const beatNs=BigInt(Math.round(NS_N*60/bp)),barNs=beatNs*4n;
-  const bars=parseInt(document.getElementById('bars-sl').value)||8;
-  const style=document.getElementById('style-sel').value,density=document.getElementById('density-sel').value,pitchRng=document.getElementById('range-sel').value;
+  if(!activePart||!activeFile) return '(select a part first)';
+  const ns=notesRaw(activePart), bp=bpmOf(activeFile.svpData);
+  const beatNs=BigInt(Math.round(NS_N*60/bp)), barNs=beatNs*4n;
+  const bars=parseInt(document.getElementById('bars-sl').value)||16;
+  const style=document.getElementById('style-sel').value;
+  const density=document.getElementById('density-sel').value;
+  const pitchRng=document.getElementById('range-sel').value;
   const isRap=noteType==='rap';
-  const lkSel=document.getElementById('lang-sel').value,lk=lkSel==='auto'?langKey(activePart):lkSel,lm=LANG[lk]||LANG.japanese;
+  const lkSel=document.getElementById('lang-sel').value;
+  const lk=lkSel==='auto'?langKey(activePart):lkSel;
+  const lm=LANG[lk]||LANG.japanese;
   const lastNs=ns.length?b2ns(ns[ns.length-1].onB+ns[ns.length-1].durB,bp):0n;
   const startNs=op==='replace'?0n:lastNs;
-  const pts=ns.map(n=>n.pitch),mnP=pts.length?Math.min(...pts):52,mxP=pts.length?Math.max(...pts):76;
-  const midP=pts.length?Math.round(pts.reduce((a,b)=>a+b,0)/pts.length):64;
-  const rangeStr={auto:`MIDI ${mnP}–${mxP} (centre ~${mname(midP)})`,low:'MIDI 48–64 (C3–E4)',mid:'MIDI 57–72 (A3–C5)',high:'MIDI 65–79 (F4–G5)'}[pitchRng]||`MIDI ${mnP}–${mxP}`;
-  const notesPerBar={sparse:'2–3',medium:'4–6',dense:'6–8',staccato:'8–12'}[density]||'4–6';
-  const durHint={sparse:'half and whole notes (dur_ns = 1–2 beats)',medium:'quarter and eighth notes (dur_ns = 0.5–1 beat)',dense:'eighth notes (dur_ns = 0.5 beat)',staccato:'sixteenth notes (dur_ns = 0.25 beat)'}[density]||'quarter/eighth';
+  const pts=ns.map(n=>n.pitch);
+  const mnP=pts.length?Math.min(...pts):52;
+  const mxP=pts.length?Math.max(...pts):76;
+  const midP=pts.length?Math.round(pts.reduce((a,b)=>a+b,0)/pts.length):62;
 
-  // Detect structure sections from bar count
-  const sections=[];
-  if(bars>=8){
-    const half=Math.floor(bars/2),q=Math.floor(bars/4);
-    sections.push(`Bars 1–${q}: intro/setup (quieter, simpler phrases)`);
-    sections.push(`Bars ${q+1}–${half}: build / main theme`);
-    sections.push(`Bars ${half+1}–${bars-q}: climax / variation`);
-    sections.push(`Bars ${bars-q+1}–${bars}: resolution / outro`);
-  }
+  const rangeStr={
+    auto:`MIDI ${mnP}–${mxP}  (centre ≈ ${mname(midP)}, detected from melody)`,
+    low: 'MIDI 48–64  (C3–E4, low/intimate)',
+    mid: 'MIDI 55–72  (G3–C5, comfortable mid)',
+    high:'MIDI 64–79  (E4–G5, bright/soaring)'
+  }[pitchRng]||`MIDI ${mnP}–${mxP}`;
 
-  let p=`You are an expert SynthesizerV vocal composer. Output ONLY a raw JSON array — no markdown, no commentary.
+  const densityGuide={
+    sparse:  `2–3 notes per bar. Use whole notes (${barNs}ns) and half notes (${barNs/2n}ns). Long, sustained, emotional.`,
+    medium:  `4–7 notes per bar. Mix quarter notes (${beatNs}ns) and half notes (${barNs/2n}ns). Natural conversational flow.`,
+    dense:   `7–10 notes per bar. Eighth notes (${beatNs/2n}ns) mostly. Active and syllabic.`,
+    staccato:`10–14 notes per bar. Sixteenth notes (${beatNs/4n}ns). Rapid-fire, staccato delivery.`
+  }[density]||`4–7 notes per bar, quarter/half notes.`;
 
-══ TASK ══
-Compose a ${bars}-bar ${style} vocal melody for SynthesizerV voice "${activePart.vname}".
-Language: ${lk} — ${lm.hint}
-Note type: ${isRap?'RAP':'SINGING'}
-BPM: ${bp.toFixed(1)}
-Pitch range: ${rangeStr}
-Density: ~${notesPerBar} notes per bar — ${durHint}
-Start onset: ${startNs} ns
+  // Genre-specific guidance drawn from real J-Pop music theory research
+  const styleGuides={
+    natural:    'Conversational. Mostly stepwise (1–2 semitone) motion. No dramatic leaps. Feels like speech set to melody.',
+    emotional:  'Expressive. Rising phrases toward emotional peaks. Leaps of a 4th or 5th are appropriate. End phrases on long sustained notes.',
+    energetic:  'Upbeat. Short notes with rhythmic momentum. Syncopate — land notes on the "and" of beats, not just on the beat itself.',
+    melancholy: 'Slow and falling. Descending phrases. Use the minor 3rd interval (3 semitones) frequently — it defines sadness.',
+    hook:       'Memorable. Write a 2-bar MOTIF first (4–6 notes), then repeat it with slight variation. This is what people hum.',
+    bridge:     'Contrasting. If the verse was low, go high here. If it was busy, go sparse. Create maximum contrast from the verse.',
+    'rap-chill':'Laid back. Mostly flat pitch (3–5 semitone range). Vary note LENGTH heavily — that creates the groove, not pitch.',
+    'rap-hype': 'Fast and punchy. Short syllables (${beatNs/4n}ns). Occasional pitch jumps for emphasis words.',
+    'rap-trap': 'Slow BPM, long drawn-out syllables on key words (${beatNs*2n}ns+), rapid bursts on others.',
+    'talk-natural':'Speech-like. Very narrow pitch range (2–3 semitones). Rhythm is everything.',
+    'talk-dramatic':'Exaggerated speech. Wide pitch swings (up to an octave) on dramatic words, flat on normal words.',
+  };
+  const styleHint=styleGuides[style]||styleGuides.natural;
 
-══ TIMING (nanoseconds) ══
-1 beat  = ${beatNs} ns
-1 bar   = ${barNs} ns
-Min dur = ${beatNs/8n} ns  (do not go shorter)
+  // Song structure derived from research: intro/verse/chorus/outro arc
+  const q=Math.max(2,Math.floor(bars/4));
+  const h=Math.max(4,Math.floor(bars/2));
+  const climaxBar=Math.floor(bars*0.65);
 
-CRITICAL RULE: onset_ns[i+1] = onset_ns[i] + dur_ns[i]
-Every note must start exactly where the previous one ends. NO gaps, NO overlaps.
-
-══ MUSICAL QUALITY REQUIREMENTS ══
-• Write a REAL melody with melodic contour — rises, falls, peaks, phrases.
-• Use stepwise motion (adjacent notes) mixed with occasional leaps (3rds, 4ths, 5ths) for interest.
-• Group notes into 2–4 bar phrases with a natural breath feel.
-• Vary note lengths — mix long sustained notes with shorter moving notes.
-• Do NOT just repeat the same pitch. Do NOT produce monotone output.
-• Each phrase should have a clear direction: ascending, descending, or arching shape.
-${sections.length?`\n══ SONG STRUCTURE ══\n${sections.map(s=>`• ${s}`).join('\n')}\n`:''}
-${isRap?`\n══ RAP SPECIFICS ══
-• Use flat or slightly varied pitch (mostly MIDI ${midP-2}–${midP+4}).
-• "rapTone" (-5.0 to 1.0): vary from -1 to 1 to shape expression.
-• "rapIntonation" (-0.5 to 0.5): use small values (±0.1–0.3) for natural inflection.
-• Rhythm is everything — vary the syllable lengths aggressively for flow.
-• Short syllables (0.25–0.5 beats) for rapid sections, long (1–2 beats) for emphasis.
-`:''}
-══ LYRIC RULES ══
-• Language: ${lk}  —  ${lm.hint}
-• Each note gets exactly one lyric syllable: "${lm.ex}"
-• Vary syllables — do NOT repeat the same syllable 4+ times in a row.
-• DO NOT include a "phoneme" field (SynthV handles pronunciation from kana/text).
-`;
-
+  // Existing melody context
+  let ctxBlock='';
   if(op==='lyrics'&&ns.length){
     const txt=document.getElementById('new-lyrics').value.trim();
-    p+=`\n══ LYRICS REWRITE MODE ══
-Keep ALL existing onset_ns, dur_ns, pitch values exactly as-is.
-Only change "lyric". Distribute "${txt}" across ${ns.length} notes:\n`;
-    ns.forEach((n,i)=>p+=`  [${i+1}] onset_ns=${b2ns(n.onB,bp)} dur_ns=${b2ns(n.durB,bp)} pitch=${n.pitch}\n`);
+    ctxBlock=`\n══ LYRICS REWRITE ══
+Keep ALL onset_ns, dur_ns, pitch unchanged. Change ONLY "lyric".
+New text to distribute across ${ns.length} notes: "${txt}"
+Notes:\n`;
+    ns.forEach((n,i)=>ctxBlock+=`  [${i+1}] onset_ns=${b2ns(n.onB,bp)} dur_ns=${b2ns(n.durB,bp)} pitch=${n.pitch} (${mname(n.pitch)})\n`);
   } else if(op!=='replace'&&ns.length){
-    p+=`\n══ EXISTING MELODY CONTEXT (continue from here) ══\n`;
-    p+=`The melody already has ${ns.length} notes. You are extending it from onset ${startNs}ns.\n`;
-    p+=`Last ${Math.min(8,ns.length)} notes for continuity:\n`;
-    ns.slice(-8).forEach(n=>p+=`  onset=${b2ns(n.onB,bp)}ns  dur=${b2ns(n.durB,bp)}ns  pitch=${n.pitch} (${mname(n.pitch)})  lyric="${n.lyric}"\n`);
-    p+=`\nContinue the melodic direction naturally — do not restart from scratch.\n`;
+    ctxBlock=`\n══ EXISTING MELODY — continue from here ══
+${ns.length} notes already exist. Your new notes start at onset_ns=${startNs}.
+Last ${Math.min(10,ns.length)} notes (match their key, mood and direction):
+${ns.slice(-10).map(n=>`  onset_ns=${b2ns(n.onB,bp)}  dur_ns=${b2ns(n.durB,bp)}  pitch=${n.pitch} (${mname(n.pitch)})  "${n.lyric}"`).join('\n')}
+Detected key centre: ~${mname(midP)} (MIDI ${midP})
+Continue the melodic arc naturally. Do not restart or repeat the opening.
+`;
   }
 
-  p+=`\n══ BAR POSITIONS ══\n`;
-  for(let i=0;i<Math.min(bars,12);i++) p+=`  Bar ${i+1}: onset_ns = ${startNs+BigInt(i)*barNs}\n`;
-  if(bars>12) p+=`  … (continue at ${barNs}ns intervals)\n`;
+  const rapBlock=isRap?`
+══ RAP / TALKING SPECIFICS ══
+Pitch range: stay within ${mname(midP-2)}–${mname(midP+4)} (MIDI ${midP-2}–${midP+4}) mostly.
+rapTone: controls overall note pitch offset (-5 to +1). Use -1 to +1 for expression.
+rapIntonation: controls pitch curve within a note (-0.5 to +0.5). Alternate signs (+ then - then +).
+RHYTHM IS EVERYTHING in rap. Vary note lengths dramatically:
+  — Unstressed syllables: ${beatNs/4n}–${beatNs/2n}ns (short, fast)
+  — Stressed/important syllables: ${beatNs}–${beatNs*2n}ns (long, land hard)
+  — End-of-bar pause simulation: use a ${beatNs*2n}ns note on the last syllable of a phrase
+`:'';
 
-  p+=`\n══ OUTPUT FORMAT ══
-Each note object:
-  {"onset_ns":<int>,"dur_ns":<int>,"pitch":<MIDI 0-127>,"lyric":"<syllable>","musicalType":"${isRap?'rap':'singing'}"${isRap?',"rapTone":<float -5 to 1>,"rapIntonation":<float -0.5 to 0.5>':''}}
+  return `You are a professional vocal composer for SynthesizerV. Output ONLY a raw JSON array — no markdown, no text before or after the array.
+${ctxBlock}
+══ BRIEF ══
+Voice:     ${activePart.vname}
+Language:  ${lk} — ${lm.hint}  |  example syllable: "${lm.ex}"
+Operation: ${op==='replace'?'Generate a completely new melody from scratch':op==='extend'?'Add new notes continuing the existing melody':'Rewrite only the lyric text'}
+Style:     ${style} — ${styleHint}
+Type:      ${isRap?'RAP':'SINGING'}
+Bars:      ${bars}  (generate ALL ${bars} bars — never stop early)
+Density:   ${densityGuide}
+Pitch:     ${rangeStr}
+BPM:       ${bp.toFixed(1)}
+Start:     onset_ns = ${startNs}
+${rapBlock}
+══ TIMING ══
+1 beat  = ${beatNs} ns
+1 bar   = ${barNs} ns
+Minimum dur_ns = ${beatNs/8n} (never write shorter — SynthV ignores them)
+RULE: onset_ns[i+1] = onset_ns[i] + dur_ns[i]  — consecutive, no gaps, no overlaps, ever.
 
-• First onset_ns MUST be exactly ${startNs}
-• Generate ALL ${bars} bars — do not stop early
-• Aim for ${bars*4} notes minimum (more is better)
-• Output ONLY the JSON array, nothing else`;
-  return p;
+Bar positions (first ${Math.min(12,bars)}):
+${Array.from({length:Math.min(12,bars)},(_,i)=>`  Bar ${String(i+1).padStart(2)}: onset_ns = ${startNs+BigInt(i)*barNs}`).join('\n')}
+${bars>12?`  … +${bars-12} more bars at ${barNs}ns intervals …`:''}
+
+══ MUSIC THEORY — follow all of these ══
+
+1. MOTIF-BASED WRITING (most important rule):
+   Write a short 2–4 note "seed phrase" in bar 1.
+   Then REPEAT it with slight variation every 2–4 bars.
+   Change the rhythm, shift it up/down by a 3rd, or invert it.
+   This is why pop melodies are memorable — repetition + variation.
+   Example: bars 1–2 = [60,62,64,62], bars 5–6 = [64,66,67,66], bars 9–10 = [67,69,71,67]
+
+2. PHRASE STRUCTURE (breathe every 2–4 bars):
+   End each 2–4 bar phrase on a LONG note (≥ ${beatNs}ns = 1 beat).
+   This creates a natural "breath" and separates musical ideas.
+   Do NOT write endless streams of identical-length notes.
+
+3. MELODIC CONTOUR (every phrase needs a shape):
+   Rising phrase:   starts low, ends high (tension, questioning feel)
+   Falling phrase:  starts high, ends low (resolution, conclusion)
+   Arching phrase:  rises then falls (complete thought, most common)
+   Wave phrase:     rises, falls, rises again (energy, movement)
+   Never: a flat line of the same pitch for more than 3 notes.
+
+4. INTERVAL VARIETY (mix these):
+   Stepwise (1–2 semitones): natural, smooth, speech-like — use most often
+   Minor/Major 3rd (3–4 semitones): emotional colour — use frequently
+   Perfect 4th/5th (5–7 semitones): strong leap, expressive — use occasionally
+   Octave (12 semitones): dramatic statement — use once or twice per song max
+   NEVER: random leaps of more than 7 semitones without purpose
+
+5. DYNAMICS VIA NOTE LENGTH:
+   Important/emotional words = LONG notes (${barNs/2n}–${barNs}ns)
+   Filler/connecting syllables = SHORT notes (${beatNs/4n}–${beatNs/2n}ns)
+   The rhythm pattern itself should feel musical, not mechanical.
+
+6. SONG ARC (${bars} bars):
+   Bars 1–${q}:          INTRO — quiet, simple, introduce the motif
+   Bars ${q+1}–${h}:     VERSE — develop the motif, build energy
+   Bars ${h+1}–${climaxBar}: CHORUS — peak energy, highest notes, most intense
+   Bars ${climaxBar+1}–${bars}: OUTRO — resolve, descend, long final note
+
+7. PEAK MOMENT:
+   Plan your highest note for around bar ${climaxBar}.
+   Everything before builds toward it. Everything after resolves away from it.
+   The highest note should be at least ${mname(midP+5)} (MIDI ${midP+5}) or higher.
+
+8. RESOLUTION:
+   The final note of the whole piece MUST land on the root of the key (≈ MIDI ${midP} or ${midP+12}).
+   It must be a LONG note (≥ ${barNs/2n}ns = 2 beats).
+   This makes the song feel finished, not cut off.
+
+══ ANTI-BAD-HABITS ══
+✗ Do NOT write the same pitch more than 3 times in a row
+✗ Do NOT make every note the same duration
+✗ Do NOT stop after 2–4 bars — fill ALL ${bars} bars
+✗ Do NOT make every bar rhythmically identical
+✗ Do NOT use only adjacent half-steps — use wider intervals too
+✗ Do NOT ignore the song arc — dynamics must change across sections
+✗ Do NOT use dur_ns values that are all identical
+
+══ OUTPUT FORMAT ══
+[
+  {"onset_ns": ${startNs}, "dur_ns": ${beatNs/2n}, "pitch": ${midP}, "lyric": "${lm.ex}", "musicalType": "${isRap?'rap':'singing'}"${isRap?', "rapTone": 0.0, "rapIntonation": 0.1':''}},
+  {"onset_ns": ${startNs+beatNs/2n}, "dur_ns": ${beatNs}, "pitch": ${midP+2}, "lyric": "${lm.ex}", "musicalType": "${isRap?'rap':'singing'}"${isRap?', "rapTone": 0.2, "rapIntonation": -0.1':''}},
+  …
+]
+
+• First onset_ns = exactly ${startNs}
+• Final note must resolve on MIDI ≈ ${midP} with dur_ns ≥ ${barNs/2n}
+• Aim for ${Math.max(bars*3, bars*4)}+ notes across ${bars} bars
+• DO NOT include a "phoneme" field — SynthV reads lyrics directly
+• Output ONLY the JSON array. Nothing before it. Nothing after it.`;
 }
 
 function refresh(doPrompt=true){if(doPrompt)document.getElementById('prompt-box').textContent=genPrompt();}
