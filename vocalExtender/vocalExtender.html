@@ -323,10 +323,100 @@ hr.rule { border:none; border-top:1px solid var(--b1); margin:10px 0; }
 .track-clr-2 { background: #a78bfa33; border-top: 2px solid #a78bfa; }
 .track-clr-3 { background: #fbbf2433; border-top: 2px solid #fbbf24; }
 .note-bar { position:absolute; border-radius:1px; min-width:2px; }
+
+/* ── MIXER TRACK CARDS ── */
+.mx-card {
+  background: var(--bg2);
+  border: 1px solid var(--b2);
+  border-radius: 4px;
+  overflow: hidden;
+  transition: border-color .15s;
+}
+.mx-card.locked { border-color: var(--amb) !important; }
+.mx-card-top {
+  display: flex; align-items: center; gap: 7px;
+  padding: 6px 9px; background: var(--bg3);
+  border-bottom: 1px solid var(--b2);
+}
+.mx-color-bar { width: 3px; height: 22px; border-radius: 2px; flex-shrink: 0; }
+.mx-name { font-size: 10.5px; font-weight: 700; color: var(--hi); flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mx-patch { font-size: 8.5px; color: var(--sub); white-space: nowrap; }
+.mx-lock {
+  width: 20px; height: 20px; border-radius: 3px;
+  border: 1px solid var(--b2); background: transparent;
+  color: var(--dim); font-size: 10px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: .12s; flex-shrink: 0;
+}
+.mx-lock:hover { border-color: var(--amb); color: var(--amb); }
+.mx-lock.on { background: rgba(251,191,36,.15); border-color: var(--amb); color: var(--amb); }
+
+.mx-body { padding: 7px 9px; display: flex; flex-direction: column; gap: 5px; }
+
+/* CC7 Volume row */
+.mx-vol-row { display: flex; align-items: center; gap: 6px; }
+.mx-vol-label { font-size: 8px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; color: var(--dim); width: 24px; flex-shrink: 0; }
+.mx-vol-sl { flex: 1; height: 3px; border-radius: 2px; cursor: pointer; outline: none; background: var(--b2); }
+.mx-vol-val { font-size: 9px; font-family: var(--mono); color: var(--txt); min-width: 24px; text-align: right; }
+
+/* Mini piano roll inside card */
+.mx-roll { height: 32px; border-top: 1px solid var(--b2); }
+.mx-roll canvas { display: block; width: 100%; height: 100%; }
+
+/* ── HUMANIZATION CONTROL ── */
+.humanize-row {
+  display: flex; flex-direction: column; gap: 5px;
+  padding: 8px 11px; border-bottom: 1px solid var(--b1);
+  background: var(--bg2); flex-shrink: 0;
+}
+.humanize-labels { display: flex; justify-content: space-between; font-size: 8.5px; color: var(--dim); }
+#humanize-sl {
+  width: 100%; accent-color: var(--pur);
+  height: 3px;
+}
+
+/* ── CONSONANT SHIFT ── */
+.cs-row { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
+.cs-row label { font-size: 8.5px; color: var(--sub); flex: 1; }
+.cs-row input[type=number] { width: 48px; font-size: 10px; padding: 2px 4px; background: var(--bg3); border: 1px solid var(--b2); border-radius: 2px; color: var(--txt); outline: none; font-family: var(--mono); text-align: center; }
+
+/* ── LYRIC VIEWER (subtitle preview) ── */
+#lyric-viewer {
+  display: none; position: fixed; bottom: 30px; left: 50%;
+  transform: translateX(-50%);
+  background: rgba(10,10,18,.82);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(62,207,142,.2);
+  border-radius: 8px;
+  padding: 10px 18px;
+  max-width: 80vw;
+  z-index: 800;
+  pointer-events: none;
+  user-select: none;
+}
+.lyric-line {
+  display: flex; flex-wrap: wrap; gap: 3px;
+  align-items: baseline; justify-content: center;
+}
+.syl {
+  font-size: 14px; color: rgba(200,200,224,.55);
+  transition: all .12s ease; font-family: var(--font);
+  padding: 0 1px;
+}
+.syl.past    { color: rgba(160,160,200,.35); }
+.syl.active  {
+  color: #3ecf8e;
+  font-size: 17px;
+  font-weight: 700;
+  text-shadow: 0 0 12px rgba(62,207,142,.7), 0 0 24px rgba(62,207,142,.3);
+}
+.syl.upcoming { color: rgba(232,232,255,.95); }
+
 </style>
 </head>
 <body>
 <div id="toasts"></div>
+<div id="lyric-viewer"><div class="lyric-line" id="lyric-line"></div></div>
 
 <!-- Add note modal -->
 <div id="add-modal">
@@ -504,7 +594,11 @@ hr.rule { border:none; border-top:1px solid var(--b1); margin:10px 0; }
         <div class="ph">
           <span class="ph-label">Prompt</span>
           <div style="flex:1"></div>
-          <span style="font-size:8.5px;color:var(--dim)">Editable — or use Generate button</span>
+          <button class="btn xs btn-ghost-grn" onclick="App.lyricPlay()" title="Preview lyric timing">▶ Lyrics</button>
+          <button class="btn xs" onclick="App.lyricStop()" title="Stop preview">■</button>
+          <button class="btn xs" onclick="App.lyricReset()" title="Reset to start">↺</button>
+          <div style="width:1px;height:12px;background:var(--b2);margin:0 3px"></div>
+          <span style="font-size:8.5px;color:var(--dim)">Copy prompt → paste into AI → paste result in response pane</span>
         </div>
         <div id="prompt-box" contenteditable="true" spellcheck="false">(select a part first)</div>
       </div>
@@ -613,9 +707,25 @@ hr.rule { border:none; border-top:1px solid var(--b1); margin:10px 0; }
           </div>
 
           <div class="gap">
-            <div class="sec">Extra Notes for Claude</div>
+            <div class="sec">Extra Notes for AI</div>
             <div class="f">
               <textarea id="acmp-notes" style="min-height:55px" placeholder="E.g. 'keep the bass minimal', 'use suspended chords', '2-5-1 progression'"></textarea>
+            </div>
+          </div>
+
+          <div class="gap">
+            <div class="sec">Humanization</div>
+            <div style="font-size:9px;color:var(--sub);margin-bottom:6px;line-height:1.5">Micro-timing offset applied at MIDI export. 0% = robotic grid. 100% = ±12 tick human feel.</div>
+            <div class="humanize-labels"><span>Mechanical</span><span id="humanize-val">50%</span><span>Human</span></div>
+            <input type="range" min="0" max="100" value="50" id="humanize-sl" class="srow" style="width:100%;accent-color:var(--pur)" oninput="document.getElementById('humanize-val').textContent=this.value+'%'">
+          </div>
+
+          <div class="gap">
+            <div class="sec">Vocal Consonant Shift</div>
+            <div style="font-size:9px;color:var(--sub);margin-bottom:6px;line-height:1.5">Shifts hard-consonant notes earlier so the vowel lands on the beat (SynthV pre-utterance fix).</div>
+            <div class="cs-row">
+              <label>Shift (ticks): hard consonants k/s/t/ch</label>
+              <input type="number" id="consonant-shift" value="18" min="0" max="40">
             </div>
           </div>
         </div>
@@ -742,10 +852,12 @@ function buildMidi(tracks, bpm, tpb=480) {
   }
 
   // Humanization: small random timing offset for organic feel
-  // Applied to bass and arp, NOT melody ref or chords (chords use stagger instead)
-  function humanize(tick, role) {
-    if (role === 'melody' || role === 'chords') return tick;
-    const jitter = Math.floor(Math.random() * 9) - 4; // ±4 ticks
+  // Uses _humanizePct (0–1) from track or defaults to 0.5
+  function humanize(tick, role, pct) {
+    if (role === 'melody' || role === 'chords') return tick; // chords stagger instead
+    const maxJitter = Math.round(12 * (pct ?? 0.5));
+    if (maxJitter === 0) return tick;
+    const jitter = Math.floor(Math.random() * (maxJitter * 2 + 1)) - maxJitter;
     return Math.max(0, tick + jitter);
   }
 
@@ -767,6 +879,7 @@ function buildMidi(tracks, bpm, tpb=480) {
     const cc7 = trk.cc7 ?? getCC7(trk);
     const trkName = (trk.name||'').toLowerCase();
     const role = trkName.includes('bass')?'bass':trkName.includes('chord')||trkName.includes('pad')||trkName.includes('string')?'chords':trkName.includes('arp')||trkName.includes('counter')?'arp':'melody';
+    const humanizePct = trk._humanizePct ?? 0.5;
 
     // Group notes by tick to detect chords (same-tick notes = chord = needs staggering)
     const notesByTick = new Map();
@@ -795,7 +908,7 @@ function buildMidi(tracks, bpm, tpb=480) {
         // Chord stagger: simulate piano hand roll (root first, then 3rd, then 5th)
         // Stagger by 5–12 ticks per note in the chord
         const stagger = isChord ? gi * 7 : 0;
-        let t0 = humanize(baseTick + stagger, role);
+        let t0 = humanize(baseTick + stagger, role, humanizePct);
 
         // Legato gap for sustaining instruments: cut dur by 60 ticks so next note breathes
         let rawDur = Math.max(1, Math.round(n.durationTicks ?? n.dur ?? 480));
@@ -1578,53 +1691,93 @@ Generate arpeggios for ALL ${totalBars} bars. Follow the ${gg.chord} chord tones
   }
 
   const totalTracks = trackSections.length;
+  const totalDurationSec = (totalTicks / TPB) * (60 / bp);
 
-  return `You are a professional MIDI arranger. Your job is to write a complete ${totalTracks}-track MIDI accompaniment.
+  return `You are a seasoned audio engineer and record producer writing professional MIDI accompaniment.
+Think like someone who has mixed hundreds of records — not a calculator that outputs grids of notes.
 Output ONLY a valid JSON object. No markdown. No explanation. No code fences.
 ${melodyContext}
 ══ PROJECT ══
-Genre:    ${genre}
+Genre:    ${genre} — ${gg.prog}
 Key:      ${keyStr}
 BPM:      ${bp.toFixed(1)}
 Energy:   ${energy}/10
-Duration: ${totalBars} bars = ${totalTicks} ticks
-Chord progression: ${gg.chord}  (repeating)
-${extraNotes ? `Extra notes: ${extraNotes}` : ''}
+Duration: ${totalBars} bars = ${totalTicks} ticks (${totalDurationSec.toFixed(1)}s)
+Chord progression: ${gg.chord}  (repeating every 4 bars)
+${extraNotes ? `Producer notes: ${extraNotes}` : ''}
 
-══ TICK MATH (memorise this) ══
-TPB = 480 ticks per beat. 4/4 time.
-1 whole note   = 1920 ticks
-1 half note    = 960 ticks
-1 quarter note = 480 ticks
-1 eighth note  = 240 ticks
-1 sixteenth    = 120 ticks
-
-Bar 1  starts at tick 0
-Bar 2  starts at tick 1920
-Bar 3  starts at tick 3840
-Bar 4  starts at tick 5760
-Bar 5  starts at tick 7680
-Bar 6  starts at tick 9600
-Bar 7  starts at tick 11520
-Bar 8  starts at tick 13440
-(each bar = previous + 1920)
-Bar ${totalBars} starts at tick ${(totalBars-1)*1920}. Last tick = ${totalTicks}.
+══ TICK MATH ══
+TPB = 480 ticks per beat  |  4/4 time
+Whole note = 1920  |  Half = 960  |  Quarter = 480  |  Eighth = 240  |  Sixteenth = 120
+Bar 1 = tick 0  |  Bar 2 = tick 1920  |  Bar 3 = tick 3840  |  Bar 4 = tick 5760
+Bar 5 = tick 7680  |  Bar 8 = tick 13440  |  Bar ${totalBars} = tick ${(totalBars-1)*1920}
+End = tick ${totalTicks}
 
 ══ TRACK SPECIFICATIONS ══
-You MUST generate exactly ${totalTracks} tracks, each with its own distinct role, instrument, and rhythm.
-DO NOT put everything on one instrument. Each track MUST have different pitches, rhythms, and velocities.
-
 ${trackSections.join('\n\n')}
 
-══ STRICT RULES ══
-1. Every track MUST cover ALL ${totalBars} bars (ticks 0 to ${totalTicks}).
-2. Each track MUST use the channel and program number specified — do not change them.
-3. Chord track: always 3–4 simultaneous notes. Bass track: always single notes. Arp: always single notes.
-4. Do NOT put bass notes in the chord track or chord notes in the bass track.
-5. Velocities must VARY — do not use the same velocity for every note.
-6. The output must have exactly ${totalTracks} objects in the "tracks" array.
+══ AUDIO ENGINEERING LAWS — mandatory, not optional ══
 
-══ JSON OUTPUT FORMAT ══
+1. FREQUENCY ALLOCATION (prevents masking):
+   Bass track:   MIDI 28–48  (E1–C3) — sub-bass territory, single notes only
+   Chord pads:   MIDI 48–67  (C3–G4) — mid register, NOT where melody lives
+   Melody ref:   MIDI 60–84  (C4–C6) — high register
+   Arp/counter:  MIDI 64–88  (E4–E6) — above chord pads
+   RULE: If melody is active in MIDI 60–72, chord pads MUST be below 60 OR above 76.
+   Never let two tracks compete for the same octave with sustained notes.
+
+2. VELOCITY HIERARCHY (gain staging in MIDI):
+   Bass notes:      velocity 90–110  (foundation — must punch through)
+   Melody ref:      velocity 62–72   (present but not dominant)
+   Arp/counter:     velocity 45–62   (texture layer, subtle)
+   Chord pads:      velocity 38–55   (background — must NOT overpower)
+   RULE: Chord pad velocity must ALWAYS be lower than bass velocity. No exceptions.
+   Inner chord notes (3rd, 5th) should be 8–12 velocity points LOWER than root and top note.
+
+3. SUSTAIN vs DECAY LAW (envelope physics):
+   String/pad patches (prog 48, 88, 89) sustain at FULL volume until note ends.
+   Piano/bass patches decay immediately after attack.
+   THEREFORE: Sustaining pads must use LOWER velocity and FEWER simultaneous notes.
+   For string/pad chord tracks: use DYADS (2 notes: root + 5th) instead of full triads.
+   Cut all sustaining notes 60 ticks SHORT of the barline: if chord lasts 1920, write dur=1860.
+   This "legato gap" lets the next downbeat punch through cleanly.
+
+4. VOICE LEADING (smooth chord movement):
+   When moving from one chord to the next, use nearest-neighbor voice leading.
+   Example: C major (C3-E3-G3) → G major: keep G, move C down to B2, move E down to D3.
+   Result: (B2-D3-G3) — smooth, no parallel octaves, no big jumps.
+   FORBIDDEN: parallel fifths (two voices moving up by a 5th together).
+   FORBIDDEN: all voices jumping by more than a 3rd in the same direction.
+
+5. COMPLEMENTARY RHYTHM (no two tracks doing the same thing):
+   If melody has fast 16th/8th notes → chords play whole/half notes (be sparse)
+   If melody holds a long note → bass and arp should move to fill the space
+   If bass plays on beats 1 and 3 → arp should syncopate on the "and" of beats
+   RULE: No two tracks should have the same rhythmic pattern in the same bar.
+
+6. MACRO-DYNAMICS (the track must breathe):
+   Bars 1–${Math.floor(totalBars/4)}: quieter start, lower velocities across all tracks (×0.8 multiplier)
+   Bars ${Math.floor(totalBars/4)+1}–${Math.floor(totalBars/2)}: build up gradually
+   Bars ${Math.floor(totalBars/2)+1}–${Math.floor(totalBars*0.75)}: peak energy, highest velocities
+   Bars ${Math.floor(totalBars*0.75)+1}–${totalBars}: resolve, descend, fade
+   IMPLEMENTATION: literally write lower velocity numbers in bars 1–${Math.floor(totalBars/4)}.
+
+7. SYNCOPATION (what makes it groove, not sound robotic):
+   Place some bass notes on the "and" of beat 2 (tick 720 of a bar) instead of always on beat 1.
+   Arp notes that start 120 ticks after the barline (on the "and" of beat 1) feel alive.
+   At least 30% of notes should NOT start on a perfect beat (0, 480, 960, 1440).
+
+══ FORBIDDEN BEHAVIORS ══
+✗ FORBIDDEN: Static velocity — using the same velocity number for every note in a track
+✗ FORBIDDEN: Chord pads louder than 60 velocity (they will overpower everything)
+✗ FORBIDDEN: Bass notes in the chord track or chord notes in the bass track
+✗ FORBIDDEN: All tracks playing notes at the exact same tick values (rhythmic unison = mud)
+✗ FORBIDDEN: Parallel fifths or octaves in chord voice leading
+✗ FORBIDDEN: Stopping before ${totalBars} bars — you MUST fill tick 0 to ${totalTicks}
+✗ FORBIDDEN: Putting sustaining chords in the same octave as a melody that is playing
+✗ FORBIDDEN: Writing dur values that perfectly match the step distance for string/pad tracks
+
+══ OUTPUT FORMAT ══
 {
   "bpm": ${bp.toFixed(1)},
   "tracks": [
@@ -1633,19 +1786,20 @@ ${trackSections.join('\n\n')}
       "channel": 0,
       "program": 0,
       "notes": [
-        { "tick": 0, "dur": 1920, "pitch": 60, "velocity": 80 },
-        { "tick": 0, "dur": 1920, "pitch": 64, "velocity": 75 }
+        { "tick": 0,    "dur": 1860, "pitch": 48, "velocity": 42 },
+        { "tick": 0,    "dur": 1860, "pitch": 55, "velocity": 38 }
       ]
     }
   ]
 }
 
-"tick" = integer, start position in ticks (≥ 0)
-"dur"  = integer, duration in ticks (≥ 60)
-"pitch" = integer, MIDI note number 0–127
-"velocity" = integer, MIDI velocity 1–127
+"tick"     = integer ≥ 0  (start position in ticks)
+"dur"      = integer ≥ 60  (duration — sustaining patches: subtract 60 from full value)
+"pitch"    = MIDI 0–127
+"velocity" = 1–127  (follow the velocity hierarchy above — this is law)
 
-Output ONLY the JSON object. Start your response with { and end with }. Nothing else.`;
+The output must have exactly ${totalTracks} objects in "tracks".
+Start your response with {  and end with }  — nothing else outside the JSON.`;
 }
 
 function refreshAccompPrompt(){
@@ -1726,66 +1880,222 @@ function renderAccomp(){
   const empty=document.getElementById('acmp-empty');
   if(!accompData||!accompData.tracks){if(empty)empty.style.display='flex';return;}
   if(empty)empty.style.display='none';
-  [...body.querySelectorAll('.track-card')].forEach(c=>c.remove());
+  [...body.querySelectorAll('.mx-card')].forEach(c=>c.remove());
+
   const bp=accompData.bpm||DEF_BPM;
-  const trackColors=['#3ecf8e','#38bdf8','#a78bfa','#fbbf24'];
-  const GM_NAMES={0:'Piano',4:'El.Piano',11:'Vibraphone',24:'Guitar',29:'Ov.Guitar',32:'Ac.Bass',33:'El.Bass',36:'Slap Bass',38:'Synth Bass',40:'Violin',48:'Strings',55:'Orch.Hit',81:'Synth Lead',88:'Synth Pad',89:'Warm Pad'};
+  const TRACK_COLORS=['#3ecf8e','#38bdf8','#a78bfa','#fbbf24','#f87171','#fb7185'];
+  const GM_NAMES={0:'Acoustic Piano',1:'Bright Piano',2:'El.Grand Piano',4:'El.Piano 1',
+    11:'Vibraphone',24:'Nylon Guitar',26:'Jazz Guitar',29:'Overdrive Guitar',
+    32:'Acoustic Bass',33:'Finger Bass',36:'Slap Bass',38:'Synth Bass 1',
+    40:'Violin',48:'String Ensemble',55:'Orchestra Hit',
+    65:'Alto Sax',73:'Flute',81:'Synth Lead',88:'New Age Pad',89:'Warm Pad'};
+
+  // CC7 defaults per role — matches buildMidi gain staging
+  const GAIN_DEFAULTS={melody:100,bass:110,chords:52,arp:82};
+
   accompData.tracks.forEach((trk,ti)=>{
-    const c=trackColors[ti%trackColors.length];
+    const c=TRACK_COLORS[ti%TRACK_COLORS.length];
     const notes=trk.notes||[];
     const prog=trk.program??0;
-    const progName=GM_NAMES[prog]||`Prog ${prog}`;
-    const card=document.createElement('div');card.className='track-card';
-    // Show first 6 notes as preview
-    const previewLines=notes.slice(0,6).map(n=>`tick=${String(n.tick).padStart(5)}  dur=${String(n.dur).padStart(4)}  ${mname(n.pitch).padEnd(3)}  vel=${n.velocity||80}`).join('\n');
-    const more=notes.length>6?`\n… +${notes.length-6} more`:'';
-    card.innerHTML=`<div class="track-card-head"><div class="track-card-name">${esc(trk.name||`Track ${ti+1}`)}</div><span class="track-badge" style="background:${c}22;color:${c};border:1px solid ${c}44">${progName} · ch${trk.channel??ti} · ${notes.length} notes</span></div><div class="track-card-notes">${esc(previewLines+more)}</div>`;
-    // Mini piano roll
-    if(notes.length){
-      const rollDiv=document.createElement('div');rollDiv.className='proll';
-      const canvas=document.createElement('canvas');rollDiv.appendChild(canvas);card.appendChild(rollDiv);
-      requestAnimationFrame(()=>{
-        const W=rollDiv.offsetWidth||500,H=36;canvas.width=W;canvas.height=H;
-        const ctx2=canvas.getContext('2d');ctx2.clearRect(0,0,W,H);
-        ctx2.fillStyle=c+'18';ctx2.fillRect(0,0,W,H);
-        const maxT=Math.max(...notes.map(n=>n.tick+n.dur));
-        const pitches=notes.map(n=>n.pitch),minP=Math.min(...pitches)-1,maxP=Math.max(...pitches)+1,pRange=maxP-minP||1;
-        notes.forEach(n=>{
-          const x=Math.round(n.tick/maxT*(W-1));const w=Math.max(2,Math.round(n.dur/maxT*W)-1);
-          const y=Math.round((maxP-n.pitch)/pRange*(H-4))+2;
-          const alpha=Math.round((n.velocity||80)/127*100);
-          ctx2.fillStyle=c;ctx2.globalAlpha=alpha/100;ctx2.fillRect(x,y,w,3);ctx2.globalAlpha=1;
-        });
-      });
-    }
+    const progName=GM_NAMES[prog]||`GM Prog ${prog}`;
+    const tname=(trk.name||'').toLowerCase();
+    const role=tname.includes('bass')?'bass':tname.includes('chord')||tname.includes('pad')||tname.includes('string')?'chords':tname.includes('arp')||tname.includes('counter')?'arp':'melody';
+    const cc7Default=trk.cc7??GAIN_DEFAULTS[role]??85;
+
+    const card=document.createElement('div');
+    card.className='mx-card';
+    card.dataset.ti=ti;
+
+    card.innerHTML=`
+      <div class="mx-card-top">
+        <div class="mx-color-bar" style="background:${c}"></div>
+        <div class="mx-name">${esc(trk.name||`Track ${ti+1}`)}</div>
+        <span class="mx-patch">${progName}</span>
+        <button class="mx-lock" title="Lock track — excluded from next regeneration" onclick="App.toggleLock(${ti})">🔒</button>
+      </div>
+      <div class="mx-body">
+        <div class="mx-vol-row">
+          <span class="mx-vol-label">VOL</span>
+          <input type="range" class="mx-vol-sl" min="0" max="127" value="${cc7Default}"
+            style="flex:1;accent-color:${c}"
+            oninput="App.setCC7(${ti},parseInt(this.value));this.nextElementSibling.textContent=this.value">
+          <span class="mx-vol-val">${cc7Default}</span>
+        </div>
+        <div style="font-size:8px;color:var(--dim)">${notes.length} notes · ch${trk.channel??ti} · ${role.toUpperCase()}</div>
+      </div>
+      <div class="mx-roll"><canvas></canvas></div>`;
+
+    // Draw mini piano roll
     body.appendChild(card);
+    requestAnimationFrame(()=>{
+      const rollDiv=card.querySelector('.mx-roll');
+      const canvas=rollDiv.querySelector('canvas');
+      const W=rollDiv.offsetWidth||400, H=32;
+      canvas.width=W; canvas.height=H;
+      const ctx=canvas.getContext('2d');
+      ctx.fillStyle=c+'18'; ctx.fillRect(0,0,W,H);
+      if(!notes.length) return;
+      const maxT=Math.max(...notes.map(n=>(n.tick||0)+(n.dur||0)))||1;
+      const pitches=notes.map(n=>n.pitch);
+      const minP=Math.min(...pitches)-1, maxP=Math.max(...pitches)+1, pRange=maxP-minP||1;
+      notes.forEach(n=>{
+        const x=Math.round((n.tick||0)/maxT*(W-1));
+        const w=Math.max(2,Math.round((n.dur||480)/maxT*W)-1);
+        const y=Math.round((maxP-n.pitch)/pRange*(H-4))+2;
+        const alpha=((n.velocity||80)/127);
+        ctx.fillStyle=c; ctx.globalAlpha=alpha; ctx.fillRect(x,y,w,3); ctx.globalAlpha=1;
+      });
+    });
   });
 }
 
+// Lock / CC7 controls
+function toggleLock(ti){
+  if(!accompData?.tracks[ti]) return;
+  const trk=accompData.tracks[ti];
+  trk._locked=!trk._locked;
+  const card=[...document.querySelectorAll('.mx-card')][ti];
+  if(!card) return;
+  const btn=card.querySelector('.mx-lock');
+  card.classList.toggle('locked', trk._locked);
+  btn.classList.toggle('on', trk._locked);
+  btn.title=trk._locked?'Track locked — will not be regenerated':'Lock track';
+  toast(trk._locked?`"${trk.name}" locked`:`"${trk.name}" unlocked`, 'info');
+}
+
+function setCC7(ti, val){
+  if(!accompData?.tracks[ti]) return;
+  accompData.tracks[ti].cc7=Math.max(0,Math.min(127,val));
+}
+
 function downloadAccomp(){
-  if(!accompData)return toast('Parse a response first','warn');
+  if(!accompData) return toast('Parse a response first','warn');
   const bp=accompData.bpm||DEF_BPM;
-  // Tick-based: notes already have tick/dur fields
+  const humanizePct=parseInt(document.getElementById('humanize-sl')?.value||50)/100;
+
   const midiTracks=accompData.tracks.map(trk=>({
-    name:trk.name||'Track',
-    channel:trk.channel??0,
-    program:trk.program??0,
-    notes:(trk.notes||[]).map(n=>({
-      startTick:Math.max(0,Math.round(n.tick)),
-      durationTicks:Math.max(1,Math.round(n.dur)),
-      pitch:Math.max(0,Math.min(127,Math.round(n.pitch))),
-      velocity:Math.max(1,Math.min(127,Math.round(n.velocity||80)))
+    name: trk.name||'Track',
+    channel: trk.channel??0,
+    program: trk.program??0,
+    cc7: trk.cc7,        // may be undefined — buildMidi will auto-detect by name
+    _humanizePct: humanizePct,
+    notes: (trk.notes||[]).map(n=>({
+      startTick:    Math.max(0, Math.round(n.tick||0)),
+      durationTicks:Math.max(1, Math.round(n.dur||480)),
+      pitch:        Math.max(0, Math.min(127, Math.round(n.pitch))),
+      velocity:     Math.max(1, Math.min(127, Math.round(n.velocity||80)))
     }))
   }));
-  const bytes=buildMidi(midiTracks,bp,TPB);
+
+  const bytes=buildMidi(midiTracks, bp, TPB);
   const fname=(activeFile?.name.replace(/\.svp$/i,'')||'svp')+'_accompaniment.mid';
-  downloadMidi(bytes,fname);
-  toast('MIDI downloaded — drag into FL Studio, all tracks are separate','info');
+  downloadMidi(bytes, fname);
+
+  const locked=accompData.tracks.filter(t=>t._locked).map(t=>t.name);
+  const lockNote=locked.length?` (${locked.join(', ')} locked)`: '';
+  toast(`MIDI exported${lockNote} — drag into FL Studio`,'info');
 }
 
 /* ═══════════════════════════════════════════════
-   NOTE EDITING
+   VOCAL MIDI EXPORT — consonant pre-utterance shift
+   Hard consonants (k,s,t,ch,p) shifted back by
+   consonant-shift ticks so the vowel hits the beat.
 ═══════════════════════════════════════════════ */
+function exportMidi(){
+  if(!activePart) return toast('Select a part first','err');
+  const bp=bpmOf(activeFile.svpData), ns=notesRaw(activePart);
+  if(!ns.length) return toast('No notes to export','warn');
+  const cShift=parseInt(document.getElementById('consonant-shift')?.value||18);
+  const humanizePct=parseInt(document.getElementById('humanize-sl')?.value||50)/100;
+
+  // Hard consonant detection — Japanese kana and Latin chars
+  const HARD_CONSONANTS=/^[kstp]|^ch|^[かきくけこさしすせそたちつてとぱぴぷぺぽ]/i;
+
+  const midiNotes=ns.map(n=>{
+    const isHard=HARD_CONSONANTS.test((n.lyric||'').trim());
+    const rawTick=s2tick(b2s(n.onB,bp), bp);
+    const shift=isHard ? cShift : 0;
+    const startTick=Math.max(0, rawTick - shift);
+    return {
+      startTick,
+      durationTicks: Math.max(1, s2tick(b2s(n.durB,bp), bp) + shift),
+      pitch: n.pitch,
+      velocity: 72
+    };
+  });
+
+  const bytes=buildMidi([{
+    name:'SVP Vocal Melody', channel:0, program:0,
+    _humanizePct: humanizePct * 0.3, // gentle humanize on melody
+    notes: midiNotes
+  }], bp);
+  downloadMidi(bytes, (activeFile.name.replace(/\.svp$/i,'')||'vocal')+'_melody.mid');
+  toast(`Vocal MIDI exported (consonant shift: ${cShift} ticks)`,'info');
+}
+
+/* ═══════════════════════════════════════════════
+   LYRIC VIEWER — syllabic highlighting
+   Maps SVP notes to visual states: past/active/upcoming
+   Uses requestAnimationFrame for smooth real-time tracking.
+   Driven by a manual playhead slider (no audio engine needed).
+═══════════════════════════════════════════════ */
+let lyricPlayhead=0, lyricPlaying=false, lyricRAF=null, lyricStartWall=0, lyricStartSec=0;
+
+function buildLyricViewer(){
+  const viewer=document.getElementById('lyric-viewer');
+  const line=document.getElementById('lyric-line');
+  if(!activePart){viewer.style.display='none';return;}
+  const ns=notesRaw(activePart), bp=bpmOf(activeFile.svpData);
+  if(!ns.length){viewer.style.display='none';return;}
+
+  line.innerHTML='';
+  ns.forEach((n,i)=>{
+    const span=document.createElement('span');
+    span.className='syl upcoming';
+    span.textContent=n.lyric||'?';
+    span.dataset.start=b2s(n.onB,bp).toFixed(4);
+    span.dataset.end=b2s(n.onB+n.durB,bp).toFixed(4);
+    line.appendChild(span);
+  });
+  viewer.style.display='block';
+  updateLyricHighlight(0);
+}
+
+function updateLyricHighlight(timeSec){
+  const syls=[...document.querySelectorAll('#lyric-line .syl')];
+  syls.forEach(s=>{
+    const start=parseFloat(s.dataset.start);
+    const end=parseFloat(s.dataset.end);
+    if(timeSec>=end)          s.className='syl past';
+    else if(timeSec>=start)   s.className='syl active';
+    else                      s.className='syl upcoming';
+  });
+}
+
+function lyricTick(){
+  if(!lyricPlaying)return;
+  const elapsed=(performance.now()-lyricStartWall)/1000;
+  lyricPlayhead=lyricStartSec+elapsed;
+  updateLyricHighlight(lyricPlayhead);
+  lyricRAF=requestAnimationFrame(lyricTick);
+}
+
+function lyricPlay(){
+  if(!activePart)return toast('Select a part first','err');
+  buildLyricViewer();
+  lyricPlaying=true;
+  lyricStartSec=lyricPlayhead;
+  lyricStartWall=performance.now();
+  lyricRAF=requestAnimationFrame(lyricTick);
+  toast('Lyric preview playing…','info');
+}
+function lyricStop(){
+  lyricPlaying=false;
+  if(lyricRAF){cancelAnimationFrame(lyricRAF);lyricRAF=null;}
+}
+function lyricReset(){
+  lyricStop();lyricPlayhead=0;updateLyricHighlight(0);
+}
 function sel(i,multi){if(multi){selSet.has(i)?selSet.delete(i):selSet.add(i);}else{selSet.clear();selSet.add(i);}renderNoteTable();}
 function editN(i,field,val){if(!activePart||i>=activePart.notes.length)return;pushU();const n=activePart.notes[i];const bp=bpmOf(activeFile.svpData);if(field==='lyric')n.lyrics=String(val);}
 function delN(i){if(!activePart)return;pushU();activePart.notes.splice(i,1);refreshAll();toast('Note deleted');}
@@ -1966,8 +2276,22 @@ function exportSubtitles(){
 /* ═══════════════════════════════════════════════
    INIT
 ═══════════════════════════════════════════════ */
-const App={undo,redo,setOp,setNT,refresh,autoFix,preview,doCommit,discard,copyPrompt,sel,editN,delN,delSel,selAll,openAdd,commitAdd,doExport,exportMidi,copyAccompPrompt,refreshAccompPrompt,parseAccomp,clearAccomp,downloadAccomp,exportSubtitles};
-setOp('extend');setNT('singing',false);updateLangHint();refreshAll();
+const App={
+  undo,redo,setOp,setNT,refresh,
+  autoFix,preview,doCommit,discard,
+  copyPrompt,
+  sel,editN,delN,delSel,selAll,
+  openAdd,commitAdd,
+  doExport,exportMidi,exportSubtitles,
+  copyAccompPrompt,refreshAccompPrompt,
+  parseAccomp,clearAccomp,downloadAccomp,
+  toggleLock,setCC7,
+  lyricPlay,lyricStop,lyricReset,
+};
+setOp('extend');
+setNT('singing',false);
+updateLangHint();
+refreshAll();
 </script>
 </body>
 </html>
