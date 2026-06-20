@@ -635,19 +635,95 @@ hr.rule { border:none; border-top:1px solid var(--b1); margin:10px 0; }
       <!-- Controls -->
       <div id="midi-ctrl">
         <div id="midi-ctrl-body">
+
+          <!-- SVP status indicator -->
+          <div id="midi-svp-status" style="margin-bottom:12px;padding:7px 9px;border-radius:4px;font-size:9.5px;line-height:1.5;background:var(--s2);border:1px solid var(--e2);">
+            <span id="midi-svp-icon">📂</span> <span id="midi-svp-text">No SVP loaded — using manual settings below</span>
+          </div>
+
           <div class="gap">
-            <div class="sec">Accompaniment Settings</div>
+            <div class="sec">Project Settings</div>
+
             <div class="f">
-              <label>Genre / Vibe</label>
+              <label>BPM</label>
+              <div class="srow">
+                <input type="number" id="acmp-bpm" value="130" min="60" max="220" style="width:70px;flex-shrink:0">
+                <select id="acmp-tempo-feel" style="flex:1">
+                  <option value="">— Tempo feel —</option>
+                  <option value="60">Slow ballad (60)</option>
+                  <option value="75">Soul / R&B (75)</option>
+                  <option value="90">Hip-hop / trap (90)</option>
+                  <option value="100">Pop midtempo (100)</option>
+                  <option value="120">Dance / EDM (120)</option>
+                  <option value="128">House / upbeat (128)</option>
+                  <option value="140">Rock / energetic (140)</option>
+                  <option value="160">Fast / intense (160)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="f">
+              <label>Key</label>
+              <select id="acmp-key">
+                <option value="auto">Auto-detect from SVP</option>
+                <option value="C major">C major (neutral, bright)</option>
+                <option value="G major">G major (open, hopeful)</option>
+                <option value="D major">D major (triumphant)</option>
+                <option value="A major">A major (warm, pop)</option>
+                <option value="E major">E major (energetic)</option>
+                <option value="F major">F major (tender)</option>
+                <option value="Bb major">Bb major (soulful)</option>
+                <option value="A minor">A minor (melancholy, classic)</option>
+                <option value="D minor">D minor (dark, dramatic)</option>
+                <option value="E minor">E minor (emotional)</option>
+                <option value="B minor">B minor (introspective)</option>
+                <option value="F# minor">F# minor (intense)</option>
+                <option value="C# minor">C# minor (deep, J-Pop)</option>
+              </select>
+            </div>
+
+            <div class="f">
+              <label>Bars</label>
+              <div class="srow">
+                <input type="range" min="4" max="128" step="4" value="16" id="acmp-bars-sl" oninput="document.getElementById('abv').textContent=this.value">
+                <span class="sv" id="abv">16</span>
+              </div>
+              <div style="font-size:8.5px;color:var(--t3);margin-top:2px">Auto-matched to SVP length when file is loaded</div>
+            </div>
+          </div>
+
+          <hr class="rule">
+
+          <div class="gap">
+            <div class="sec">Genre &amp; Feel</div>
+
+            <div class="f">
+              <label>Genre</label>
               <select id="acmp-genre">
-                <option value="jpop">J-Pop (bright, clean)</option>
-                <option value="rnb">R&B / Soul</option>
-                <option value="trap">Trap / Hip-hop</option>
-                <option value="ballad">Ballad (slow, emotional)</option>
-                <option value="rock">Rock (distorted chords)</option>
-                <option value="edm">EDM / Synth-pop</option>
-                <option value="lofi">Lo-fi / Chill-hop</option>
-                <option value="anime">Anime / Orchestral</option>
+                <optgroup label="Japanese / Anime">
+                  <option value="jpop">J-Pop (bright, I–V–vi–IV)</option>
+                  <option value="jpop-minor">J-Pop Minor (emotional, vi–IV–I–V)</option>
+                  <option value="anime">Anime / Orchestral (epic strings)</option>
+                  <option value="city-pop">City Pop (jazzy, nostalgic)</option>
+                  <option value="vocaloid">Vocaloid-style (electronic pop)</option>
+                </optgroup>
+                <optgroup label="Western Pop / R&B">
+                  <option value="pop">Pop (I–V–vi–IV, radio-friendly)</option>
+                  <option value="rnb">R&B / Soul (ii–V–I with 7ths)</option>
+                  <option value="ballad">Ballad (slow, emotional, I–IV–V)</option>
+                  <option value="gospel">Gospel / Soul (lush chords)</option>
+                </optgroup>
+                <optgroup label="Electronic">
+                  <option value="edm">EDM / Synth-pop</option>
+                  <option value="lofi">Lo-fi / Chill-hop (lazy jazz)</option>
+                  <option value="trap">Trap / Hip-hop (dark, 808)</option>
+                  <option value="synthwave">Synthwave / Retrowave</option>
+                </optgroup>
+                <optgroup label="Rock / Other">
+                  <option value="rock">Rock (power chords, I–IV–V)</option>
+                  <option value="indie">Indie / Folk (open, acoustic)</option>
+                  <option value="metal">Metal / Heavy (i–bVI–bVII–i)</option>
+                </optgroup>
               </select>
             </div>
 
@@ -660,77 +736,68 @@ hr.rule { border:none; border-top:1px solid var(--b1); margin:10px 0; }
             </div>
 
             <div class="f">
-              <label>Key / Mode</label>
-              <select id="acmp-key">
-                <option value="auto">Auto-detect from melody</option>
-                <option value="C major">C major</option>
-                <option value="G major">G major</option>
-                <option value="D major">D major</option>
-                <option value="A major">A major</option>
-                <option value="E major">E major</option>
-                <option value="F major">F major</option>
-                <option value="Bb major">Bb major</option>
-                <option value="A minor">A minor</option>
-                <option value="D minor">D minor</option>
-                <option value="E minor">E minor</option>
-                <option value="B minor">B minor</option>
-                <option value="F# minor">F# minor</option>
+              <label>Mood / Feel</label>
+              <select id="acmp-mood">
+                <option value="uplifting">Uplifting / Happy</option>
+                <option value="melancholy">Melancholy / Wistful</option>
+                <option value="romantic">Romantic / Tender</option>
+                <option value="epic">Epic / Cinematic</option>
+                <option value="chill">Chill / Relaxed</option>
+                <option value="intense">Intense / Dramatic</option>
+                <option value="playful">Playful / Quirky</option>
+                <option value="dark">Dark / Brooding</option>
               </select>
-            </div>
-
-            <div class="f">
-              <label>Bars of accompaniment</label>
-              <div class="srow">
-                <input type="range" min="4" max="128" step="4" value="16" id="acmp-bars-sl" oninput="document.getElementById('abv').textContent=this.value">
-                <span class="sv" id="abv">16</span>
-              </div>
-              <div style="font-size:9px;color:var(--dim);margin-top:2px">Auto-set from SVP length when a file is loaded</div>
             </div>
           </div>
 
           <hr class="rule">
 
           <div class="gap">
-            <div class="sec">MIDI Tracks to Include</div>
-            <label style="display:flex;align-items:center;gap:6px;margin-bottom:6px;font-size:10.5px;cursor:pointer">
-              <input type="checkbox" id="trk-melody" checked> Melody Reference
+            <div class="sec">MIDI Tracks</div>
+            <label style="display:flex;align-items:center;gap:7px;margin-bottom:7px;font-size:10.5px;cursor:pointer;color:var(--t1)">
+              <input type="checkbox" id="trk-melody" checked> <span>Melody Reference</span>
+              <span style="font-size:8.5px;color:var(--t3);margin-left:auto">Piano, soft</span>
             </label>
-            <label style="display:flex;align-items:center;gap:6px;margin-bottom:6px;font-size:10.5px;cursor:pointer">
-              <input type="checkbox" id="trk-chords" checked> Chord Pads
+            <label style="display:flex;align-items:center;gap:7px;margin-bottom:7px;font-size:10.5px;cursor:pointer;color:var(--t1)">
+              <input type="checkbox" id="trk-chords" checked> <span>Chord Pads</span>
+              <span style="font-size:8.5px;color:var(--t3);margin-left:auto">Strings/pad</span>
             </label>
-            <label style="display:flex;align-items:center;gap:6px;margin-bottom:6px;font-size:10.5px;cursor:pointer">
-              <input type="checkbox" id="trk-bass" checked> Bass Line
+            <label style="display:flex;align-items:center;gap:7px;margin-bottom:7px;font-size:10.5px;cursor:pointer;color:var(--t1)">
+              <input type="checkbox" id="trk-bass" checked> <span>Bass Line</span>
+              <span style="font-size:8.5px;color:var(--t3);margin-left:auto">Low register</span>
             </label>
-            <label style="display:flex;align-items:center;gap:6px;margin-bottom:6px;font-size:10.5px;cursor:pointer">
-              <input type="checkbox" id="trk-arp"> Arpeggio / Counter-melody
+            <label style="display:flex;align-items:center;gap:7px;margin-bottom:7px;font-size:10.5px;cursor:pointer;color:var(--t1)">
+              <input type="checkbox" id="trk-arp" checked> <span>Arpeggio / Counter</span>
+              <span style="font-size:8.5px;color:var(--t3);margin-left:auto">Texture</span>
             </label>
           </div>
 
-          <div class="gap">
-            <div class="sec">Extra Notes for AI</div>
-            <div class="f">
-              <textarea id="acmp-notes" style="min-height:55px" placeholder="E.g. 'keep the bass minimal', 'use suspended chords', '2-5-1 progression'"></textarea>
-            </div>
-          </div>
+          <hr class="rule">
 
           <div class="gap">
             <div class="sec">Humanization</div>
-            <div style="font-size:9px;color:var(--sub);margin-bottom:6px;line-height:1.5">Micro-timing offset applied at MIDI export. 0% = robotic grid. 100% = ±12 tick human feel.</div>
-            <div class="humanize-labels"><span>Mechanical</span><span id="humanize-val">50%</span><span>Human</span></div>
-            <input type="range" min="0" max="100" value="50" id="humanize-sl" class="srow" style="width:100%;accent-color:var(--pur)" oninput="document.getElementById('humanize-val').textContent=this.value+'%'">
+            <div class="humanize-labels"><span>Mechanical</span><span id="humanize-val">55%</span><span>Human</span></div>
+            <input type="range" min="0" max="100" value="55" id="humanize-sl" style="width:100%;accent-color:var(--pur);cursor:pointer" oninput="document.getElementById('humanize-val').textContent=this.value+'%'">
+          </div>
+
+          <div class="gap">
+            <div class="sec">Extra Instructions</div>
+            <div class="f">
+              <textarea id="acmp-notes" style="min-height:50px" placeholder="E.g. 'use suspended chords on bar 4', 'add a piano intro', 'more syncopation in the bass'"></textarea>
+            </div>
           </div>
 
           <div class="gap">
             <div class="sec">Vocal Consonant Shift</div>
-            <div style="font-size:9px;color:var(--sub);margin-bottom:6px;line-height:1.5">Shifts hard-consonant notes earlier so the vowel lands on the beat (SynthV pre-utterance fix).</div>
             <div class="cs-row">
-              <label>Shift (ticks): hard consonants k/s/t/ch</label>
+              <label>Ticks to shift hard consonants (k/s/t/ch) earlier</label>
               <input type="number" id="consonant-shift" value="18" min="0" max="40">
             </div>
           </div>
+
         </div>
         <div id="midi-ctrl-foot">
-          <button class="btn btn-cyn" onclick="App.copyAccompPrompt()" style="width:100%;height:28px">📋 Copy Prompt for AI</button>
+          <button class="btn btn-cyn" onclick="App.copyAccompPrompt()" style="width:100%;height:30px;font-size:11px">📋 Copy Prompt for AI</button>
           <button class="btn sm" onclick="App.refreshAccompPrompt()" style="width:100%">↺ Refresh Prompt</button>
           <button class="btn sm btn-ghost-cyn" id="acmp-dl-btn" disabled onclick="App.downloadAccomp()" style="width:100%">⬇ Download .mid for FL Studio</button>
         </div>
@@ -1445,16 +1512,559 @@ function exportMidi(){
    TPB=480, so: quarter=480, half=960, whole=1920, 8th=240, 16th=120
 ═══════════════════════════════════════════════ */
 function getAccompParams(){
-  const genre=document.getElementById('acmp-genre').value;
-  const energy=parseInt(document.getElementById('energy-sl').value);
-  const keyChoice=document.getElementById('acmp-key').value;
-  const wantMelody=document.getElementById('trk-melody').checked;
-  const wantChords=document.getElementById('trk-chords').checked;
-  const wantBass=document.getElementById('trk-bass').checked;
-  const wantArp=document.getElementById('trk-arp').checked;
-  const extraNotes=document.getElementById('acmp-notes').value.trim();
-  const bp=activePart?bpmOf(activeFile.svpData):DEF_BPM;
-  return{genre,energy,keyChoice,wantMelody,wantChords,wantBass,wantArp,extraNotes,bp};
+  const genre     = document.getElementById('acmp-genre')?.value || 'jpop';
+  const energy    = parseInt(document.getElementById('energy-sl')?.value || 6);
+  const keyChoice = document.getElementById('acmp-key')?.value || 'auto';
+  const mood      = document.getElementById('acmp-mood')?.value || 'uplifting';
+  const wantMelody= document.getElementById('trk-melody')?.checked ?? true;
+  const wantChords= document.getElementById('trk-chords')?.checked ?? true;
+  const wantBass  = document.getElementById('trk-bass')?.checked ?? true;
+  const wantArp   = document.getElementById('trk-arp')?.checked ?? true;
+  const extraNotes= document.getElementById('acmp-notes')?.value.trim() || '';
+  const manualBpm = parseInt(document.getElementById('acmp-bpm')?.value) || DEF_BPM;
+  const bp = activePart ? bpmOf(activeFile.svpData)
+           : activeFile  ? bpmOf(activeFile.svpData)
+           : manualBpm;
+  return{genre,energy,keyChoice,mood,wantMelody,wantChords,wantBass,wantArp,extraNotes,bp};
+}
+
+// Update the MIDI status banner and BPM field whenever file state changes
+function updateMidiStatus(){
+  const icon=document.getElementById('midi-svp-icon');
+  const text=document.getElementById('midi-svp-text');
+  const bpmEl=document.getElementById('acmp-bpm');
+  if(!icon||!text) return;
+  if(activePart){
+    const bp=bpmOf(activeFile.svpData);
+    if(bpmEl) bpmEl.value=Math.round(bp);
+    const ns=notesRaw(activePart);
+    const bars=Math.ceil(ns.length>0?(Number(ns[ns.length-1].onB+ns[ns.length-1].durB-ns[0].onB)/BLK*(60/bp)*bp/60*TPB/1920):0);
+    document.getElementById('acmp-bars-sl').value=Math.max(4,bars*1920===0?16:bars);
+    document.getElementById('abv').textContent=document.getElementById('acmp-bars-sl').value;
+    icon.textContent='✅'; text.style.color='var(--grn)';
+    text.textContent=`${activePart.name} · ${ns.length} notes · ${bp.toFixed(1)} BPM · length auto-matched`;
+  } else if(activeFile){
+    const bp=bpmOf(activeFile.svpData);
+    if(bpmEl) bpmEl.value=Math.round(bp);
+    icon.textContent='📁'; text.style.color='var(--cyn)';
+    text.textContent=`${activeFile.name} loaded — no part selected, using all notes`;
+  } else {
+    icon.textContent='📂'; text.style.color='var(--t3)';
+    text.textContent='No SVP loaded — set BPM manually and choose key below';
+  }
+}
+
+function isSustainingProg(p){
+  return[48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,
+         88,89,90,91,92,93,94,95,16,17,18,19,20,21,22,23,
+         40,41,42,43,44,45,46,47].includes(p);
+}
+
+function buildAccompPrompt(){
+  const{genre,energy,keyChoice,mood,wantMelody,wantChords,wantBass,wantArp,extraNotes,bp}=getAccompParams();
+
+  // Collect notes from SVP if available
+  let allNotes=[], sourceName='';
+  if(activePart){ allNotes=notesRaw(activePart); sourceName=activePart.vname; }
+  else if(activeFile&&activeFile.parts.length){
+    activeFile.parts.forEach(p=>{ allNotes=allNotes.concat(notesRaw(p)); });
+    allNotes.sort((a,b)=>a.onB<b.onB?-1:a.onB>b.onB?1:0);
+    sourceName=activeFile.parts[0].vname||'';
+  }
+
+  // Derive duration
+  let totalBars, totalTicks;
+  if(allNotes.length){
+    const firstOnB=allNotes[0].onB, lastN=allNotes[allNotes.length-1];
+    const totalSec=Number(lastN.onB+lastN.durB-firstOnB)/BLK*(60/bp);
+    totalBars=Math.max(4,Math.ceil(totalSec*bp/60*TPB/1920));
+    totalTicks=totalBars*1920;
+  } else {
+    totalBars=parseInt(document.getElementById('acmp-bars-sl')?.value||16);
+    totalTicks=totalBars*1920;
+  }
+
+  // ── GENRE DATABASE ──
+  // Real music theory, proven progressions, curated song references per genre.
+  // Song refs are embedded here so any AI can use them without internet access.
+  const GENRE_DB={
+    'jpop':{
+      name:'J-Pop (Major)',scale:'Major scale — MIDI semitones from root: 0,2,4,5,7,9,11',
+      diatonic:[0,2,4,5,7,9,11], minor:false,
+      progs:[
+        {n:'Royal Road (most common)',c:'F–G–Am–C',roman:'IV–V–vi–I'},
+        {n:'Komuro progression',c:'Am–F–C–G',roman:'vi–IV–I–V'},
+        {n:'Pachelbel J-Pop',c:'C–G–Am–Em–F–C–F–G',roman:'I–V–vi–iii–IV–I–IV–V'},
+      ],
+      refs:'Reference tracks that define this sound:\n  • Lemon – Kenshi Yonezu (2018) [bright piano, warm strings, clean mix]\n  • Gurenge – LiSA (2019) [driving rhythm, emotional minor-to-major shift]\n  • Hikaru Nara – Goose House (2014) [acoustic guitar, clean arpeggios]\n  Study these: the chord pads sit low, the bass is simple, melody has space to breathe.',
+      ci:{prog:0,name:'Acoustic Piano',ch:1},
+      bi:{prog:32,name:'Acoustic Bass',ch:2},
+      ai:{prog:11,name:'Vibraphone',ch:3},
+      cv:'MIDI 52–72 (E3–C5). Close position major triads. Root + 3rd + 5th.',
+      bp2:'Root on beat 1 (tick 0). Fifth on beat 3 (tick 960). Occasional passing quarter note on beat 4.',
+      ap:'Vibraphone eighth note arpeggios. MIDI 64–84. Root→3rd→5th→octave pattern.',
+      rhythm:'Straight 8th note feel. Clean and radio-friendly.',
+    },
+    'jpop-minor':{
+      name:'J-Pop Minor',scale:'Natural minor — semitones: 0,2,3,5,7,8,10',
+      diatonic:[0,2,3,5,7,8,10], minor:true,
+      progs:[
+        {n:'YOASOBI style',c:'Am–C–G–F',roman:'i–bIII–bVII–bVI'},
+        {n:'Emotional minor',c:'Am–F–C–G',roman:'i–bVI–bIII–bVII'},
+        {n:'J-Drama tension',c:'Am–G–F–E',roman:'i–bVII–bVI–V (major V for tension)'},
+      ],
+      refs:'Reference tracks:\n  • Idol – YOASOBI (2023) [fast arps, driving minor energy, very busy texture]\n  • Melt – ryo feat. Hatsune Miku (2007) [clean synth, steady 4/4, iconic]\n  • Nisemono – Eve (2019) [layered synths, melancholy minor feel]\n  Study: the arpeggio is the signature texture. Fast 16th notes above a simple chord pad.',
+      ci:{prog:0,name:'Acoustic Piano',ch:1},
+      bi:{prog:32,name:'Acoustic Bass',ch:2},
+      ai:{prog:73,name:'Flute',ch:3},
+      cv:'MIDI 48–67. Minor triads. Keep below melody octave.',
+      bp2:'Driving 8th notes on root. Occasional chromatic approach notes.',
+      ap:'Flowing 16th note arpeggios. MIDI 64–84. The primary texture of this genre.',
+      rhythm:'Slightly urgent — notes pushed slightly forward. 16th note arp is essential.',
+    },
+    'anime':{
+      name:'Anime / Orchestral',scale:'Major scale with occasional chromatic colour tones',
+      diatonic:[0,2,4,5,7,9,11], minor:false,
+      progs:[
+        {n:'Epic anime',c:'C–G–Am–Em–F–C–F–G',roman:'I–V–vi–iii–IV–I–IV–V'},
+        {n:'Hero theme',c:'C–F–G–Am–F–G–C',roman:'I–IV–V–vi–IV–V–I'},
+        {n:'Emotional ending',c:'Am–F–C–G–Am–E–F–G',roman:'vi–IV–I–V–vi–III–IV–V'},
+      ],
+      refs:'Reference tracks:\n  • Gurenge – LiSA / Demon Slayer (sweeping strings, piano lead)\n  • Unravel – TK from Ling Tosite Sigure / Tokyo Ghoul (piano, building intensity)\n  • Your Lie in April OST (chamber music feel, solo instruments)\n  Study: strings are lush and sustaining but QUIET (they must not overpower the piano melody).',
+      ci:{prog:48,name:'String Ensemble',ch:1},
+      bi:{prog:32,name:'Acoustic Bass',ch:2},
+      ai:{prog:0,name:'Acoustic Piano',ch:3},
+      cv:'Full string voicings, MIDI 48–72. 4 notes per chord. SUSTAINING — cut dur by 60 ticks.',
+      bp2:'Cello-style: half notes mostly. Root on 1, fifth on 3. Gentle and supportive.',
+      ap:'Piano counter-melody. Quarter notes. MIDI 60–84. Fills gaps in the vocal.',
+      rhythm:'Grand and sweeping. Long durations. Space is important.',
+    },
+    'city-pop':{
+      name:'City Pop',scale:'Major with jazz extensions — always use 7th chords',
+      diatonic:[0,2,4,5,7,9,11], minor:false,
+      progs:[
+        {n:'Mariya-style',c:'Cmaj7–Am7–Dm7–G7',roman:'Imaj7–vi7–ii7–V7'},
+        {n:'Tatsuro-style',c:'Am7–D7–Gmaj7–Cmaj7',roman:'vi7–II7–Vmaj7–Imaj7'},
+        {n:'Funky city',c:'Fmaj7–Em7–Dm7–G7–Cmaj7',roman:'IVmaj7–iii7–ii7–V7–Imaj7'},
+      ],
+      refs:'Reference tracks:\n  • Plastic Love – Mariya Takeuchi (1984/2018 viral) [Electric piano, funky bass, sax fills]\n  • Ride on Time – Tatsuro Yamashita [groovy bass, jazz chords, disco-pop feel]\n  • Take Me to the Night – Junko Ohashi [warm synth, smooth groove]\n  Study: the bass WALKS (quarter notes through chord tones). Jazz chords always. Sax or guitar fills.',
+      ci:{prog:4,name:'Electric Piano',ch:1},
+      bi:{prog:33,name:'Finger Bass',ch:2},
+      ai:{prog:65,name:'Alto Sax',ch:3},
+      cv:'ALWAYS 7th chords: Cmaj7=C-E-G-B, Am7=A-C-E-G. MIDI 48–67. Warm and jazzy.',
+      bp2:'WALKING BASS: quarter notes through chord tones. Root→3rd→5th→7th or scale-wise approach.',
+      ap:'Sax counter-melody. Short phrases in gaps. MIDI 60–79. Soulful.',
+      rhythm:'Swing 8ths. Syncopation. Slightly behind the beat for that laid-back groove.',
+    },
+    'vocaloid':{
+      name:'Vocaloid Electronic',scale:'Major scale',
+      diatonic:[0,2,4,5,7,9,11], minor:false,
+      progs:[
+        {n:'Classic Miku',c:'C–G–Am–F',roman:'I–V–vi–IV'},
+        {n:'Supercell style',c:'C–Em–F–G–Am–F–G–C',roman:'I–iii–IV–V–vi–IV–V–I'},
+        {n:'DECO*27 style',c:'Am–G–F–G',roman:'vi–V–IV–V repeating'},
+      ],
+      refs:'Reference tracks:\n  • World is Mine – ryo/supercell (fast synth, clean pop, punchy bass)\n  • Rolling Girl – wowaka (driving 8ths, aggressive piano, fast chord changes)\n  • Poker Face – DECO*27 (bass-forward, synth stabs, high arp)\n  Study: the arpeggio is very fast (16th notes), bass is punchy, chord stabs are short.',
+      ci:{prog:81,name:'Synth Lead',ch:1},
+      bi:{prog:38,name:'Synth Bass',ch:2},
+      ai:{prog:88,name:'New Age Pad',ch:3},
+      cv:'Synth stabs — SHORT duration (quarter notes 480 ticks). MIDI 55–79. Bright.',
+      bp2:'Punchy synth bass on roots. 8th note pattern. Very present.',
+      ap:'16th note pad arpeggios MIDI 72–88. The signature Vocaloid texture.',
+      rhythm:'Driving straight 8ths. Synth stabs on beats 2 and 4.',
+    },
+    'pop':{
+      name:'Western Pop',scale:'Major scale',
+      diatonic:[0,2,4,5,7,9,11], minor:false,
+      progs:[
+        {n:'Four chords (most common song ever)',c:'C–G–Am–F',roman:'I–V–vi–IV'},
+        {n:'Axis/Emotional',c:'Am–F–C–G',roman:'vi–IV–I–V'},
+        {n:'1950s nostalgia',c:'C–Am–F–G',roman:'I–vi–IV–V'},
+      ],
+      refs:'Reference tracks:\n  • Shape of You – Ed Sheeran (simple rhythm, repetitive bass, earworm melody)\n  • Blinding Lights – The Weeknd (synth-driven I–V–vi–IV, pulsing bass)\n  • Cruel Summer – Taylor Swift (8th note drive, euphoric energy)\n  Study: chords are simple, the arrangement is clean, bass is steady.',
+      ci:{prog:0,name:'Acoustic Piano',ch:1},
+      bi:{prog:33,name:'Finger Bass',ch:2},
+      ai:{prog:11,name:'Vibraphone',ch:3},
+      cv:'Clean triads MIDI 52–72. Root+3rd+5th. Bright inversions.',
+      bp2:'Root on beat 1, octave on beat 3. Walking 8th notes in chorus sections.',
+      ap:'Vibraphone 8th notes MIDI 64–80. Light and bright.',
+      rhythm:'Straight 8ths. Steady 4/4. Clear downbeat.',
+    },
+    'rnb':{
+      name:'R&B / Soul',scale:'Major with blue notes (b3, b7) welcome',
+      diatonic:[0,2,4,5,7,9,11], minor:false,
+      progs:[
+        {n:'Neo-soul',c:'Dm7–G7–Cmaj7–Am7',roman:'ii7–V7–Imaj7–vi7'},
+        {n:'SZA/Frank style',c:'Am9–D7–Gmaj9–Cmaj7',roman:'all extended chords'},
+        {n:'Soul ballad',c:'Fmaj7–Em7–Dm7–Cmaj7',roman:'descending: IV–iii–ii–I'},
+      ],
+      refs:'Reference tracks:\n  • Good Days – SZA (layered electric piano, breathy bass, lush R&B)\n  • Pyramids – Frank Ocean (long progressions, cinematic, complex)\n  • Willow – Erykah Badu (minimal bass, space, very human feel)\n  Study: 7th chords ALWAYS. Slap bass is active. Sax fills in the gaps.',
+      ci:{prog:4,name:'Electric Piano',ch:1},
+      bi:{prog:36,name:'Slap Bass',ch:2},
+      ai:{prog:65,name:'Alto Sax',ch:3},
+      cv:'Extended chords: 7ths AND 9ths. Cmaj9=C-E-G-B-D. MIDI 48–67. Warm.',
+      bp2:'Syncopated slap pattern: root on 1, ghost note on "and" of 2, hit on 3.',
+      ap:'Sax fills only in long melody gaps. MIDI 60–79. Soulful phrases.',
+      rhythm:'Heavy swing. Laid back. Sit BEHIND the beat.',
+    },
+    'ballad':{
+      name:'Ballad',scale:'Major scale',
+      diatonic:[0,2,4,5,7,9,11], minor:false,
+      progs:[
+        {n:'Classic ballad',c:'C–Am–F–G',roman:'I–vi–IV–V'},
+        {n:'Emotional',c:'C–F–Am–G',roman:'I–IV–vi–V'},
+        {n:'Heartbreak',c:'Am–F–C–E',roman:'i–bVI–bIII–V (surprise major V)'},
+      ],
+      refs:'Reference tracks:\n  • Someone Like You – Adele (solo piano intro, minimal arrangement, space is everything)\n  • Photograph – Ed Sheeran (acoustic guitar, simple bass, emotional melody)\n  • Fix You – Coldplay (starts sparse, builds to full arrangement)\n  Study: the arrangement is SPARSE. Long notes. No busyness. Let the melody breathe.',
+      ci:{prog:0,name:'Acoustic Piano',ch:1},
+      bi:{prog:32,name:'Acoustic Bass',ch:2},
+      ai:{prog:73,name:'Flute',ch:3},
+      cv:'SLOW whole notes (1920 ticks). MIDI 48–67. Very sparse. 3 notes max per chord.',
+      bp2:'Root ONLY on beat 1. Whole notes. Leave enormous space.',
+      ap:'Flute only on very long melody notes. MIDI 67–84. 2–3 notes per bar max.',
+      rhythm:'Slow and grand. Almost nothing moves fast.',
+    },
+    'lofi':{
+      name:'Lo-fi / Chill-hop',scale:'Major with jazz 7ths',
+      diatonic:[0,2,4,5,7,9,11], minor:false,
+      progs:[
+        {n:'Chill jazz',c:'Cmaj7–Am7–Dm7–G7',roman:'Imaj7–vi7–ii7–V7'},
+        {n:'Study beat',c:'Fmaj7–Em7–Am7–Dm7',roman:'IVmaj7–iii7–vi7–ii7'},
+        {n:'Nujabes style',c:'Am7–Bm7b5–E7–Am7',roman:'jazz minor i–iiø–V7–i'},
+      ],
+      refs:'Reference tracks:\n  • Featherstone – Nujabes (jazz samples, vinyl crackle, laid-back)\n  • Midnight Study – typical lo-fi playlist track (slow BPM, warm piano, lazy bass)\n  • lofi hip hop radio – Chilled Cow aesthetic (75-90 BPM, jazz chords, slow)\n  Study: VERY relaxed. Low energy. Everything is soft and warm. Bass barely moves.',
+      ci:{prog:4,name:'Electric Piano',ch:1},
+      bi:{prog:32,name:'Acoustic Bass',ch:2},
+      ai:{prog:11,name:'Vibraphone',ch:3},
+      cv:'Jazz 7th chords always. MIDI 48–67. Warm and soft. Very low velocity.',
+      bp2:'Walking bass in quarter notes. Very mellow, velocity 48–65.',
+      ap:'Vibraphone sparse arps. MIDI 64–80. Leave lots of air.',
+      rhythm:'Swing 8ths, very laid back. 75–90 BPM sweet spot.',
+    },
+    'trap':{
+      name:'Trap / Hip-hop',scale:'Minor scale (natural or harmonic)',
+      diatonic:[0,2,3,5,7,8,10], minor:true,
+      progs:[
+        {n:'Dark trap',c:'Cm–Ab–Eb–Bb',roman:'i–bVI–bIII–bVII'},
+        {n:'Melodic trap',c:'Am–F–C–G',roman:'i–bVI–bIII–bVII (minor feel)'},
+        {n:'Drill slow',c:'Cm–Gm–Ab–Bb',roman:'i–v–bVI–bVII'},
+      ],
+      refs:'Reference tracks:\n  • SICKO MODE – Travis Scott (sparse piano, 808 bass, minimal chords)\n  • Congratulations – Post Malone (slow, melodic, minimal arrangement)\n  • Metro Boomin production style (wide space, 808 sustain, occasional piano stabs)\n  Study: SPACE is the instrument. Very few notes. The 808 bass is everything.',
+      ci:{prog:89,name:'Warm Pad',ch:1},
+      bi:{prog:38,name:'Synth Bass',ch:2},
+      ai:{prog:0,name:'Acoustic Piano',ch:3},
+      cv:'VERY sparse pads. 2 notes MAX (root + 5th only). MIDI 48–60. Long sustain.',
+      bp2:'808-style: long whole-note bass MIDI 28–40. Very heavy, very low.',
+      ap:'Sparse piano: 1–2 notes per bar only. MIDI 55–72. Melodic fills.',
+      rhythm:'Slow (60–90 BPM). SPACE IS THE INSTRUMENT. Leave bars almost empty.',
+    },
+    'edm':{
+      name:'EDM / Synth-pop',scale:'Minor scale or major depending on mood',
+      diatonic:[0,2,3,5,7,8,10], minor:true,
+      progs:[
+        {n:'Festival anthem',c:'Am–F–C–G',roman:'i–bVI–bIII–bVII'},
+        {n:'Progressive',c:'Am–G–F–E7',roman:'tension on major V'},
+        {n:'House loop',c:'Am–F repeating',roman:'simple 2-chord loop is authentic'},
+      ],
+      refs:'Reference tracks:\n  • Wake Me Up – Avicii (folk meets EDM, clean mix, emotional chords)\n  • Clarity – Zedd (full synth, pad-driven, clear frequency separation)\n  • Animals – Martin Garrix (pulsing synth bass, minimal chords, drop energy)\n  Study: pads are lush but sit LOW in the mix. Arp is HIGH and bright. Bass pulses.',
+      ci:{prog:88,name:'New Age Pad',ch:1},
+      bi:{prog:38,name:'Synth Bass',ch:2},
+      ai:{prog:81,name:'Synth Lead',ch:3},
+      cv:'Lush sustained pads. MIDI 48–67. Only 2–3 notes (dyads). Legato gap essential.',
+      bp2:'Pulsing 8th note bass on root. MIDI 28–45. Strong and driving.',
+      ap:'16th note arp MIDI 72–88. The main texture. Very bright.',
+      rhythm:'4-on-the-floor feel. Bass on every beat, arp on every 16th.',
+    },
+    'synthwave':{
+      name:'Synthwave / Retrowave',scale:'Minor scale',
+      diatonic:[0,2,3,5,7,8,10], minor:true,
+      progs:[
+        {n:'Outrun classic',c:'Am–F–C–G',roman:'i–bVI–bIII–bVII'},
+        {n:'80s night drive',c:'Am–G–F–E',roman:'i–bVII–bVI–V (E is major)'},
+        {n:'Cyberpunk',c:'Am–Dm–G–C',roman:'descending bass feel'},
+      ],
+      refs:'Reference tracks:\n  • Nightcall – Kavinsky (iconic synth bass, retro arps, cool 80s feel)\n  • Perturbator – Future Club (dark synths, pulsing bass, minor energy)\n  • The Midnight – Sunset (lush synths, sax, nostalgic 80s warmth)\n  Study: lush synth strings + pulsing bass + arp is the formula.',
+      ci:{prog:50,name:'Synth Strings',ch:1},
+      bi:{prog:38,name:'Synth Bass',ch:2},
+      ai:{prog:81,name:'Synth Lead',ch:3},
+      cv:'Lush synth strings MIDI 48–72. 4-note chords. Sustained.',
+      bp2:'Pumping 8th note bass MIDI 33–48. Root-driven, no walking.',
+      ap:'16th note synth arp MIDI 72–92. The signature 80s texture.',
+      rhythm:'Straight 8ths. Strong downbeat. Four-on-the-floor.',
+    },
+    'rock':{
+      name:'Rock',scale:'Major or minor depending on mood',
+      diatonic:[0,2,4,5,7,9,11], minor:false,
+      progs:[
+        {n:'Power rock',c:'E–A–D–A',roman:'I–IV–bVII–IV (power chords)'},
+        {n:'Classic rock',c:'E–A–B–A',roman:'I–IV–V–IV'},
+        {n:'Rock minor',c:'Am–G–F–E',roman:'i–bVII–bVI–V'},
+      ],
+      refs:'Reference tracks:\n  • Believer – Imagine Dragons (driving rhythm, clear bass, huge chorus)\n  • In the End – Linkin Park (piano + guitar, emotional build, clear mix)\n  • Best of You – Foo Fighters (raw guitar energy, steady bass, real drums feel)\n  Study: guitar chords are SHORT (staccato). Bass is locked to beat 1. Energy comes from rhythm.',
+      ci:{prog:29,name:'Overdriven Guitar',ch:1},
+      bi:{prog:33,name:'Electric Bass',ch:2},
+      ai:{prog:26,name:'Jazz Guitar',ch:3},
+      cv:'Power chords (root+5th ONLY, no 3rd). MIDI 40–60. Staccato quarter notes.',
+      bp2:'Root on beat 1, octave on beat 3. 8th note runs in fills.',
+      ap:'Clean guitar counter-riff MIDI 52–72. Short phrases.',
+      rhythm:'Driving 8ths. Strong on 1 and 3. Accent on 2 and 4.',
+    },
+    'indie':{
+      name:'Indie / Folk',scale:'Major scale',
+      diatonic:[0,2,4,5,7,9,11], minor:false,
+      progs:[
+        {n:'Folk standard',c:'G–D–Em–C',roman:'I–V–vi–IV'},
+        {n:'Introspective',c:'Em–C–G–D',roman:'vi–IV–I–V'},
+        {n:'Dreamy',c:'C–G–Am–Em–F–G',roman:'I–V–vi–iii–IV–V'},
+      ],
+      refs:'Reference tracks:\n  • Skinny Love – Bon Iver (minimal, intimate, raw acoustic)\n  • The Night Will Always Win – Manchester Orchestra (build from quiet to loud)\n  • I Will Follow You Into the Dark – Death Cab for Cutie (pure acoustic, simple)\n  Study: SIMPLICITY. Acoustic instruments. Space. The arrangement should feel human.',
+      ci:{prog:24,name:'Nylon Guitar',ch:1},
+      bi:{prog:32,name:'Acoustic Bass',ch:2},
+      ai:{prog:73,name:'Flute',ch:3},
+      cv:'Open guitar voicings. MIDI 52–72. Strum feel (stagger notes 7 ticks apart).',
+      bp2:'Simple: root on beat 1, fifth on beat 3. Very gentle.',
+      ap:'Flute descant above melody MIDI 67–84. Very sparse — only 2–3 notes per bar.',
+      rhythm:'Natural strumming feel. No aggressive rhythm.',
+    },
+    'gospel':{
+      name:'Gospel / Soul',scale:'Major with added blue notes',
+      diatonic:[0,2,4,5,7,9,11], minor:false,
+      progs:[
+        {n:'Gospel walk',c:'C–F–Dm7–G7–C',roman:'I–IV–ii7–V7–I (authentic gospel)'},
+        {n:'Praise',c:'C–G/B–Am7–Fmaj7',roman:'descending bass I–V/3–vi7–IVmaj7'},
+        {n:'Soul anthem',c:'Fmaj7–Em7–Am7–Dm7–G7–C',roman:'flowing jazz gospel'},
+      ],
+      refs:'Reference tracks:\n  • Total Praise – Richard Smallwood (rich piano, organ, choir feel)\n  • Kirk Franklin productions (lush chords, walking bass, joyful energy)\n  Study: the piano is rich with passing tones. Bass walks constantly. Energy is uplifting.',
+      ci:{prog:0,name:'Acoustic Piano',ch:1},
+      bi:{prog:32,name:'Acoustic Bass',ch:2},
+      ai:{prog:73,name:'Flute',ch:3},
+      cv:'Rich gospel voicings with passing tones. 4-note chords MIDI 48–72.',
+      bp2:'Walking gospel bass: fill all 4 beats with scale tones leading to next chord root.',
+      ap:'Flute counter-melody MIDI 60–79.',
+      rhythm:'Swing 8ths. Strong backbeat on 2 and 4.',
+    },
+    'metal':{
+      name:'Metal / Heavy',scale:'Phrygian / harmonic minor — semitones: 0,1,4,5,7,8,10',
+      diatonic:[0,1,4,5,7,8,10], minor:true,
+      progs:[
+        {n:'Phrygian riff',c:'Em–F–Em–F',roman:'i–bII–i–bII (Phrygian movement)'},
+        {n:'Metal minor',c:'Em–C–G–D',roman:'i–bVI–bIII–bVII'},
+        {n:'Doom',c:'Am–G–F–E',roman:'slow and heavy, E is major V'},
+      ],
+      refs:'Reference tracks:\n  • One – Metallica (slow build, powerful chords, locked bass)\n  • Dragula – Rob Zombie (heavy riff, minimal melody, aggressive)\n  Study: power chords are the texture. Bass mirrors guitar rhythm exactly.',
+      ci:{prog:29,name:'Overdriven Guitar',ch:1},
+      bi:{prog:33,name:'Electric Bass',ch:2},
+      ai:{prog:81,name:'Synth Lead',ch:3},
+      cv:'Power chords (root+5th). MIDI 28–48 (very low, gritty). Staccato 8ths.',
+      bp2:'Mirror the guitar rhythm exactly. Aggressive and locked.',
+      ap:'Lead melody between chord hits MIDI 52–72. Angular, not smooth.',
+      rhythm:'Aggressive. Accent beat 1 hard. Syncopate in riff sections.',
+    },
+  };
+
+  const gd=GENRE_DB[genre]||GENRE_DB['jpop'];
+
+  // ── Mood modifiers ──
+  const MOODS={
+    uplifting: {velBoost:10,  note:'Use major chords. Rising melodic contour. Bright upper register. Positive energy.'},
+    melancholy:{velBoost:-5,  note:'Use minor chords and minor 7ths. Falling phrases. Slower note changes. Introspective.'},
+    romantic:  {velBoost:0,   note:'Smooth voice leading. Sustained notes. No harsh jumps. Gentle and tender dynamics.'},
+    epic:      {velBoost:15,  note:'Full chord voicings. Broad dynamics. Build toward a climax in the final third.'},
+    chill:     {velBoost:-20, note:'Sparse arrangement. Low velocities. LOTS of space. Very relaxed.'},
+    intense:   {velBoost:20,  note:'Dense notes, high energy, strong bass, fast rhythm.'},
+    playful:   {velBoost:5,   note:'Short staccato notes, syncopation, unexpected chord changes, light and bouncy.'},
+    dark:      {velBoost:-5,  note:'Minor chords, low register, sparse arp, heavy brooding bass, tension unresolved.'},
+  };
+  const mm=MOODS[mood]||MOODS.uplifting;
+
+  // ── Key detection ──
+  const rootNames=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+  let keyStr=keyChoice;
+  if(keyStr==='auto'){
+    if(allNotes.length){
+      const counts=Array(12).fill(0);
+      allNotes.forEach(n=>counts[n.pitch%12]++);
+      const rootIdx=counts.indexOf(Math.max(...counts));
+      keyStr=`${rootNames[rootIdx]} ${gd.minor?'minor':'major'} (auto-detected)`;
+    } else {
+      keyStr=gd.minor?'A minor':'C major';
+    }
+  }
+
+  // ── Melody context ──
+  let melCtx='';
+  if(allNotes.length){
+    const firstSec=b2s(allNotes[0].onB,bp);
+    melCtx=`\n══ VOCAL MELODY (${allNotes.length} notes${sourceName?' · voice: '+sourceName:''}) ══\n`;
+    melCtx+=`Use this to detect key, tempo feel, phrase lengths, and emotional pacing.\n`;
+    melCtx+=`  tick    dur   pitch  note  lyric\n`;
+    const show=allNotes.length<=48?allNotes:[...allNotes.slice(0,36),null,...allNotes.slice(-4)];
+    show.forEach(n=>{
+      if(!n){melCtx+=`  … (${allNotes.length-40} more) …\n`;return;}
+      const t=Math.round((b2s(n.onB,bp)-firstSec)*bp/60*TPB);
+      const d=Math.max(1,Math.round(b2s(n.durB,bp)*bp/60*TPB));
+      melCtx+=`  ${String(t).padStart(6)}  ${String(d).padStart(4)}  ${String(n.pitch).padStart(3)}    ${mname(n.pitch).padEnd(3)}  "${n.lyric}"\n`;
+    });
+  } else {
+    melCtx='\n(No SVP vocal provided — write a complete standalone instrumental track)\n';
+  }
+
+  // ── Velocities ──
+  const velBase=Math.max(32,Math.min(115,48+energy*7+mm.velBoost));
+  const velChords=Math.max(28,velBase-22);
+  const velBass  =Math.min(118,velBase+15);
+  const velArp   =Math.max(28,velBase-28);
+  const velMelody=55;
+
+  // ── Chord duration from energy ──
+  const chordDur =energy<=3?1920:energy<=6?960:480;
+  const chordGap =isSustainingProg(gd.ci.prog)?60:0;
+  const chordDurAct=chordDur-chordGap;
+
+  // ── Track sections ──
+  const trackSections=[];
+  if(wantMelody&&allNotes.length){
+    trackSections.push(`━━ TRACK: MELODY REFERENCE ━━
+Channel: 0 | Program: 0 (Acoustic Piano, very soft)
+Copy the vocal melody from the table above, note for note.
+Same tick, same dur, same pitch. Velocity: ${velMelody} for all notes (background reference only).`);
+  }
+  if(wantChords){
+    const p0=gd.progs[0], p1=gd.progs[1];
+    trackSections.push(`━━ TRACK: CHORD PADS ━━
+Channel: 1 | Program: ${gd.ci.prog} (${gd.ci.name})
+Chord progressions:
+  Primary:   ${p0.n} → ${p0.c} (${p0.roman})
+  Secondary: ${p1.n} → ${p1.c} (${p1.roman})
+  Use Primary for most bars, Secondary for bars ${Math.floor(totalBars/2)+1}–${Math.floor(totalBars*0.75)} (variation).
+Voicing: ${gd.cv}
+Duration per chord: ${chordDurAct} ticks (${chordDur} − ${chordGap} gap for breathing room)
+Velocity: ${velChords} (MUST be the QUIETEST non-reference track — these are background pads)
+Inner chord notes: ${velChords-8} velocity (root and top note: ${velChords}, middle notes: ${velChords-8})
+Voice leading: when changing chord, move each voice to the NEAREST note in the next chord.
+Fill all ${totalBars} bars.`);
+  }
+  if(wantBass){
+    trackSections.push(`━━ TRACK: BASS LINE ━━
+Channel: 2 | Program: ${gd.bi.prog} (${gd.bi.name})
+Pitch range: MIDI 28–48 (E1–C3). NEVER go above MIDI 52. Low register only.
+Velocity: ${velBass} (HIGHEST of all tracks — bass must punch through)
+Pattern: ${gd.bp2}
+Single notes ONLY. Follow chord roots from the chord track.
+Vary the rhythm slightly every 2 bars. Fill all ${totalBars} bars.`);
+  }
+  if(wantArp){
+    trackSections.push(`━━ TRACK: ARPEGGIO / COUNTER ━━
+Channel: 3 | Program: ${gd.ai.prog} (${gd.ai.name})
+Pitch range: MIDI 60–88 (C4–E6). High register only — above the chord pads.
+Velocity: ${velArp} (SOFTEST track — texture only, must not overpower)
+Pattern: ${gd.ap}
+Single notes only. Move when the melody holds long notes (fill the gaps).
+When melody is busy, play slower here. Fill all ${totalBars} bars.`);
+  }
+
+  return `You are a professional music producer and arranger. Think like a seasoned recording engineer — warm, musical, and human. NOT a calculator spitting out note grids.
+Output ONLY a valid JSON object. Start with { and end with }. No markdown, no explanation.
+${melCtx}
+══ PROJECT ══
+Genre:  ${gd.name}
+Key:    ${keyStr}
+Scale:  ${gd.scale}
+Mood:   ${mood} — ${mm.note}
+BPM:    ${bp.toFixed(1)}
+Energy: ${energy}/10
+Length: ${totalBars} bars = ${totalTicks} ticks = ${(totalTicks/TPB*(60/bp)).toFixed(1)}s
+${extraNotes?`\nProducer notes: ${extraNotes}`:''}
+
+══ SOUND REFERENCES (study these — your output must fit in this genre context) ══
+${gd.refs}
+
+══ TICK REFERENCE (TPB=480, 4/4 time) ══
+Bar=1920  Beat=480  8th=240  16th=120
+Bar 1=0  Bar 2=1920  Bar 3=3840  Bar 4=5760  Bar 5=7680  Bar 6=9600
+Bar ${Math.ceil(totalBars/2)}=${(Math.ceil(totalBars/2)-1)*1920}  Bar ${totalBars}=${(totalBars-1)*1920}  END=${totalTicks}
+
+══ TRACKS ══
+${trackSections.join('\n\n')}
+
+══ THE GOLDEN RULES OF PROFESSIONAL MUSIC PRODUCTION ══
+
+RULE 1 — DIATONIC CONSTRAINT (most important — this is what prevents "creepy" sound):
+  Key: ${keyStr}  |  Scale: ${gd.scale}
+  EVERY note in EVERY track must come from this scale.
+  Allowed semitone intervals from root: ${gd.diatonic.join(', ')}
+  One chromatic passing tone is allowed ONLY if it immediately resolves to a scale tone.
+  An unresolved out-of-scale note = instant "wrong and creepy". FORBIDDEN.
+
+RULE 2 — FREQUENCY SEPARATION (prevents masking):
+  Bass track:   MIDI 28–48 only   (never higher)
+  Chord pads:   MIDI 48–67 only   (never in melody range)
+  Arp/counter:  MIDI 60–88 only   (above the chords)
+  If two tracks occupy the same octave with sustained notes = mud. Avoid.
+
+RULE 3 — VELOCITY HIERARCHY:
+  Bass=LOUDEST (${velBass})  Melody ref=${velMelody}  Arp=${velArp}  Chords=QUIETEST (${velChords})
+  These are NOT suggestions. They are laws. Inverted hierarchy = bad mix.
+
+RULE 4 — LEGATO GAP for sustaining patches:
+  Program ${gd.ci.prog} (${gd.ci.name}) sustains until note ends, so cut all durations by 60:
+  Whole note chord: dur=1860 (not 1920)  Half note: dur=900 (not 960)
+  This lets the next downbeat's bass punch through.
+
+RULE 5 — VOICE LEADING (no parallel jumping):
+  C major → G major: keep G, move C→B, move E→D. Result: B-D-G (smooth, no big jumps).
+  FORBIDDEN: all chord voices jumping in the same direction by more than a 3rd.
+  FORBIDDEN: parallel 5ths.
+
+RULE 6 — COMPLEMENTARY RHYTHM (no rhythmic unison):
+  If melody is busy (fast notes) → chord pads use WHOLE NOTES (very sparse)
+  If melody holds a long note → arp fills the gap with movement
+  If bass is simple → arp can be busier
+  No two tracks should play on the exact same ticks every bar.
+
+RULE 7 — MACRO DYNAMICS (the track must breathe and build):
+  Bars 1–${Math.floor(totalBars/4)}: INTRO — multiply all velocities by 0.75 (write lower numbers)
+  Bars ${Math.floor(totalBars/4)+1}–${Math.floor(totalBars/2)}: BUILD — normal velocities
+  Bars ${Math.floor(totalBars/2)+1}–${Math.floor(totalBars*0.75)}: PEAK — multiply velocities by 1.1
+  Bars ${Math.floor(totalBars*0.75)+1}–${totalBars}: RESOLUTION — settle back, last bar ends softly
+
+RULE 8 — HUMANIZATION (not a perfect grid):
+  Vary velocities note-by-note by ±5 (never all identical)
+  Chord notes: stagger start by 5–10 ticks (lowest pitch first)
+  Bass notes: can be 5–8 ticks early for a "pushed" feel
+
+══ ABSOLUTELY FORBIDDEN ══
+✗ Any pitch outside the ${keyStr} scale (Rule 1 — #1 cause of "creepy" music)
+✗ Bass notes above MIDI 52
+✗ Chord pad velocity above ${velChords+10}
+✗ Arp velocity above ${velArp+10}
+✗ All tracks playing on the same tick every bar (rhythmic unison = mud)
+✗ Parallel 5ths in chord voicing
+✗ Not filling all ${totalBars} bars
+
+══ OUTPUT FORMAT ══
+{
+  "bpm": ${bp.toFixed(1)},
+  "tracks": [
+    {
+      "name": "Chords",
+      "channel": 1,
+      "program": ${gd.ci.prog},
+      "notes": [
+        { "tick": 0,    "dur": ${chordDurAct}, "pitch": 48, "velocity": ${velChords} },
+        { "tick": 0,    "dur": ${chordDurAct}, "pitch": 52, "velocity": ${velChords-8} },
+        { "tick": 0,    "dur": ${chordDurAct}, "pitch": 55, "velocity": ${velChords} }
+      ]
+    }
+  ]
+}
+
+"tick" = integer ≥ 0
+"dur"  = integer ≥ 60
+"pitch" = integer 0–127, must be in ${keyStr} scale
+"velocity" = integer 1–127
+
+Output ${trackSections.length} tracks. Output ONLY the JSON. Nothing before {, nothing after }.`;
 }
 
 function buildAccompPrompt(){
@@ -1803,31 +2413,23 @@ Start your response with {  and end with }  — nothing else outside the JSON.`;
 }
 
 function refreshAccompPrompt(){
-  const box = document.getElementById('acmp-prompt-box');
-  if (!box) return;
-  if (!activeFile && !activePart) {
-    box.textContent = '(open a .svp file first — no part selection required)';
-    return;
-  }
-  box.textContent = buildAccompPrompt();
+  const box=document.getElementById('acmp-prompt-box');
+  if(!box)return;
+  updateMidiStatus();
+  box.textContent=buildAccompPrompt();
 }
 
 function copyAccompPrompt(){
-  if (!activeFile && !activePart) {
-    toast('Open a .svp file first', 'err');
-    return;
-  }
-  refreshAccompPrompt();
-  const txt = document.getElementById('acmp-prompt-box').textContent;
-  if (!txt || txt.startsWith('(open')) { toast('No prompt — open a .svp file first', 'err'); return; }
+  updateMidiStatus();
+  const txt=buildAccompPrompt();
+  document.getElementById('acmp-prompt-box').textContent=txt;
   navigator.clipboard.writeText(txt)
-    .then(() => toast('Prompt copied — paste into Claude, ChatGPT, or Gemini'))
-    .catch(() => {
-      // Fallback: select all text in the box
-      const box = document.getElementById('acmp-prompt-box');
-      const sel = window.getSelection(); const range = document.createRange();
-      range.selectNodeContents(box); sel.removeAllRanges(); sel.addRange(range);
-      toast('Could not auto-copy — text selected, press Ctrl+C', 'warn');
+    .then(()=>toast('Prompt copied — paste into Claude, ChatGPT, or Gemini'))
+    .catch(()=>{
+      const box=document.getElementById('acmp-prompt-box');
+      const sel=window.getSelection(),range=document.createRange();
+      range.selectNodeContents(box);sel.removeAllRanges();sel.addRange(range);
+      toast('Select all + Ctrl+C to copy','warn');
     });
 }
 
