@@ -441,7 +441,9 @@ hr.rule { border:none; border-top:1px solid var(--b1); margin:10px 0; }
 <div id="topbar">
   <div class="logo">SVP<b>·</b>Studio</div>
   <button class="btn sm" onclick="document.getElementById('fi').click()">Open SVP</button>
-  <input type="file" id="fi" accept=".svp,.json" multiple hidden>
+  <input type="file" id="fi" accept=".svp,.json,.mid" multiple hidden>
+  <button class="btn sm btn-ghost-cyn" onclick="document.getElementById('fi-midi').click()">Open MIDI</button>
+  <input type="file" id="fi-midi" accept=".mid,.midi" multiple hidden>
   <button class="btn sm" id="undo-btn" disabled onclick="App.undo()">↩</button>
   <button class="btn sm" id="redo-btn" disabled onclick="App.redo()">↪</button>
   <div class="div-v"></div>
@@ -1125,6 +1127,205 @@ function rebuild(f){
   if(!parts.length&&svp.library){svp.library.forEach((l,li)=>{if(l.notes?.length)parts.push({ti:li,track:null,lib:l,notes:l.notes,offB:0n,vname:'Unknown',lang:'japanese',name:l.name||`Part ${li+1}`});});}
   f.parts=parts;
 }
+/* ═══════════════════════════════════════════════
+   MIDI FILE READER (binary .mid → SVP structure)
+   Parses SMF format 0 or 1 files, extracting notes
+   and tempo, then injecting into an SVP-like object.
+═══════════════════════════════════════════════ */
+function loadMidiFile(f) {
+  const rd = new FileReader();
+  rd.onload = ev => {
+    const buf = ev.target.result;
+    try {
+      const svp = parseMidiToSvp(new Uint8Array(buf), f.name);
+      const ent = { id: Date.now() + Math.random(), name: f.name.replace(/\.midi?$/i, '.svp'), svpData: svp, parts: [], _built: false };
+      rebuild(ent);
+      if (!ent.parts.length) { toast('No notes found in MIDI file', 'warn'); return; }
+      FILES.push(ent);
+      if (!activeFile) { activeFile = ent; if (ent.parts.length) selPart(ent.parts[0]); }
+      refreshAll();
+      toast('Loaded MIDI: ' + f.name + ' → ' + ent.parts.length + ' part(s)');
+    } catch(e) {
+      toast('MIDI parse error: ' + e.message, 'err');
+    }
+  };
+  rd.onerror = () => toast('MIDI read error', 'err');
+  rd.readAsArrayBuffer(f);
+}
+
+function parseMidiToSvp(bytes, origName) {
+  // SMF header
+  let pos = 0;
+  function r8() { return bytes[pos++]; }
+  function r16() { const v = (bytes[pos] << 8) | bytes[pos+1]; pos += 2; return v; }
+  function r32() { const v = (bytes[pos]<<24)|(bytes[pos+1]<<16)|(bytes[pos+2]<<8)|bytes[pos+3]; pos += 4; return v; }
+  function rVL() { let v=0, b; while ((b=r8()) & 0x80) { v = (v<<7)|(b&0x7f); } return (v<<7)|b; }
+  function rStr(n) { const s=[]; for(let i=0;i<n;i++) s.push(String.fromCharCode(bytes[pos++])); return s.join(''); }
+
+  // Read header
+  const magic = rStr(4);
+  if (magic !== 'MThd') throw new Error('Not a MIDI file (missing MThd)');
+  const hdrLen = r32();
+  const format = r16();
+  const numTracks = r16();
+  const tpb = r16();
+  if (hdrLen > 6) pos += hdrLen - 6; // skip extra header bytes
+
+  // Step 1: Parse all tracks, collect events
+  const allEvents = []; // {tick, track, command, ...}
+  const trackNames = [];
+  const tempoEvents = []; // {tick, bpm}
+
+  for (let t = 0; t < numTracks; t++) {
+    const trkMagic = rStr(4);
+    if (trkMagic !== 'MTrk') throw new Error('Expected MTrk at track ' + t);
+    const trkLen = r32();
+    const endPos = pos + trkLen;
+    let absTick = 0;
+    let runningStatus = 0;
+
+    while (pos < endPos) {
+      const delta = rVL();
+      absTick += delta;
+
+      let status = r8();
+      if (status === 0xFF) {
+        // Meta event
+        const metaType = r8();
+        const metaLen = rVL();
+        const metaData = bytes.subarray(pos, pos + metaLen); pos += metaLen;
+        if (metaType === 0x03) { // Track name
+          const name = String.fromCharCode(...metaData);
+          trackNames[t] = name;
+        } else if (metaType === 0x51) { // Tempo
+          if (metaLen >= 3) {
+            const usPerQ = (metaData[0] << 16) | (metaData[1] << 8) | metaData[2];
+            const bpm = Math.round(60000000 / usPerQ);
+            tempoEvents.push({ tick: absTick, bpm });
+          }
+        } else if (metaType === 0x2F) {
+          break; // End of track
+        }
+        // else ignore other meta events
+        continue;
+      }
+
+      if (status >= 0xF0) {
+        // System common/realtime — skip
+        if (status === 0xF0 || status === 0xF7) {
+          // SysEx
+          const len = (status === 0xF0) ? rVL() : rVL();
+          pos += len;
+        }
+        continue;
+      }
+
+      if ((status & 0x80) === 0) {
+        // Running status: byte is actually data
+        runningStatus = status;
+        status = runningStatus;
+        pos--; // rewind to re-read the data byte
+      } else {
+        runningStatus = status;
+      }
+
+      const cmd = status & 0xF0;
+      const ch = status & 0x0F;
+
+      if (cmd === 0x80 || cmd === 0x90) { // Note Off / Note On
+        const pitch = r8();
+        const vel = r8();
+        if (cmd === 0x90 && vel > 0) {
+          allEvents.push({ tick: absTick, track: t, type: 'on', pitch, vel, ch });
+        } else {
+          allEvents.push({ tick: absTick, track: t, type: 'off', pitch, vel: 0, ch });
+        }
+      } else if (cmd === 0xA0 || cmd === 0xB0 || cmd === 0xE0) {
+        // Aftertouch, CC, Pitch bend — skip 2 bytes
+        r8(); r8();
+      } else if (cmd === 0xC0) { // Program change
+        r8();
+      } else if (cmd === 0xD0) { // Channel aftertouch
+        r8();
+      } else {
+        // Unknown — skip one byte
+        r8();
+      }
+    }
+  }
+
+  // Step 2: Determine BPM
+  let bpm = 120;
+  if (tempoEvents.length) {
+    bpm = tempoEvents[0].bpm;
+  }
+
+  // Step 3: Group note-on/off pairs by track+pitch
+  const trackNotes = {}; // { track: [ {tick, dur, pitch, vel} ] }
+  const pendingNotes = {}; // key: track_pitch -> {tick, vel}
+
+  for (const ev of allEvents) {
+    const key = ev.track + '_' + ev.pitch;
+    if (ev.type === 'on') {
+      pendingNotes[key] = { tick: ev.tick, vel: ev.vel };
+    } else if (ev.type === 'off' && pendingNotes[key]) {
+      const on = pendingNotes[key];
+      const dur = ev.tick - on.tick;
+      if (dur > 0) {
+        if (!trackNotes[ev.track]) trackNotes[ev.track] = [];
+        trackNotes[ev.track].push({ tick: on.tick, dur, pitch: ev.pitch, vel: on.vel });
+      }
+      delete pendingNotes[key];
+    }
+  }
+  // Step 4: Build SVP structure
+  // We use a simple SVP format with a "library" containing notes
+  const totalTicks = allEvents.length > 0 ? Math.max(...allEvents.map(e => e.tick)) : tpb * 16;
+  const totalSec = totalTicks / tpb * (60 / bpm);
+  const totalBlicks = BigInt(Math.round(totalSec * BLK / 60 * bpm));
+  const blicksPerTick = totalBlicks / BigInt(Math.max(1, totalTicks));
+
+  const tracks = [];
+  const library = [];
+
+  Object.keys(trackNotes).forEach((trackKey, ti) => {
+    const notes = trackNotes[trackKey].sort((a, b) => a.tick - b.tick);
+    const name = trackNames[parseInt(trackKey)] || ('MIDI Track ' + (parseInt(trackKey) + 1));
+    // Compute average velocity for program detection
+    const avgVel = notes.length ? Math.round(notes.reduce((s, n) => s + n.vel, 0) / notes.length) : 80;
+    // Map to a GM program based on range & track characteristics
+    const avgPitch = notes.length ? Math.round(notes.reduce((s, n) => s + n.pitch, 0) / notes.length) : 60;
+    let prog;
+    if (avgPitch < 48 && avgVel > 80) prog = 33; // Electric Bass
+    else if (avgPitch >= 36 && avgPitch < 55 && avgVel > 70) prog = 32; // Acoustic Bass
+    else if (avgPitch >= 55 && avgPitch < 72 && avgVel > 75) prog = 0; // Acoustic Piano
+    else if (avgPitch >= 72) prog = 81; // Synth Lead
+    else prog = 0; // Piano fallback
+
+    const svpNotes = notes.map(n => {
+      // Convert MIDI ticks to SVP blicks
+      const onsetB = BigInt(n.tick) * blicksPerTick;
+      const durB = BigInt(Math.max(1, n.dur)) * blicksPerTick;
+      return mkNote(onsetB, durB, n.pitch, 0, 'la', 'singing');
+    });
+    library.push({ name, notes: svpNotes, uuid: crypto.randomUUID ? crypto.randomUUID() : 'uuid-' + ti });
+    tracks.push({
+      name,
+      mainRef: { database: { name, language: 'japanese' } },
+      groups: [{ groupID: library[library.length - 1].uuid, blickOffset: 0 }]
+    });
+  });
+
+  if (!library.length) throw new Error('No notes parsed from MIDI file');
+
+  const svp = {
+    time: { tempo: [{ bpm }], meter: [{ numerator: 4, denominator: 4 }] },
+    tracks,
+    library
+  };
+  return svp;
+}
+
 function loadFile(f){
   const rd=new FileReader();
   rd.onload=ev=>{
@@ -1239,10 +1440,12 @@ function genPrompt(){
   const lm=LANG[lk]||LANG.japanese;
   const lastNs=ns.length?b2ns(ns[ns.length-1].onB+ns[ns.length-1].durB,bp):0n;
   const startNs=op==='replace'?0n:lastNs;
-  const pts=ns.map(n=>n.pitch);
-  const mnP=pts.length?Math.min(...pts):52;
-  const mxP=pts.length?Math.max(...pts):76;
-  const midP=pts.length?Math.round(pts.reduce((a,b)=>a+b,0)/pts.length):62;
+  // For replace mode, do NOT use existing note data — AI must create from scratch
+  const useExistingData = op !== 'replace' && ns.length > 0;
+  const pts=useExistingData ? ns.map(n=>n.pitch) : [];
+  const mnP=useExistingData ? Math.min(...pts) : 48;
+  const mxP=useExistingData ? Math.max(...pts) : 76;
+  const midP=useExistingData ? Math.round(pts.reduce((a,b)=>a+b,0)/pts.length) : 60;
 
   const rangeStr={
     auto:`MIDI ${mnP}–${mxP}  (centre ≈ ${mname(midP)}, detected from melody)`,
@@ -2775,6 +2978,7 @@ document.querySelectorAll('.tab').forEach(tab=>{
 document.addEventListener('dragover',e=>e.preventDefault());
 document.addEventListener('drop',e=>{e.preventDefault();[...e.dataTransfer.files].filter(f=>/\.(svp|json)$/i.test(f.name)).forEach(loadFile);});
 document.getElementById('fi').addEventListener('change',e=>{[...e.target.files].forEach(loadFile);e.target.value='';});
+document.getElementById('fi-midi').addEventListener('change',e=>{[...e.target.files].forEach(loadMidiFile);e.target.value='';});
 document.addEventListener('keydown',e=>{
   if(e.target.matches('input,textarea,select,[contenteditable]'))return;
   if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();delSel();}
