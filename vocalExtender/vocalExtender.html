@@ -260,6 +260,17 @@ hr.rule { border:none; border-top:1px solid var(--b1); margin:10px 0; }
 }
 .midi-ctx-bar { flex:1; background:var(--cyn); opacity:.6; border-radius:1px; }
 
+/* MIDI context lyric theme input */
+#midi-ctx-theme-row {
+  display:none; margin-bottom:10px; padding:8px 10px; border-radius:4px;
+  background:rgba(244,114,182,.04); border:1px solid rgba(244,114,182,.18);
+  border-left:3px solid var(--pnk);
+}
+.midi-ctx-theme-title { font-size:8px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--pnk); margin-bottom:5px; }
+#midi-lyric-theme { font-size:10px; padding:5px 7px; background:var(--bg3); border:1px solid var(--b2); border-radius:var(--rad); color:var(--txt); outline:none; font-family:var(--font); width:100%; }
+#midi-lyric-theme:focus { border-color:var(--pnk); }
+.midi-ctx-theme-hint { font-size:8.5px; color:var(--dim); margin-top:4px; line-height:1.5; }
+
 /* Op tabs */
 .ops { display:flex; gap:2px; margin-bottom:8px; }
 .op {
@@ -623,11 +634,18 @@ hr.rule { border:none; border-top:1px solid var(--b1); margin:10px 0; }
           <!-- MIDI Context strip — shows when MIDI was loaded -->
           <div id="midi-ctx-strip">
             <div class="midi-ctx-title">
-              <span>🎹 MIDI Blueprint</span>
+              <span>🎹 MIDI Blueprint Active</span>
               <button class="btn xs btn-ghost-cyn" onclick="App.clearMidiContext()" style="height:16px;padding:0 5px;font-size:8px">clear</button>
             </div>
             <div class="midi-ctx-info" id="midi-ctx-info">—</div>
             <div class="midi-ctx-bars" id="midi-ctx-vis"></div>
+          </div>
+
+          <!-- MIDI lyric theme — only visible in MIDI blueprint mode -->
+          <div id="midi-ctx-theme-row">
+            <div class="midi-ctx-theme-title">🎤 Song Theme / Lyrics Topic</div>
+            <input type="text" id="midi-lyric-theme" placeholder="e.g. summer love, lonely city nights, chasing dreams…" oninput="App.refresh()">
+            <div class="midi-ctx-theme-hint">What is the song about? AI writes lyrics on this theme.</div>
           </div>
 
           <div class="gap">
@@ -1215,7 +1233,6 @@ function createNewProject() {
   const bars    = parseInt(document.getElementById('np-bars').value) || 16;
   const tname   = document.getElementById('np-trackname').value.trim() || 'Main Vocal';
 
-  // Build a minimal valid SVP skeleton
   const libUUID = 'svp-' + Date.now().toString(16);
   const svp = {
     time: {
@@ -1256,14 +1273,11 @@ function createNewProject() {
   FILES.push(ent);
   activeFile = ent;
 
-  // Auto-select the first (only) part
   if (ent.parts.length) selPart(ent.parts[0]);
 
-  // Set bars slider
   document.getElementById('bars-sl').value = bars;
   document.getElementById('bv').textContent = bars;
 
-  // Set lang
   const ls = document.getElementById('lang-sel');
   if (lang in LANG) ls.value = lang; else ls.value = 'auto';
   updateLangHint();
@@ -1301,19 +1315,24 @@ function setMidiContext(notes, bpm, trackName) {
 function clearMidiContext() {
   midiContext = null;
   document.getElementById('midi-ctx-strip').style.display='none';
+  document.getElementById('midi-ctx-theme-row').style.display='none';
   refresh();
   toast('MIDI blueprint cleared');
 }
 
 function renderMidiContextStrip() {
-  if (!midiContext) { document.getElementById('midi-ctx-strip').style.display='none'; return; }
+  if (!midiContext) {
+    document.getElementById('midi-ctx-strip').style.display='none';
+    document.getElementById('midi-ctx-theme-row').style.display='none';
+    return;
+  }
   document.getElementById('midi-ctx-strip').style.display='block';
+  document.getElementById('midi-ctx-theme-row').style.display='block';
   const { notes, bpm, trackName, totalBars, minP, maxP, midP, totalTicks } = midiContext;
   document.getElementById('midi-ctx-info').innerHTML =
     `${notes.length} notes · ${totalBars} bars · ${bpm.toFixed(1)} BPM\n` +
     `Pitch: ${mname(minP)}–${mname(maxP)} · centre ≈ ${mname(midP)} (${midP})`;
 
-  // Mini pitch histogram
   const vis = document.getElementById('midi-ctx-vis');
   vis.innerHTML = '';
   const barsPerBucket = Math.max(1, Math.ceil(totalBars / 24));
@@ -1403,7 +1422,6 @@ function parseMidiToSvp(bytes, origName) {
     }
   }
 
-  // Scale from MIDI ticks to SVP blicks
   const blicksPerTick = BLICKS / BigInt(tpb);
   const tracks2 = [], library = [];
 
@@ -1452,7 +1470,6 @@ function rebuild(f){
       if(l.notes?.length) parts.push({ti:li,track:null,lib:l,notes:l.notes,offB:0n,vname:'Unknown',lang:'japanese',name:l.name||`Part ${li+1}`});
     });
   }
-  // For new empty projects, create a virtual empty part from the first library entry
   if(!parts.length&&svp.library&&svp.library[0]){
     const l=svp.library[0];
     const t=svp.tracks?.[0];
@@ -1472,15 +1489,24 @@ function loadMidiFile(f) {
       const ent   = { id:Date.now()+Math.random(), name:f.name.replace(/\.midi?$/i,'.svp'), svpData:svp, parts:[], _built:false };
       rebuild(ent);
 
-      // Collect all notes for MIDI context
+      // Pick the melody track — longest note count, or first track
       const bpm = bpmOf(svp);
-      const allMidiNotes = [];
-      let tpb2 = 480;
-      // Re-parse just to get tick-based notes for context
+      let melodyTrackKey = null;
+      let maxNotes = 0;
+      const allTrackNotes = {};
+
+      // Re-parse to get tick-level notes for each track
+      let pos2=0;
+      const bytes2=bytes;
+      function r8b(){return bytes2[pos2++];}
+      function r16b(){const v=(bytes2[pos2]<<8)|bytes2[pos2+1];pos2+=2;return v;}
+      function r32b(){const v=(bytes2[pos2]<<24)|(bytes2[pos2+1]<<16)|(bytes2[pos2+2]<<8)|bytes2[pos2+3];pos2+=4;return v>>>0;}
+      function rVLb(){let v=0,b;while((b=r8b())&0x80){v=(v<<7)|(b&0x7f);}return(v<<7)|b;}
+      // Use already-parsed library instead — just collect for context
       const ctxPart = ent.parts[0];
+      const allMidiNotes = [];
       if (ctxPart) {
         const ns = notesRaw(ctxPart);
-        // Convert blicks back to ticks approximately
         ns.forEach(n => {
           const tickApprox = Math.round(Number(n.onB) / BLK * bpm / 60 * TPB);
           const durTickApprox = Math.round(Number(n.durB) / BLK * bpm / 60 * TPB);
@@ -1495,7 +1521,7 @@ function loadMidiFile(f) {
       else { refreshAll(); }
       hideWelcome();
       refreshAll();
-      toast(`MIDI loaded: ${f.name} → ${ent.parts.length} part(s) · blueprint active`, 'info');
+      toast(`MIDI loaded: ${f.name} · ${allMidiNotes.length} notes · blueprint active`, 'info');
     } catch(e) {
       toast('MIDI parse error: ' + e.message, 'err');
     }
@@ -1561,7 +1587,7 @@ function updateWorkflowHints() {
     document.getElementById('wf4').className='wf-num done';
     document.getElementById('wf5').className='wf-num active';
   }
-  const ctx = midiContext ? '🎹 MIDI blueprint active — pitches will be preserved' :
+  const ctx = midiContext ? '🎹 MIDI blueprint active — AI will write real lyrics for this melody' :
               (activePart?.isNew ? '✦ New project — will generate from scratch' : '');
   document.getElementById('wf-ctx').textContent = ctx;
 }
@@ -1626,11 +1652,6 @@ function renderNoteTable(){
 
 /* ═══════════════════════════════════════════════
    SVP PROMPT GENERATION
-   Now handles 4 modes:
-   1. Normal extend (existing notes)
-   2. Replace (from scratch using project settings)
-   3. MIDI blueprint → SVP vocal (midi context)
-   4. New empty project (pure from-scratch)
 ═══════════════════════════════════════════════ */
 function genPrompt(){
   if(!activePart||!activeFile) return '(select a part or create a new project)';
@@ -1651,11 +1672,10 @@ function genPrompt(){
   const isEmptyNew = ns.length===0;
   const allPlaceholder = ns.length>0 && ns.every(n=>n.lyric==='la'||n.lyric===''||n.lyric==='あ');
 
-  // Compute start position
   const lastNs = ns.length ? b2ns(ns[ns.length-1].onB+ns[ns.length-1].durB,bp) : 0n;
   const startNs = (op==='replace'||isEmptyNew) ? 0n : (hasMidiCtx&&allPlaceholder ? 0n : lastNs);
 
-  // Pitch range strings
+  // Pitch range
   let midP=60, mnP=48, mxP=76;
   if (hasMidiCtx) {
     midP=midiContext.midP; mnP=midiContext.minP; mxP=midiContext.maxP;
@@ -1663,107 +1683,146 @@ function genPrompt(){
     const pts=ns.map(n=>n.pitch);
     mnP=Math.min(...pts); mxP=Math.max(...pts); midP=Math.round(pts.reduce((a,b)=>a+b,0)/pts.length);
   }
+
   const rangeStr={
     auto: hasMidiCtx
-      ? `${mname(mnP)}–${mname(mxP)} (MIDI ${mnP}–${mxP}, from MIDI blueprint — follow this range)`
-      : ns.length ? `MIDI ${mnP}–${mxP} (detected from melody, centre ≈ ${mname(midP)})`
+      ? `${mname(mnP)}–${mname(mxP)} (MIDI ${mnP}–${mxP}, follow the blueprint exactly)`
+      : ns.length ? `MIDI ${mnP}–${mxP} (from existing melody)`
         : 'MIDI 55–72 (comfortable mid-range)',
-    low: 'MIDI 48–64  (C3–E4, low/intimate)',
-    mid: 'MIDI 55–72  (G3–C5, comfortable mid)',
-    high:'MIDI 64–79  (E4–G5, bright/soaring)'
+    low: 'MIDI 48–64 (C3–E4)',
+    mid: 'MIDI 55–72 (G3–C5)',
+    high:'MIDI 64–79 (E4–G5)'
   }[pitchRng]||`MIDI ${mnP}–${mxP}`;
 
+  // ── MIDI BLUEPRINT MODE — completely separate, highly explicit prompt ──
+  if (hasMidiCtx && (isEmptyNew || op==='replace' || (op==='extend'&&allPlaceholder))) {
+    const theme = (document.getElementById('midi-lyric-theme')?.value||'').trim();
+    const themeBlock = theme
+      ? `Song theme / what to sing about: "${theme}"`
+      : `Song theme: (none specified — invent something fitting the mood and melody)`;
+    const totalBars = Math.max(bars, midiContext.totalBars);
+
+    // Build the explicit note table
+    const noteTable = midiContext.notes.map((n,i) => {
+      const onNs = BigInt(Math.round(n.tick / TPB * NS_N * 60 / midiContext.bpm));
+      const durNs = BigInt(Math.round(n.dur  / TPB * NS_N * 60 / midiContext.bpm));
+      return `{"onset_ns":${onNs},"dur_ns":${durNs},"pitch":${n.pitch},"lyric":"???","musicalType":"singing"}`;
+    }).join(',\n  ');
+
+    return `You are a SynthesizerV vocal editor. Your job: take a monophonic MIDI melody and turn it into a SINGING VOCAL TRACK by replacing every "???" lyric with a real ${lk} syllable.
+
+════════════════════════════════════════════════
+ ⚠  READ THESE RULES BEFORE DOING ANYTHING ELSE
+════════════════════════════════════════════════
+
+RULE 1 — MONOPHONIC ONLY: This is a single VOCAL TRACK. ONE note plays at a time. You are NOT writing chords, bass, or accompaniment. You are NOT making an a cappella arrangement. You are writing ONE SINGER singing ONE note at a time. If you output two notes with the same or overlapping onset_ns, the second note WILL NOT PLAY and your output is broken.
+
+RULE 2 — DO NOT CHANGE onset_ns OR dur_ns: Every note's timing is already set by the MIDI. You must output the exact same onset_ns and dur_ns values as in the blueprint below. Do not shift, merge, split, or drop any notes.
+
+RULE 3 — DO NOT CHANGE pitch: Every note's pitch is already set by the MIDI. Output the exact same pitch values as in the blueprint.
+
+RULE 4 — ONLY change "lyric": Your ONLY creative task is to replace every "???" with a real ${lk} syllable. One syllable per note. Never leave "???" or "la" or placeholder text.
+
+RULE 5 — OUTPUT FORMAT: Output ONLY the flat JSON array. Nothing before [. Nothing after ]. No explanation. No markdown. No extra fields.
+
+════════════════════════════════════════════════
+ PROJECT INFO
+════════════════════════════════════════════════
+Voice: ${activePart.vname}
+Language: ${lk} (${lm.hint})
+${themeBlock}
+Total notes: ${midiContext.notes.length}
+Pitch range: ${mname(mnP)}–${mname(mxP)}
+BPM: ${midiContext.bpm.toFixed(1)}${projectKey?'\nKey: '+projectKey:''}
+
+════════════════════════════════════════════════
+ LYRIC WRITING GUIDE
+════════════════════════════════════════════════
+• Write REAL ${lk} song lyrics — not phonetic filler, not "la la la"
+• Every "???" = one syllable in ${lk} that fits the song theme
+• Write lyrics that feel like a real ${lk} pop song about: ${theme||'the mood of the melody'}
+• Group syllables into words that form actual lyric lines across bars
+• Phrase endings (long notes, notes before gaps) = end of lyric phrase — use strong final syllables
+• Match the emotional tone of the melody contour (rising pitch = build emotion, falling = resolve)
+
+${lk === 'japanese' ? `JAPANESE LYRIC TIPS:
+• Each note gets ONE kana character (hiragana or katakana)
+• Words span multiple notes: "わ-た-し" = 3 notes, "こ-こ-ろ" = 3 notes
+• Natural Japanese syllable flow: CV pattern (consonant+vowel), open vowels preferred on long notes
+• Example lyric line across 8 notes: わ た し の こ こ ろ に (watashi no kokoro ni)` : ''}
+${lk === 'english' ? `ENGLISH LYRIC TIPS:
+• Each note gets ONE syllable: "love" = 1 note, "feel-ing" = 2 notes, "beau-ti-ful" = 3 notes
+• Stressed syllables go on strong beats (beat 1, beat 3)
+• Single-syllable strong words on long notes: love, heart, night, dream, fall, time
+• Example line across 8 notes: I can feel it in the air to-night` : ''}
+${lk === 'mandarin' ? `MANDARIN LYRIC TIPS:
+• Each note gets ONE hanzi character
+• Write actual Mandarin words: 你(nǐ), 我(wǒ), 爱(ài), 心(xīn), 夜(yè), 梦(mèng)
+• Tonal words: match high tones (1st, 2nd) to rising phrases, falling tones (4th) to descending` : ''}
+${lk === 'korean' ? `KOREAN LYRIC TIPS:
+• Each note gets ONE hangul syllable block
+• Examples: 나(na), 사(sa), 랑(rang), 해(hae), 요(yo), 하(ha), 늘(neul)
+• Natural K-pop syllable patterns: 나-는, 사-랑-해, 너-를` : ''}
+
+════════════════════════════════════════════════
+ BLUEPRINT — copy this array and fill in the "???" fields
+════════════════════════════════════════════════
+
+[
+  ${noteTable}
+]
+
+════════════════════════════════════════════════
+ OUTPUT — the same array with every "???" replaced by a real ${lk} syllable
+════════════════════════════════════════════════
+Output ONLY the array. Start with [. End with ]. Nothing else.`;
+  }
+
+  // ── NON-MIDI modes (extend / replace / new / lyrics) — original logic ──
   const densityGuide={
-    sparse:  `2–3 notes per bar. Whole notes (${barNs}ns) and half notes (${barNs/2n}ns). Sustained, emotional.`,
-    medium:  `4–7 notes per bar. Quarter notes (${beatNs}ns) and half notes (${barNs/2n}ns). Natural flow.`,
-    dense:   `7–10 notes per bar. Eighth notes (${beatNs/2n}ns). Active, syllabic.`,
-    staccato:`10–14 notes per bar. Sixteenth notes (${beatNs/4n}ns). Rapid-fire.`
+    sparse:  `2–3 notes per bar. Whole notes (${barNs}ns) and half notes (${barNs/2n}ns).`,
+    medium:  `4–7 notes per bar. Quarter notes (${beatNs}ns) and half notes (${barNs/2n}ns).`,
+    dense:   `7–10 notes per bar. Eighth notes (${beatNs/2n}ns).`,
+    staccato:`10–14 notes per bar. Sixteenth notes (${beatNs/4n}ns).`
   }[density]||`4–7 notes per bar.`;
 
   const styleGuides={
-    natural:    'Conversational. Mostly stepwise (1–2 semitone) motion. Natural speech feel.',
-    emotional:  'Expressive. Rising phrases toward peaks. Leaps of a 4th/5th are fine. Long sustained endings.',
-    energetic:  'Upbeat. Short notes, rhythmic momentum. Land notes on offbeats.',
-    melancholy: 'Slow, falling phrases. Minor 3rd interval (3 semitones) frequently used.',
-    hook:       'Memorable. Write a 2-bar motif then repeat it with slight variation.',
-    bridge:     'Maximum contrast from the verse. If verse was low → go high here.',
-    'rap-chill':'Flat pitch (3–5 semitone range). Vary NOTE LENGTH to create groove.',
-    'rap-hype': 'Fast and punchy. Short syllables. Occasional pitch jumps on emphasis words.',
-    'rap-trap': 'Slow BPM. Long drawn syllables on key words, rapid bursts on others.',
-    'talk-natural':'Speech-like. Very narrow pitch range (2–3 semitones). Rhythm is everything.',
-    'talk-dramatic':'Wide pitch swings (up to an octave) on dramatic words, flat on normal words.',
+    natural:'Conversational. Mostly stepwise motion.',
+    emotional:'Expressive. Rising phrases. Long sustained endings.',
+    energetic:'Upbeat. Short notes, rhythmic momentum.',
+    melancholy:'Slow, falling phrases. Minor 3rd interval frequently.',
+    hook:'Memorable. 2-bar motif repeated with variation.',
+    bridge:'Maximum contrast from the verse.',
+    'rap-chill':'Flat pitch (3–5 semitone range). Vary note length for groove.',
+    'rap-hype':'Fast and punchy. Occasional pitch jumps on emphasis words.',
+    'rap-trap':'Long drawn syllables on key words, rapid bursts on others.',
+    'talk-natural':'Speech-like. Very narrow pitch range (2–3 semitones).',
+    'talk-dramatic':'Wide pitch swings on dramatic words, flat on normal words.',
   };
   const styleHint=styleGuides[style]||styleGuides.natural;
-
-  // Song structure
   const q=Math.max(2,Math.floor(bars/4));
   const h=Math.max(4,Math.floor(bars/2));
   const climaxBar=Math.floor(bars*0.65);
 
-  // ── Context block for each mode ──
   let ctxBlock='', operationDesc='', totalBarsCover=bars;
 
   if (op==='lyrics'&&ns.length) {
     const txt=document.getElementById('new-lyrics').value.trim();
-    ctxBlock=`\n══ LYRICS REWRITE ══
-Keep ALL onset_ns, dur_ns, pitch unchanged. Change ONLY "lyric".
-New text for ${ns.length} notes: "${txt}"
-Notes:\n`;
+    ctxBlock=`\n══ LYRICS REWRITE ══\nKeep ALL onset_ns, dur_ns, pitch unchanged. Change ONLY "lyric".\nNew text for ${ns.length} notes: "${txt}"\nNotes:\n`;
     ns.forEach((n,i)=>ctxBlock+=`  [${i+1}] onset_ns=${b2ns(n.onB,bp)} dur_ns=${b2ns(n.durB,bp)} pitch=${n.pitch} (${mname(n.pitch)})\n`);
     operationDesc='Rewrite only the lyric text — keep all pitches and timing identical';
-
-  } else if (hasMidiCtx && (isEmptyNew || op==='replace' || (op==='extend'&&allPlaceholder))) {
-    // ── MIDI BLUEPRINT MODE ──
-    totalBarsCover=Math.max(bars, midiContext.totalBars);
-    ctxBlock=`\n══ MIDI BLUEPRINT ══
-Source: "${midiContext.trackName}" · ${midiContext.notes.length} notes · ${midiContext.bpm.toFixed(1)} BPM
-This MIDI file defines the MELODIC STRUCTURE. Use it as your pitch and rhythm skeleton.
-
-YOUR TASK:
-1. Follow the pitch sequence from the MIDI notes below closely — these are your pitch targets.
-2. Assign realistic ${lk} lyrics to every note (one syllable per note, ${lm.hint}).
-3. Adjust dur_ns slightly for natural vocal breathing — shorten some notes a bit, lengthen phrase-ending notes.
-4. The onset_ns values define where notes start — preserve them but you may shift by up to ${beatNs/8n}ns for feel.
-
-MIDI blueprint notes (onset in ticks → onset_ns for your output):
-  Note  |  Tick   |  onset_ns        |  dur_ns         |  Pitch  | Note name
-${midiContext.notes.slice(0,60).map((n,i)=>{
-  const onNs=BigInt(Math.round(n.tick/TPB*NS_N*60/midiContext.bpm));
-  const durNs=BigInt(Math.round(n.dur/TPB*NS_N*60/midiContext.bpm));
-  return `  [${String(i+1).padStart(3)}]  ${String(n.tick).padStart(6)}  ${String(onNs).padStart(16)}  ${String(durNs).padStart(15)}  ${String(n.pitch).padStart(3)}  (${mname(n.pitch)})`;
-}).join('\n')}${midiContext.notes.length>60?`\n  … (${midiContext.notes.length-60} more notes)`:''}\n`;
-    operationDesc=`Convert this MIDI blueprint into a ${lk} vocal performance — assign lyrics to every note while preserving the melodic structure`;
-
   } else if (isEmptyNew && !hasMidiCtx) {
-    // ── PURE FROM-SCRATCH MODE ──
-    ctxBlock=`\n══ NEW PROJECT — GENERATE FROM SCRATCH ══
-Voice:   ${activePart.vname}
-${projectKey?`Key:     ${projectKey}\n`:''}No existing notes. You are composing the entire melody.
-Create a complete, satisfying ${bars}-bar vocal melody with proper song structure.
-`;
-    operationDesc='Generate a complete melody from scratch — this is a new empty project';
-
+    ctxBlock=`\n══ NEW PROJECT — GENERATE FROM SCRATCH ══\nVoice: ${activePart.vname}\n${projectKey?`Key: ${projectKey}\n`:''}No existing notes. Compose the entire ${bars}-bar vocal melody.\n`;
+    operationDesc='Generate a complete melody from scratch';
   } else if (op==='replace') {
-    ctxBlock=`\n══ REPLACE — GENERATE NEW MELODY ══
-Discard previous content. Generate a completely new ${bars}-bar melody.
-`;
-    operationDesc='Generate a completely new melody, discarding all previous content';
-
+    ctxBlock=`\n══ REPLACE — GENERATE NEW MELODY ══\nDiscard previous content. Generate a completely new ${bars}-bar melody.\n`;
+    operationDesc='Generate a completely new melody';
   } else if (op==='extend'&&ns.length) {
-    ctxBlock=`\n══ EXISTING MELODY — continue after this ══
-${ns.length} notes exist. Your new notes start at onset_ns=${startNs}.
-Last ${Math.min(8,ns.length)} notes (match key, mood, direction):
-${ns.slice(-8).map(n=>`  onset_ns=${b2ns(n.onB,bp)}  dur_ns=${b2ns(n.durB,bp)}  pitch=${n.pitch} (${mname(n.pitch)})  "${n.lyric}"`).join('\n')}
-Key centre: ~${mname(midP)} (MIDI ${midP}) · continue naturally, do not restart.
-`;
+    ctxBlock=`\n══ EXISTING MELODY — continue after this ══\n${ns.length} notes exist. Your new notes start at onset_ns=${startNs}.\nLast ${Math.min(8,ns.length)} notes:\n${ns.slice(-8).map(n=>`  onset_ns=${b2ns(n.onB,bp)}  dur_ns=${b2ns(n.durB,bp)}  pitch=${n.pitch} (${mname(n.pitch)})  "${n.lyric}"`).join('\n')}\n`;
     operationDesc=`Add ${bars} bars of new notes continuing the existing melody`;
   }
 
-  const rapBlock=isRap?`\n══ RAP SPECIFICS ══
-Stay within ${mname(midP-2)}–${mname(midP+4)} mostly.
-rapTone: -1 to +1 for expression. rapIntonation: ±0.5, alternate signs.
-Vary note lengths dramatically: short syllables (${beatNs/4n}ns), long key words (${beatNs*2n}ns).
-`:'';
+  const rapBlock=isRap?`\n══ RAP SPECIFICS ══\nStay within ${mname(midP-2)}–${mname(midP+4)} mostly.\nrapTone: -1 to +1. rapIntonation: ±0.5.\nVary note lengths dramatically.\n`:'';
 
   return `You are a professional SynthesizerV vocal composer. Output ONLY a flat JSON array.
 Do NOT output chords, bass, arp, accompaniment, tracks, bpm, or program changes.
@@ -1775,64 +1834,39 @@ Language:  ${lk} — ${lm.hint}  |  example: "${lm.ex}"
 Operation: ${operationDesc}
 Style:     ${style} — ${styleHint}
 Type:      ${isRap?'RAP':'SINGING'}
-Bars:      ${totalBarsCover} (fill ALL of them — never stop early)
-Density:   ${hasMidiCtx?'Follow the MIDI blueprint note positions above':densityGuide}
+Bars:      ${totalBarsCover}
+Density:   ${densityGuide}
 Pitch:     ${rangeStr}
 BPM:       ${bp.toFixed(1)}
 Start:     onset_ns = ${startNs}${projectKey?`\nKey:       ${projectKey}`:''}
 ${rapBlock}
 ══ TIMING ══
-1 beat  = ${beatNs} ns
-1 bar   = ${barNs} ns
-Minimum dur_ns = ${beatNs/8n}  (never shorter — SynthV ignores them)
-RULE: onset_ns[i+1] = onset_ns[i] + dur_ns[i]  — no gaps, no overlaps, ever.
+1 beat = ${beatNs} ns  |  1 bar = ${barNs} ns
+Minimum dur_ns = ${beatNs/8n}
+RULE: onset_ns[i+1] = onset_ns[i] + dur_ns[i] — no gaps, no overlaps.
 
-Bar start positions (first ${Math.min(12,totalBarsCover)}):
-${Array.from({length:Math.min(12,totalBarsCover)},(_,i)=>`  Bar ${String(i+1).padStart(2)}: onset_ns = ${startNs+BigInt(i)*barNs}`).join('\n')}${totalBarsCover>12?`\n  … +${totalBarsCover-12} more bars at ${barNs}ns intervals …`:''}
+Bar positions (first ${Math.min(12,totalBarsCover)}):
+${Array.from({length:Math.min(12,totalBarsCover)},(_,i)=>`  Bar ${String(i+1).padStart(2)}: onset_ns = ${startNs+BigInt(i)*barNs}`).join('\n')}${totalBarsCover>12?`\n  … +${totalBarsCover-12} more bars …`:''}
 
 ══ MUSIC THEORY ══
-
-1. MOTIF-BASED WRITING:
-   Create a 2–4 note seed phrase in bar 1. Repeat with variation every 2–4 bars.
-   Example: bars 1–2 = [60,62,64,62], bars 5–6 = [64,66,67,66], bars 9–10 = [67,69,71,67]
-
-2. PHRASE BREATHING (end each 2–4 bar phrase on a long note ≥${beatNs}ns):
-   Natural phrases = memorable melody. Endless streams = robotic.
-
-3. MELODIC CONTOUR (each phrase needs a shape):
-   Rising → tension | Falling → resolution | Arching → complete thought
-   Never: the same pitch 3+ times in a row.
-
-4. INTERVAL VARIETY:
-   Stepwise (1–2 semitones): most common — smooth, natural
-   3rd/4th (3–5 semitones): emotional colour — use often
-   5th/6th (7 semitones): strong leap — use occasionally
-   Octave: dramatic statement — once or twice per song max
-
-5. SONG ARC (${totalBarsCover} bars):
-   Bars 1–${q}:            Intro — quiet, simple, introduce motif
-   Bars ${q+1}–${h}:       Verse — develop, build
-   Bars ${h+1}–${climaxBar}: Chorus/Peak — highest notes, most intense
-   Bars ${climaxBar+1}–${totalBarsCover}: Resolution — descend, long final note
-
-6. RESOLUTION: Last note = root (≈ MIDI ${midP}), dur_ns ≥ ${barNs/2n}
+1. Create a 2–4 note seed phrase in bar 1. Repeat with variation every 2–4 bars.
+2. End each 2–4 bar phrase on a long note ≥${beatNs}ns.
+3. Each phrase needs a shape: rising → tension | falling → resolution.
+4. Never the same pitch 3+ times in a row.
+5. Song arc: bars 1–${q} intro · bars ${q+1}–${h} verse · bars ${h+1}–${climaxBar} peak · bars ${climaxBar+1}–${totalBarsCover} resolve.
+6. Last note = root (≈ MIDI ${midP}), dur_ns ≥ ${barNs/2n}.
 
 ══ ANTI-BAD-HABITS ══
 ✗ Same pitch 3+ times in a row
 ✗ All notes identical duration
 ✗ Stop before bar ${totalBarsCover}
-✗ Every bar rhythmically identical
-✗ Output accompaniment data (chords/bass/arp)
-✗ "phoneme" field (SynthV reads lyrics directly)
+✗ Output accompaniment data
 
 ══ OUTPUT (flat array, nothing else) ══
 [
   {"onset_ns": ${startNs}, "dur_ns": ${beatNs/2n}, "pitch": ${midP}, "lyric": "${lm.ex}", "musicalType": "${isRap?'rap':'singing'}"${isRap?', "rapTone": 0.0, "rapIntonation": 0.1':''}},
-  {"onset_ns": ${startNs+beatNs/2n}, "dur_ns": ${beatNs}, "pitch": ${midP+2}, "lyric": "${lm.ex}", "musicalType": "${isRap?'rap':'singing'}"${isRap?', "rapTone": 0.2, "rapIntonation": -0.1':''}},
   …
-]
-• ONLY the JSON array. Nothing before [. Nothing after ].
-• Final note: pitch ≈ ${midP}, dur_ns ≥ ${barNs/2n}`;
+]`;
 }
 
 function refresh(doPrompt=true){
@@ -1849,7 +1883,12 @@ function copyPrompt(){
 /* ═══════════════════════════════════════════════
    AI RESPONSE / PREVIEW
 ═══════════════════════════════════════════════ */
-function sanitize(raw){let s=raw.trim().replace(/^```(?:json)?\s*/i,'').replace(/\s*```\s*$/i,'').trim();const a=s.indexOf('['),e=s.lastIndexOf(']');if(a===-1||e===-1)throw new Error('No JSON array found');return JSON.parse(s.substring(a,e+1).replace(/"(\w+)"\s*=\s*/g,'"$1":').replace(/,\s*([}\]])/g,'$1'));}
+function sanitize(raw){
+  let s=raw.trim().replace(/^```(?:json)?\s*/i,'').replace(/\s*```\s*$/i,'').trim();
+  const a=s.indexOf('['),e=s.lastIndexOf(']');
+  if(a===-1||e===-1)throw new Error('No JSON array found');
+  return JSON.parse(s.substring(a,e+1).replace(/"(\w+)"\s*=\s*/g,'"$1":').replace(/,\s*([}\]])/g,'$1'));
+}
 function setMsg(txt,cls){const el=document.getElementById('parse-msg');el.textContent=txt;el.className=cls?'msg-'+cls:'';}
 
 function preview(){
@@ -1865,8 +1904,23 @@ function preview(){
       const onB=ns2b(onRaw,bp),durB=ns2b(durRaw,bp);
       return{onB,durB:durB<minD?minD:durB,pitch:parseInt(n.pitch??n.n)||60,det:0,lyric:String(n.lyric??n.lyrics??n.y??'あ'),mode:n.musicalType??n.mode??noteType,rapTone:parseFloat(n.rapTone??0)||0,rapInt:parseFloat(n.rapIntonation??0)||0};
     });
-    pending.sort((a,b)=>a.onB<b.onB?-1:a.onB>b.onB?1:0);
-    for(let i=1;i<pending.length;i++)pending[i].onB=pending[i-1].onB+pending[i-1].durB;
+    // For MIDI blueprint mode: preserve original timing — do NOT re-chain
+    const isMidiMode = !!midiContext && pending.length > 0;
+    if (!isMidiMode) {
+      // Normal mode: enforce strict chaining to remove gaps/overlaps
+      pending.sort((a,b)=>a.onB<b.onB?-1:a.onB>b.onB?1:0);
+      for(let i=1;i<pending.length;i++) pending[i].onB=pending[i-1].onB+pending[i-1].durB;
+    } else {
+      // MIDI mode: trust the onset_ns from AI (they copied from blueprint)
+      // Just sort and validate no two notes are truly simultaneous
+      pending.sort((a,b)=>a.onB<b.onB?-1:a.onB>b.onB?1:0);
+      for(let i=1;i<pending.length;i++){
+        // If two notes start at same time, push second one forward
+        if(pending[i].onB<=pending[i-1].onB){
+          pending[i].onB=pending[i-1].onB+pending[i-1].durB;
+        }
+      }
+    }
     const lines=pending.map(n=>{const be=Number(n.onB)/BLK,bar=Math.floor(be/4)+1,bt=((be%4)+1).toFixed(1);return`${n.mode==='rap'?'[R]':'[S]'} ${bar}.${bt}  ${mname(n.pitch).padEnd(4)}  ${b2s(n.durB,bp).toFixed(3)}s  "${n.lyric}"`;});
     document.getElementById('prev-log').textContent=lines.join('\n');
     document.getElementById('prev-count').textContent=`${pending.length} notes — review then Apply`;
@@ -1882,7 +1936,18 @@ function autoFix(){
   try{
     const a=sanitize(raw),bp=activeFile?bpmOf(activeFile.svpData):DEF_BPM,beatNs=Math.round(NS_N*60/bp);
     const f=a.map(n=>{const on=Math.max(0,Math.round(parseFloat(n.onset_ns??n.onset??0)));const dur=Math.max(Math.round(beatNs/8),Math.round(parseFloat(n.dur_ns??n.duration??beatNs)));return{onset_ns:on,dur_ns:dur,pitch:parseInt(n.pitch??n.n)||60,lyric:String(n.lyric??n.lyrics??n.y??'あ'),musicalType:n.musicalType??n.mode??noteType,rapTone:parseFloat(n.rapTone??0)||0,rapIntonation:parseFloat(n.rapIntonation??0)||0};});
-    f.sort((a,b)=>a.onset_ns-b.onset_ns);for(let i=1;i<f.length;i++)f[i].onset_ns=f[i-1].onset_ns+f[i-1].dur_ns;
+    f.sort((a,b)=>a.onset_ns-b.onset_ns);
+    // Only re-chain if NOT in MIDI blueprint mode
+    if (!midiContext) {
+      for(let i=1;i<f.length;i++)f[i].onset_ns=f[i-1].onset_ns+f[i-1].dur_ns;
+    } else {
+      // In MIDI mode: only fix truly overlapping notes, preserve timing otherwise
+      for(let i=1;i<f.length;i++){
+        if(f[i].onset_ns<f[i-1].onset_ns+f[i-1].dur_ns){
+          f[i].onset_ns=f[i-1].onset_ns+f[i-1].dur_ns;
+        }
+      }
+    }
     document.getElementById('json-in').value=JSON.stringify(f,null,2);toast('Auto-fixed '+f.length+' notes');preview();
   }catch(e){toast('Auto-fix failed: '+e.message,'err');}
 }
@@ -1918,7 +1983,6 @@ function doExport(){
   const clean=n=>{delete n.phonemes;};
   if(clone.tracks)clone.tracks.forEach(t=>{if(t.mainGroup?.notes)t.mainGroup.notes.forEach(clean);});
   if(clone.library)clone.library.forEach(l=>{if(l.notes)l.notes.forEach(clean);});
-  // Remove internal-only fields
   delete clone._midiSource; delete clone._projectKey; delete clone._projectBars;
   const j=svpStringify(clone);
   const b=new Blob([j],{type:'application/json'}),a=document.createElement('a');
@@ -1949,7 +2013,7 @@ function exportMidi(){
 }
 
 /* ═══════════════════════════════════════════════
-   ACCOMPANIMENT PROMPT (single unified function)
+   ACCOMPANIMENT PROMPT
 ═══════════════════════════════════════════════ */
 function getAccompParams(){
   return {
@@ -1970,7 +2034,6 @@ function buildAccompPrompt(){
   const {genre,energy,keyChoice,wantMelody,wantChords,wantBass,wantArp,extraNotes,manualBpm}=getAccompParams();
   const bp = activePart ? bpmOf(activeFile.svpData) : activeFile ? bpmOf(activeFile.svpData) : manualBpm;
 
-  // Collect notes
   let allNotes=[], sourceName='';
   if(activePart){ allNotes=notesRaw(activePart); sourceName=activePart.vname; }
   else if(activeFile&&activeFile.parts.length){
@@ -1990,7 +2053,6 @@ function buildAccompPrompt(){
     totalTicks=totalBars*1920;
   }
 
-  // Melody context
   let melCtx='';
   if(allNotes.length){
     const firstSec=b2s(allNotes[0].onB,bp);
@@ -2005,7 +2067,6 @@ function buildAccompPrompt(){
     });
   } else { melCtx='\n(No SVP melody — composing standalone instrumental)\n'; }
 
-  // Key detection
   const rootNames=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
   let keyStr=keyChoice;
   if(keyStr==='auto'&&allNotes.length){
@@ -2015,7 +2076,6 @@ function buildAccompPrompt(){
     keyStr=`${rootNames[rootIdx]} major (auto-detected)`;
   } else if(keyStr==='auto'){ keyStr='C major'; }
 
-  // Genre guide DB (condensed)
   const G={
     jpop:{name:'J-Pop',prog:'F–G–Am–C (IV–V–vi–I)',cp:0,ci:48,cb:32,ca:11,cname:'Piano',iname:'Strings',bname:'Acoustic Bass',aname:'Vibraphone'},
     'jpop-minor':{name:'J-Pop Minor',prog:'Am–C–G–F (i–III–VII–VI)',cp:0,ci:0,cb:32,ca:73,cname:'Piano',iname:'Piano pad',bname:'Acoustic Bass',aname:'Flute'},
@@ -2038,50 +2098,24 @@ function buildAccompPrompt(){
   const velBase=Math.max(32,Math.min(112,48+energy*7));
   const chordDur=energy<=3?1920:energy<=6?960:480;
 
-  // Build track sections
   const sections=[];
   if(wantMelody&&allNotes.length){
     const firstSec=b2s(allNotes[0].onB,bp);
     const ex=allNotes.slice(0,4).map(n=>{const t=Math.round((b2s(n.onB,bp)-firstSec)*bp/60*TPB),d=Math.max(1,Math.round(b2s(n.durB,bp)*bp/60*TPB));return`{ "tick": ${t}, "dur": ${d}, "pitch": ${n.pitch}, "velocity": 62 }`;}).join('\n    ');
-    sections.push(`━━ MELODY REFERENCE ━━
-Channel: 0 | Program: 0 (Acoustic Piano, very soft)
-Copy every note from the VOCAL MELODY table above — same tick, same pitch, same dur. Velocity: 62.
-Example (first notes):
-    ${ex}`);
+    sections.push(`━━ MELODY REFERENCE ━━\nChannel: 0 | Program: 0 (Acoustic Piano, very soft)\nCopy every note from the VOCAL MELODY table above — same tick, same pitch, same dur. Velocity: 62.\nExample (first notes):\n    ${ex}`);
   }
   if(wantChords){
-    sections.push(`━━ CHORD PADS ━━
-Channel: 1 | Program: ${gd.ci} (${gd.iname})
-Progression: ${gd.prog} — repeat every 4 bars
-Always write 3–4 notes at the SAME tick (full chord voicings). Range MIDI 55–79.
-Chord duration: ${chordDur} ticks. Velocity: ${Math.max(28,velBase-22)} (background — MUST be quietest).
-Example — C major at tick 0:
-    { "tick": 0, "dur": ${chordDur-60}, "pitch": 60, "velocity": ${Math.max(28,velBase-22)} }
-    { "tick": 0, "dur": ${chordDur-60}, "pitch": 64, "velocity": ${Math.max(22,velBase-30)} }
-    { "tick": 0, "dur": ${chordDur-60}, "pitch": 67, "velocity": ${Math.max(22,velBase-30)} }`);
+    sections.push(`━━ CHORD PADS ━━\nChannel: 1 | Program: ${gd.ci} (${gd.iname})\nProgression: ${gd.prog} — repeat every 4 bars\nAlways write 3–4 notes at the SAME tick (full chord voicings). Range MIDI 55–79.\nChord duration: ${chordDur} ticks. Velocity: ${Math.max(28,velBase-22)} (background — MUST be quietest).\nExample — C major at tick 0:\n    { "tick": 0, "dur": ${chordDur-60}, "pitch": 60, "velocity": ${Math.max(28,velBase-22)} }\n    { "tick": 0, "dur": ${chordDur-60}, "pitch": 64, "velocity": ${Math.max(22,velBase-30)} }\n    { "tick": 0, "dur": ${chordDur-60}, "pitch": 67, "velocity": ${Math.max(22,velBase-30)} }`);
   }
   if(wantBass){
-    sections.push(`━━ BASS LINE ━━
-Channel: 2 | Program: ${gd.cb} (${gd.bname})
-Range: MIDI 28–48 ONLY. Single notes, never chords. Velocity: ${Math.min(118,velBase+15)} (loudest).
-Pattern: root on beat 1 (tick 0,1920…), vary with passing tones on beat 3 (tick 960…).
-Example bar 1:
-    { "tick": 0,   "dur": 480, "pitch": 36, "velocity": ${Math.min(118,velBase+15)} }
-    { "tick": 960, "dur": 480, "pitch": 43, "velocity": ${Math.min(110,velBase+8)} }`);
+    sections.push(`━━ BASS LINE ━━\nChannel: 2 | Program: ${gd.cb} (${gd.bname})\nRange: MIDI 28–48 ONLY. Single notes, never chords. Velocity: ${Math.min(118,velBase+15)} (loudest).\nPattern: root on beat 1 (tick 0,1920…), vary with passing tones on beat 3 (tick 960…).\nExample bar 1:\n    { "tick": 0,   "dur": 480, "pitch": 36, "velocity": ${Math.min(118,velBase+15)} }\n    { "tick": 960, "dur": 480, "pitch": 43, "velocity": ${Math.min(110,velBase+8)} }`);
   }
   if(wantArp){
     const arpDur=energy<=5?480:240;
-    sections.push(`━━ ARPEGGIO / COUNTER ━━
-Channel: 3 | Program: ${gd.ca} (${gd.aname})
-Range: MIDI 60–88. Single notes. Duration: ${arpDur} ticks. Velocity: ${Math.max(28,velBase-28)} (subtle).
-Cycle: root→3rd→5th→octave of each chord. Example bar 1:
-    { "tick": 0,         "dur": ${arpDur}, "pitch": 72, "velocity": ${Math.max(28,velBase-28)} }
-    { "tick": ${arpDur}, "dur": ${arpDur}, "pitch": 76, "velocity": ${Math.max(25,velBase-32)} }
-    { "tick": ${arpDur*2}, "dur": ${arpDur}, "pitch": 79, "velocity": ${Math.max(28,velBase-28)} }`);
+    sections.push(`━━ ARPEGGIO / COUNTER ━━\nChannel: 3 | Program: ${gd.ca} (${gd.aname})\nRange: MIDI 60–88. Single notes. Duration: ${arpDur} ticks. Velocity: ${Math.max(28,velBase-28)} (subtle).\nCycle: root→3rd→5th→octave of each chord. Example bar 1:\n    { "tick": 0,         "dur": ${arpDur}, "pitch": 72, "velocity": ${Math.max(28,velBase-28)} }\n    { "tick": ${arpDur}, "dur": ${arpDur}, "pitch": 76, "velocity": ${Math.max(25,velBase-32)} }\n    { "tick": ${arpDur*2}, "dur": ${arpDur}, "pitch": 79, "velocity": ${Math.max(28,velBase-28)} }`);
   }
 
   return `You are a professional music producer. Write realistic, musical MIDI accompaniment.
-Think like a seasoned engineer — warm, human, NOT a note grid calculator.
 Output ONLY a valid JSON object. No markdown. No explanation. Start with { end with }.
 ${melCtx}
 ══ PROJECT ══
@@ -2100,20 +2134,19 @@ Bar 1=0 | Bar 2=1920 | Bar 3=3840 | Bar 4=5760 | End=${totalTicks}
 ${sections.join('\n\n')}
 
 ══ AUDIO ENGINEERING LAWS ══
-1. FREQUENCY ZONES: Bass=MIDI 28–48, Chords=48–67, Arp/Counter=64–88. Never overlap sustained notes.
-2. VELOCITY HIERARCHY: Bass=${Math.min(118,velBase+15)} > Arp/Melody > Chords=${Math.max(28,velBase-22)} (law, not suggestion).
-3. LEGATO GAP: String/pad patches subtract 60 from all dur values (next downbeat punches through).
-4. VOICE LEADING: Moving chord → nearest neighbor per voice. No parallel 5ths.
-5. COMPLEMENTARY RHYTHM: If melody is fast → chord plays whole notes. If melody holds → arp fills.
+1. FREQUENCY ZONES: Bass=MIDI 28–48, Chords=48–67, Arp/Counter=64–88.
+2. VELOCITY HIERARCHY: Bass=${Math.min(118,velBase+15)} > Arp/Melody > Chords=${Math.max(28,velBase-22)}.
+3. LEGATO GAP: String/pad patches subtract 60 from all dur values.
+4. VOICE LEADING: Moving chord → nearest neighbor per voice.
+5. COMPLEMENTARY RHYTHM: If melody is fast → chord plays whole notes.
 6. DYNAMICS: Bars 1–${Math.floor(totalBars/4)} at 80% velocity, bars ${Math.floor(totalBars/2)+1}–${Math.floor(totalBars*0.75)} at 110%.
-7. HUMANIZE: Vary velocity ±5 per note. Chord notes stagger start by 5–10 ticks (lowest first).
+7. HUMANIZE: Vary velocity ±5 per note.
 
 ══ FORBIDDEN ══
 ✗ Chord pads velocity > ${Math.max(28,velBase-22)+10}
 ✗ Bass notes above MIDI 52
 ✗ All tracks on same ticks every bar
 ✗ Fewer than ${totalBars} bars
-✗ Static velocity (identical on every note)
 
 ══ OUTPUT FORMAT ══
 {
@@ -2374,7 +2407,6 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){closeAdd();closeNewModal();selSet.clear();renderNoteTable();}
 });
 
-// Close modals on backdrop click
 document.getElementById('new-modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeNewModal();});
 document.getElementById('add-modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeAdd();});
 
