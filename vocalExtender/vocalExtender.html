@@ -1438,17 +1438,36 @@ function genPrompt(){
   const lkSel=document.getElementById('lang-sel').value;
   const lk=lkSel==='auto'?langKey(activePart):lkSel;
   const lm=LANG[lk]||LANG.japanese;
+
+  // ══ DETECT MIDI IMPORT: notes came from a MIDI file if all lyrics are "la" or empty ══
+  const allFromMidi = ns.length > 0 && ns.every(n => n.lyric === 'la' || n.lyric === '' || n.lyric === 'あ');
+
+  // Calculate last onset and start
   const lastNs=ns.length?b2ns(ns[ns.length-1].onB+ns[ns.length-1].durB,bp):0n;
-  const startNs=op==='replace'?0n:lastNs;
+
+  // When MIDI import + extend mode: treat as "MIDI→Singing" conversion (covers ALL notes, not just new ones)
+  let startNs;
+  if (op === 'extend' && allFromMidi && ns.length > 0) {
+    // Force start from 0 — the AI will re-generate with lyrics for the entire duration
+    startNs = 0n;
+  } else {
+    startNs = op==='replace' ? 0n : lastNs;
+  }
+
   // For replace mode, do NOT use existing note data — AI must create from scratch
-  const useExistingData = op !== 'replace' && ns.length > 0;
+  const useExistingData = op !== 'replace' && ns.length > 0 && !(op === 'extend' && allFromMidi);
   const pts=useExistingData ? ns.map(n=>n.pitch) : [];
   const mnP=useExistingData ? Math.min(...pts) : 48;
   const mxP=useExistingData ? Math.max(...pts) : 76;
   const midP=useExistingData ? Math.round(pts.reduce((a,b)=>a+b,0)/pts.length) : 60;
 
+  // When MIDI→Singing mode, compute range from ALL existing notes
+  const midiMnP = ns.length ? Math.min(...ns.map(n=>n.pitch)) : 48;
+  const midiMxP = ns.length ? Math.max(...ns.map(n=>n.pitch)) : 76;
+  const midiMidP = ns.length ? Math.round(ns.reduce((a,b)=>a+n.pitch,0)/ns.length) : 60;
+
   const rangeStr={
-    auto:`MIDI ${mnP}–${mxP}  (centre ≈ ${mname(midP)}, detected from melody)`,
+    auto: allFromMidi ? `MIDI ${midiMnP}–${midiMxP}  (centre ≈ ${mname(midiMidP)}, from your MIDI file)` : `MIDI ${mnP}–${mxP}  (centre ≈ ${mname(midP)}, detected from melody)`,
     low: 'MIDI 48–64  (C3–E4, low/intimate)',
     mid: 'MIDI 55–72  (G3–C5, comfortable mid)',
     high:'MIDI 64–79  (E4–G5, bright/soaring)'
@@ -1482,7 +1501,7 @@ function genPrompt(){
   const h=Math.max(4,Math.floor(bars/2));
   const climaxBar=Math.floor(bars*0.65);
 
-  // Existing melody context
+  // Existing melody context — COMPLETELY REVISED
   let ctxBlock='';
   if(op==='lyrics'&&ns.length){
     const txt=document.getElementById('new-lyrics').value.trim();
@@ -1491,6 +1510,25 @@ Keep ALL onset_ns, dur_ns, pitch unchanged. Change ONLY "lyric".
 New text to distribute across ${ns.length} notes: "${txt}"
 Notes:\n`;
     ns.forEach((n,i)=>ctxBlock+=`  [${i+1}] onset_ns=${b2ns(n.onB,bp)} dur_ns=${b2ns(n.durB,bp)} pitch=${n.pitch} (${mname(n.pitch)})\n`);
+  } else if (op === 'extend' && allFromMidi && ns.length > 0) {
+    // ══ MIDI → SINGING CONVERSION MODE ══
+    // This activates when user loaded a MIDI file and uses "Extend" mode
+    // Instead of adding notes after the existing ones, it converts ALL existing
+    // MIDI notes into proper singing notes with realistic lyrics
+    ctxBlock=`\n══ MIDI-TO-SINGING CONVERSION ══
+CRITICAL: These ${ns.length} notes were imported from a MIDI file and ALL have placeholder lyrics "la".
+You must convert EVERY SINGLE NOTE into a proper singing performance with realistic lyrics.
+
+YOUR TASK:
+1. Keep the EXACT SAME onset_ns and pitch for each note — preserve the melody structure.
+2. Replace EVERY "la" lyric with an appropriate syllable in ${lk} language (${lm.hint}).
+3. Slightly adjust dur_ns for natural vocal breathing — shorten some notes slightly to create micro-pauses between phrases, lengthen phrase-ending notes.
+4. Add musicalType: "singing" (or "rap" if rap mode).
+
+The melody structure (onset positions and pitches) is your main reference. Do NOT change the pitch sequence.
+All notes with their current positions:\n`;
+    ns.forEach((n,i)=>ctxBlock+=`  [${i+1}] onset_ns=${b2ns(n.onB,bp)}  dur_ns=${b2ns(n.durB,bp)}  pitch=${n.pitch} (${mname(n.pitch)})  ↪ needs lyric in ${lk}\n`);
+    ctxBlock+=`\nOutput ALL ${ns.length} notes with lyrics assigned. Keep the same onset_ns and pitch for each.`;
   } else if(op!=='replace'&&ns.length){
     ctxBlock=`\n══ EXISTING MELODY — continue from here ══
 ${ns.length} notes already exist. Your new notes start at onset_ns=${startNs}.
@@ -1500,6 +1538,13 @@ Detected key centre: ~${mname(midP)} (MIDI ${midP})
 Continue the melodic arc naturally. Do not restart or repeat the opening.
 `;
   }
+
+  const isMidiToSinging = op === 'extend' && allFromMidi && ns.length > 0;
+  const operationDesc = isMidiToSinging
+    ? 'Convert these MIDI notes into a full singing performance — assign realistic lyrics to every note while preserving the melodic structure'
+    : (op==='replace' ? 'Generate a completely new melody from scratch' : (op==='extend' ? 'Add new notes continuing the existing melody' : 'Rewrite only the lyric text'));
+
+  const totalBarsCover = isMidiToSinging ? Math.max(bars, Math.ceil(ns.length / 4)) : bars;
 
   const rapBlock=isRap?`
 ══ RAP / TALKING SPECIFICS ══
@@ -1512,16 +1557,19 @@ RHYTHM IS EVERYTHING in rap. Vary note lengths dramatically:
   — End-of-bar pause simulation: use a ${beatNs*2n}ns note on the last syllable of a phrase
 `:'';
 
-  return `You are a professional vocal composer for SynthesizerV. Output ONLY a raw JSON array — no markdown, no text before or after the array.
+  return `You are a professional SynthesizerV vocal composer. Output ONLY a flat JSON array of singing notes.
+CRITICAL: Do NOT output chords, bass, arpeggio, melody reference, or any accompaniment data.
+Do NOT output a "tracks" object. Do NOT output bpm or program changes.
+Output is ONLY: [ {"onset_ns":..., "dur_ns":..., "pitch":..., "lyric":"...", "musicalType":"singing"}, ... ]
 ${ctxBlock}
 ══ BRIEF ══
 Voice:     ${activePart.vname}
 Language:  ${lk} — ${lm.hint}  |  example syllable: "${lm.ex}"
-Operation: ${op==='replace'?'Generate a completely new melody from scratch':op==='extend'?'Add new notes continuing the existing melody':'Rewrite only the lyric text'}
+Operation: ${operationDesc}
 Style:     ${style} — ${styleHint}
 Type:      ${isRap?'RAP':'SINGING'}
-Bars:      ${bars}  (generate ALL ${bars} bars — never stop early)
-Density:   ${densityGuide}
+Bars:      ${isMidiToSinging ? ns.length + ' notes from your MIDI file (assign lyrics to all of them)' : totalBarsCover + ' bars  (generate ALL bars — never stop early)'}
+Density:   ${isMidiToSinging ? 'Use the existing note timing from your MIDI file' : densityGuide}
 Pitch:     ${rangeStr}
 BPM:       ${bp.toFixed(1)}
 Start:     onset_ns = ${startNs}
@@ -1593,17 +1641,16 @@ ${bars>12?`  … +${bars-12} more bars at ${barNs}ns intervals …`:''}
 ✗ Do NOT use only adjacent half-steps — use wider intervals too
 ✗ Do NOT ignore the song arc — dynamics must change across sections
 ✗ Do NOT use dur_ns values that are all identical
+✗ Do NOT output accompaniment data (chords, bass, arp, melody ref, tracks, program changes)
 
-══ OUTPUT FORMAT ══
+══ OUTPUT FORMAT — SINGING NOTES ONLY ══
 [
   {"onset_ns": ${startNs}, "dur_ns": ${beatNs/2n}, "pitch": ${midP}, "lyric": "${lm.ex}", "musicalType": "${isRap?'rap':'singing'}"${isRap?', "rapTone": 0.0, "rapIntonation": 0.1':''}},
   {"onset_ns": ${startNs+beatNs/2n}, "dur_ns": ${beatNs}, "pitch": ${midP+2}, "lyric": "${lm.ex}", "musicalType": "${isRap?'rap':'singing'}"${isRap?', "rapTone": 0.2, "rapIntonation": -0.1':''}},
   …
 ]
 
-• First onset_ns = exactly ${startNs}
 • Final note must resolve on MIDI ≈ ${midP} with dur_ns ≥ ${barNs/2n}
-• Aim for ${Math.max(bars*3, bars*4)}+ notes across ${bars} bars
 • DO NOT include a "phoneme" field — SynthV reads lyrics directly
 • Output ONLY the JSON array. Nothing before it. Nothing after it.`;
 }
