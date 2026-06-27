@@ -1,457 +1,1278 @@
 ﻿<!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MIDI Composer</title>
+<title>MIDI Composer — AI Music Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
 <style>
-:root{
-  --bg:#0a0a12;--surface:#10101a;--card:#15151f;--card2:#1a1a26;
-  --border:rgba(255,255,255,0.065);--border-hi:rgba(255,255,255,0.11);
-  --teal:#2dd4bf;--teal-d:rgba(45,212,191,0.10);
-  --purple:#a78bfa;--purple-d:rgba(167,139,250,0.10);
-  --amber:#fbbf24;--red:#f87171;--green:#34d399;--green-d:rgba(52,211,153,0.10);
-  --blue:#60a5fa;--blue-d:rgba(96,165,250,0.10);
-  --pink:#f472b6;--pink-d:rgba(244,114,182,0.10);
-  --txt:#c4c4dc;--txt-m:#58587a;--hi:#f0f0ff;
-  --mono:'Cascadia Code','Fira Code',Consolas,monospace;
-  --sans:'Segoe UI',system-ui,sans-serif;
-  --r:8px;--rl:12px;
+/* ══════════════════════════════════════════════════════════
+   TOKENS
+══════════════════════════════════════════════════════════ */
+:root {
+  --bg:       #080C14;
+  --bg2:      #0D1220;
+  --surface:  #111827;
+  --card:     #161E2E;
+  --card2:    #1C2537;
+  --border:   rgba(255,255,255,.07);
+  --border2:  rgba(255,255,255,.12);
+
+  --ind:      #6C63FF; /* electric indigo — primary */
+  --ind-d:    rgba(108,99,255,.12);
+  --ind-glow: rgba(108,99,255,.35);
+  --rose:     #FF6584;
+  --rose-d:   rgba(255,101,132,.10);
+  --amber:    #F5A623;
+  --amber-d:  rgba(245,166,35,.10);
+  --teal:     #00C9A7;
+  --teal-d:   rgba(0,201,167,.10);
+  --green:    #2DD4A0;
+  --green-d:  rgba(45,212,160,.10);
+  --blue:     #60A5FA;
+  --pink:     #F472B6;
+  --red:      #F87171;
+
+  --txt:      #C8D0E0;
+  --txt-m:    #5A6480;
+  --txt-s:    #3A4060;
+  --hi:       #F0F4FF;
+
+  --mono: 'JetBrains Mono', 'Cascadia Code', Consolas, monospace;
+  --sans: 'Inter', system-ui, sans-serif;
+  --r: 10px;
+  --rl: 14px;
 }
-[data-theme=light]{
-  --bg:#f0f0f6;--surface:#ffffff;--card:#f7f7fb;--card2:#eeeef6;
-  --border:rgba(0,0,0,0.07);--border-hi:rgba(0,0,0,0.12);
-  --teal:#0d9488;--teal-d:rgba(13,148,136,0.08);
-  --purple:#7c3aed;--purple-d:rgba(124,58,237,0.08);
-  --amber:#d97706;--red:#dc2626;--green:#059669;--green-d:rgba(5,150,105,0.08);
-  --blue:#2563eb;--blue-d:rgba(37,99,235,0.08);
-  --pink:#be185d;--pink-d:rgba(190,24,93,0.08);
-  --txt:#1e1e32;--txt-m:#5a5a90;--hi:#080820;
+
+/* ══════ RESET ══════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; background: var(--bg); color: var(--txt); font-family: var(--sans); font-size: 13px; overflow: hidden; }
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* ══════════════════════════════════════════════════════════
+   APP SHELL
+══════════════════════════════════════════════════════════ */
+#app { display: flex; flex-direction: column; height: 100vh; }
+
+/* ══════ HEADER ══════ */
+#header {
+  flex-shrink: 0;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0 20px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  z-index: 10;
 }
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html,body{height:100%;background:var(--bg);font-family:var(--sans);color:var(--txt);font-size:13px;display:flex;flex-direction:column;overflow:hidden;}
-::-webkit-scrollbar{width:4px;height:4px;}
-::-webkit-scrollbar-thumb{background:var(--border-hi);border-radius:2px;}
-::-webkit-scrollbar-track{background:transparent;}
+#header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--ind-glow) 30%, var(--ind) 50%, var(--ind-glow) 70%, transparent);
+  opacity: .6;
+}
 
-/* ── TOP BAR ── */
-#topbar{height:46px;flex-shrink:0;display:flex;align-items:center;gap:6px;padding:0 14px;background:var(--surface);border-bottom:1px solid var(--border);}
-.logo{font-size:13.5px;font-weight:700;color:var(--hi);display:flex;align-items:center;gap:8px;margin-right:10px;letter-spacing:-.02em;user-select:none;}
-.logo-dot{width:7px;height:7px;border-radius:50%;background:var(--teal);animation:blink 2.6s ease-in-out infinite;flex-shrink:0;}
-@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
-.sp{flex:1;}
-.tbtn{height:27px;padding:0 10px;border-radius:6px;border:1px solid var(--border-hi);background:transparent;color:var(--txt-m);font-size:11px;font-weight:500;cursor:pointer;font-family:var(--sans);white-space:nowrap;transition:all .1s;display:inline-flex;align-items:center;gap:5px;}
-.tbtn:hover{background:rgba(255,255,255,.05);color:var(--hi);}
-.tbtn:disabled{opacity:.2;pointer-events:none;}
-.tbtn.grn{border-color:rgba(52,211,153,.3);color:var(--green);}
-.tbtn.grn:hover{background:var(--green-d);}
-.tbtn.pur{border-color:rgba(167,139,250,.3);color:var(--purple);}
-.tbtn.pur:hover{background:var(--purple-d);}
-.ibt{width:27px;height:27px;border-radius:50%;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;color:var(--txt-m);transition:all .1s;}
-.ibt:hover{border-color:var(--border-hi);color:var(--hi);}
-.dvd{width:1px;height:16px;background:var(--border);flex-shrink:0;}
+.logo-mark {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: 24px;
+  cursor: default;
+  user-select: none;
+}
+.logo-spectrum {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 22px;
+}
+.ls-bar {
+  width: 3px;
+  background: var(--ind);
+  border-radius: 1.5px;
+  transition: height .1s ease;
+  animation: spectrum-pulse var(--dur, 0.6s) ease-in-out infinite alternate;
+}
+@keyframes spectrum-pulse {
+  from { opacity: .4; }
+  to   { opacity: 1; }
+}
+.logo-text {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--hi);
+  letter-spacing: -.03em;
+}
+.logo-text span { color: var(--ind); }
 
-/* ── LAYOUT ── */
-#shell{display:flex;flex:1;overflow:hidden;}
+/* NAV TABS */
+#nav {
+  display: flex;
+  gap: 2px;
+  height: 100%;
+}
+.nav-tab {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 16px;
+  height: 100%;
+  border: none;
+  background: transparent;
+  color: var(--txt-m);
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all .15s;
+  white-space: nowrap;
+  position: relative;
+}
+.nav-tab .tab-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--border);
+  font-size: 9px;
+  font-weight: 700;
+  font-family: var(--mono);
+  transition: all .15s;
+}
+.nav-tab:hover { color: var(--txt); }
+.nav-tab.active {
+  color: var(--hi);
+  border-bottom-color: var(--ind);
+}
+.nav-tab.active .tab-num {
+  background: var(--ind);
+  color: #fff;
+}
+.nav-tab.done .tab-num {
+  background: var(--green-d);
+  color: var(--green);
+  border: 1px solid rgba(45,212,160,.3);
+}
+.nav-tab.done .tab-num::after {
+  content: '✓';
+  font-family: sans-serif;
+  font-size: 9px;
+}
+.nav-tab.done .tab-num-n { display: none; }
 
-/* ── SIDEBAR: MELODY FILES ── */
-#sb{width:190px;flex-shrink:0;display:flex;flex-direction:column;background:var(--surface);border-right:1px solid var(--border);overflow:hidden;}
-#sb-s{flex:1;overflow-y:auto;padding:10px 8px;}
-#sb-foot{padding:6px 10px;border-top:1px solid var(--border);font-size:9px;color:var(--txt-m);}
-.sb-sec{margin-bottom:14px;}
-.sb-t{font-size:8.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--txt-m);padding:0 3px;margin-bottom:5px;display:flex;align-items:center;gap:4px;}
-.frow{display:flex;align-items:center;gap:6px;padding:5px 6px;border-radius:5px;cursor:pointer;border-left:2px solid transparent;transition:all .08s;}
-.frow:hover{background:rgba(255,255,255,.04);}
-.frow.active{background:var(--teal-d);border-left-color:var(--teal);}
-.fdot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
-.fi{flex:1;min-width:0;}
-.fn{font-size:10.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--hi);}
-.fm{font-size:8.5px;color:var(--txt-m);margin-top:1px;}
-.fdel{opacity:0;background:none;border:none;color:var(--red);cursor:pointer;font-size:11px;padding:0 2px;transition:opacity .1s;line-height:1;}
-.frow:hover .fdel{opacity:.45;}
-.fdel:hover{opacity:1!important;}
-.trow{display:flex;align-items:center;gap:6px;padding:4px 6px;border-radius:5px;cursor:pointer;transition:background .08s;}
-.trow:hover{background:rgba(255,255,255,.04);}
-.trow.active{background:var(--purple-d);}
-.cp{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;margin:2px;border-radius:4px;background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.14);font-size:9px;}
-.cn{font-weight:700;color:var(--purple);}
-.cb{font-size:8px;color:var(--txt-m);}
-.eh{padding:10px 4px;font-size:10px;color:var(--txt-m);line-height:1.6;}
+.hsp { flex: 1; }
+#header-actions { display: flex; align-items: center; gap: 6px; }
 
-/* ── LEFT CONFIGURE PANEL ── */
-#left{width:306px;flex-shrink:0;display:flex;flex-direction:column;background:var(--surface);border-right:1px solid var(--border);overflow:hidden;}
-#left-scroll{flex:1;overflow-y:auto;padding:12px 11px 8px;}
-#left-foot{padding:8px 11px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:5px;flex-shrink:0;}
-.sh{display:flex;align-items:center;gap:6px;font-size:8.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--txt-m);margin-bottom:7px;padding-bottom:5px;border-bottom:1px solid var(--border);}
-.gap{margin-bottom:13px;}
+/* ══════ PAGES ══════ */
+#pages { flex: 1; overflow: hidden; }
+.page { display: none; height: 100%; overflow-y: auto; }
+.page.active { display: block; }
 
-/* ── PRESET GRID ── */
-.preset-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
-.preset-btn{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:8px 9px 8px;border-radius:var(--r);border:1px solid var(--border-hi);background:var(--card);cursor:pointer;transition:all .12s;text-align:left;font-family:var(--sans);overflow:hidden;}
-.preset-btn::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--ac);opacity:.55;transition:opacity .12s;}
-.preset-btn:hover{border-color:var(--ac);background:var(--card2);transform:translateY(-1px);box-shadow:0 3px 12px rgba(0,0,0,.3);}
-.preset-btn:hover::before{opacity:1;}
-.preset-btn.active{border-color:var(--ac)!important;background:var(--card2);}
-.preset-btn.active::before{opacity:1;}
-.preset-btn.active::after{content:'\f00c';font-family:'Font Awesome 6 Free';font-weight:900;position:absolute;top:5px;right:6px;font-size:8px;color:var(--ac);}
-.pb-icon{font-size:14px;color:var(--ac);margin-bottom:2px;}
-.pb-name{font-size:10.5px;font-weight:700;color:var(--hi);line-height:1.2;}
-.pb-tag{font-size:8.5px;color:var(--txt-m);line-height:1.3;}
+/* ══════════════════════════════════════════════════════════
+   PAGE 1 — COMPOSE
+══════════════════════════════════════════════════════════ */
+#page-compose {
+  padding: 28px 32px 40px;
+  max-width: 1100px;
+  margin: 0 auto;
+  display: block;
+}
 
-/* ── INTENSITY ROW ── */
-.int-row{display:flex;gap:4px;margin-bottom:13px;}
-.int-pill{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 5px;border-radius:6px;border:1px solid var(--border-hi);background:var(--card);cursor:pointer;font-family:var(--sans);transition:all .12s;}
-.int-pill:hover{background:var(--card2);}
-.int-pill.active{border-color:var(--ac);background:var(--card2);box-shadow:0 0 0 1px var(--ac) inset;}
-.int-pill i{font-size:13px;color:var(--txt-m);transition:color .12s;}
-.int-pill.active i{color:var(--ac);}
-.int-label{font-size:10px;font-weight:700;color:var(--txt-m);transition:color .12s;}
-.int-pill.active .int-label{color:var(--hi);}
-.int-desc{font-size:8px;color:var(--txt-m);text-align:center;line-height:1.3;max-width:72px;}
+.section-header {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.section-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--txt-m);
+}
+.section-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
 
-/* ── FORM FIELDS ── */
-.f{margin-bottom:8px;}
-.f label{display:block;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--txt-m);margin-bottom:3px;}
-.f select,.f input[type=number]{width:100%;padding:6px 8px;background:var(--card);border:1px solid var(--border-hi);border-radius:6px;color:var(--hi);font-size:11.5px;font-family:var(--sans);outline:none;transition:border-color .1s;}
-.f select:focus,.f input:focus{border-color:var(--teal);}
-.f select option{background:var(--card);}
-.f textarea{width:100%;padding:6px 8px;background:var(--card);border:1px solid var(--border-hi);border-radius:6px;color:var(--hi);font-size:11px;font-family:var(--sans);outline:none;resize:vertical;line-height:1.5;min-height:42px;transition:border-color .1s;}
-.f textarea:focus{border-color:var(--purple);}
-.f textarea::placeholder{color:var(--txt-m);}
-.srow{display:flex;align-items:center;gap:8px;}
-.srow input[type=range]{flex:1;accent-color:var(--teal);cursor:pointer;}
-.sv{font-size:11px;font-weight:700;font-family:var(--mono);min-width:34px;text-align:right;color:var(--hi);}
-.ends{display:flex;justify-content:space-between;font-size:8.5px;color:var(--txt-m);margin-top:2px;}
-.trk-item{display:flex;align-items:center;gap:8px;padding:4px 0;cursor:pointer;}
-.trk-item input[type=checkbox]{accent-color:var(--teal);width:13px;height:13px;cursor:pointer;flex-shrink:0;}
-.trk-name{flex:1;font-size:11.5px;font-weight:600;color:var(--txt);}
-.trk-sub{font-size:9.5px;color:var(--txt-m);}
-.hr{border:none;border-top:1px solid var(--border);margin:9px 0;}
+/* PRESET GRID */
+.preset-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 28px;
+}
+@media (max-width: 900px) { .preset-grid { grid-template-columns: repeat(2, 1fr); } }
 
-/* ── BUTTONS ── */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:30px;padding:0 12px;border-radius:7px;border:1px solid var(--border-hi);background:transparent;color:var(--txt-m);font-size:11px;font-weight:500;cursor:pointer;font-family:var(--sans);white-space:nowrap;transition:all .12s;}
-.btn:hover{background:rgba(255,255,255,.05);color:var(--hi);}
-.btn:active{transform:scale(.97);}
-.btn:disabled{opacity:.2;pointer-events:none;}
-.btn.full{width:100%;}
-.btn.lg{height:36px;font-size:12px;font-weight:700;border-radius:8px;}
-.btn.xl{height:40px;font-size:13px;font-weight:700;border-radius:9px;}
-.btn.acc-pur{background:var(--purple);border-color:var(--purple);color:#fff;}
-.btn.acc-pur:hover{filter:brightness(1.12);}
-.btn.g-grn{border-color:rgba(52,211,153,.3);color:var(--green);}
-.btn.g-grn:hover{background:var(--green-d);}
-.btn.g-teal{border-color:rgba(45,212,191,.3);color:var(--teal);}
-.btn.g-teal:hover{background:var(--teal-d);}
-.btn.g-amb{border-color:rgba(251,191,36,.28);color:var(--amber);}
-.btn.g-amb:hover{background:rgba(251,191,36,.06);}
-.btn.g-red{border-color:rgba(248,113,113,.25);color:var(--red);}
-.btn.g-red:hover{background:rgba(248,113,113,.06);}
+.preset-card {
+  position: relative;
+  padding: 16px;
+  border-radius: var(--rl);
+  border: 1px solid var(--border2);
+  background: var(--card);
+  cursor: pointer;
+  transition: all .18s;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow: hidden;
+  font-family: var(--sans);
+  text-align: left;
+}
+.preset-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--ac, var(--ind));
+  opacity: 0;
+  transition: opacity .18s;
+}
+.preset-card:hover {
+  border-color: var(--ac, var(--ind));
+  background: var(--card2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0,0,0,.4), 0 0 0 1px var(--ac, var(--ind)) inset;
+}
+.preset-card:hover::before { opacity: 1; }
+.preset-card.active {
+  border-color: var(--ac, var(--ind));
+  background: var(--card2);
+}
+.preset-card.active::before { opacity: 1; }
 
-/* ── MIDDLE: PROMPT ── */
-#mid{flex:1;min-width:0;display:flex;flex-direction:column;background:var(--bg);border-right:1px solid var(--border);}
-#steps{height:34px;flex-shrink:0;display:none;align-items:stretch;background:var(--surface);border-bottom:1px solid var(--border);padding:0 12px;}
-.step{display:flex;align-items:center;gap:5px;padding:0 8px;font-size:10px;color:var(--txt-m);cursor:pointer;border-bottom:2px solid transparent;transition:all .12s;user-select:none;}
-.step:hover{color:var(--txt);}
-.step.active{color:var(--hi);border-bottom-color:var(--teal);}
-.step.done{color:var(--green);}
-.step-n{width:16px;height:16px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;flex-shrink:0;transition:all .15s;}
-.step.active .step-n{background:var(--teal);color:#000;}
-.step.done .step-n{background:var(--green-d);color:var(--green);}
-.step-sep{color:var(--border-hi);font-size:11px;align-self:center;}
-#mel-strip{display:none;margin:8px 12px 0;padding:7px 10px;border-radius:6px;background:var(--teal-d);border:1px solid rgba(45,212,191,.16);}
-#mel-strip.show{display:block;}
-.mel-t{font-size:9px;font-weight:700;color:var(--teal);margin-bottom:3px;display:flex;justify-content:space-between;align-items:center;}
-.mel-i{font-size:8.5px;color:var(--txt-m);font-family:var(--mono);}
-.mel-bars{display:flex;gap:1px;height:10px;margin-top:4px;background:rgba(0,0,0,.2);border-radius:2px;overflow:hidden;}
-.mel-bar{flex:1;background:var(--teal);border-radius:1px;align-self:flex-end;}
-#pr-wrap{display:none;margin:6px 12px 0;border-radius:var(--r);overflow:hidden;border:1px solid var(--border);}
-#pr-wrap.show{display:block;}
-#pr-head{display:flex;justify-content:space-between;align-items:center;padding:4px 9px;background:var(--card);border-bottom:1px solid var(--border);font-size:9px;font-weight:600;color:var(--txt-m);}
-#pr-canvas{display:block;width:100%;height:65px;}
-.ph{height:36px;display:flex;align-items:center;gap:8px;padding:0 13px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;}
-.ph-label{font-size:8.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--txt-m);}
-.ph-hint{font-size:9px;color:var(--txt-m);}
-#prompt-box{flex:1;overflow-y:auto;padding:13px 15px;font-family:var(--mono);font-size:9px;color:var(--txt-m);white-space:pre-wrap;line-height:1.85;outline:none;background:transparent;cursor:text;tab-size:2;}
-#prompt-box.has-content{color:var(--txt);}
+.pc-icon {
+  width: 36px; height: 36px;
+  border-radius: 9px;
+  background: var(--ac-d, var(--ind-d));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  color: var(--ac, var(--ind));
+  flex-shrink: 0;
+}
+.pc-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--hi);
+  line-height: 1.2;
+}
+.pc-tag {
+  font-size: 10.5px;
+  color: var(--txt-m);
+  line-height: 1.4;
+}
+.pc-check {
+  position: absolute;
+  top: 10px; right: 10px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--ac, var(--ind));
+  color: #fff;
+  font-size: 9px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.preset-card.active .pc-check { display: flex; }
 
-/* ── RIGHT: RESPONSE ── */
-#right{width:330px;flex-shrink:0;display:flex;flex-direction:column;background:var(--surface);}
-#right-body{flex:1;overflow-y:auto;padding:11px;}
-.rl{font-size:8.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--txt-m);margin-bottom:5px;}
-#json-in{width:100%;min-height:85px;max-height:125px;resize:vertical;background:var(--bg);border:1px solid var(--border-hi);border-radius:6px;padding:7px 9px;font-family:var(--mono);font-size:9px;color:var(--hi);outline:none;line-height:1.6;transition:border-color .12s;}
-#json-in:focus{border-color:var(--teal);}
-#json-in.err{border-color:var(--red)!important;}
-#json-in.ok{border-color:var(--green)!important;}
-#parse-msg{font-size:9px;min-height:14px;font-family:var(--mono);line-height:1.5;padding:2px 0;}
-.msg-ok{color:var(--green);}
-.msg-err{color:var(--red);}
-#repair-log{display:none;margin-top:5px;padding:6px 8px;background:rgba(251,191,36,.05);border:1px solid rgba(251,191,36,.16);border-radius:6px;font-family:var(--mono);font-size:8.5px;color:var(--amber);line-height:1.7;max-height:55px;overflow-y:auto;}
-#repair-log.show{display:block;}
-.mx-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:5px;}
-.mx-card.muted{opacity:.25;}
-.mx-card.locked{border-color:var(--amber);}
-.mx-top{display:flex;align-items:center;gap:5px;padding:5px 8px;border-bottom:1px solid var(--border);}
-.mx-sw{width:3px;height:18px;border-radius:2px;flex-shrink:0;}
-.mx-nm{flex:1;font-size:10px;font-weight:700;color:var(--hi);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.mx-pt{font-size:8px;color:var(--txt-m);white-space:nowrap;}
-.mx-tool{width:18px;height:18px;border-radius:3px;border:1px solid var(--border);background:transparent;color:var(--txt-m);font-size:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .1s;padding:0;flex-shrink:0;}
-.mx-tool:hover{border-color:var(--border-hi);color:var(--txt);}
-.mx-tool.on{background:var(--teal-d);border-color:rgba(45,212,191,.28);color:var(--teal);}
-.mx-tool.on-a{background:rgba(251,191,36,.08);border-color:rgba(251,191,36,.28);color:var(--amber);}
-.mx-bd{padding:5px 8px;display:flex;flex-direction:column;gap:3px;}
-.mx-row{display:flex;align-items:center;gap:5px;}
-.mx-rl{font-size:7px;font-weight:800;text-transform:uppercase;color:var(--txt-m);width:22px;flex-shrink:0;}
-.mx-rv{font-size:8px;font-family:var(--mono);color:var(--txt);min-width:20px;text-align:right;}
-.mx-info{font-size:8px;color:var(--txt-m);padding:3px 8px;border-top:1px solid var(--border);}
-.mx-roll{height:14px;border-top:1px solid var(--border);}
-.mx-roll canvas{display:block;width:100%;height:100%;}
+/* INTENSITY */
+.intensity-strip {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 28px;
+  min-height: 80px;
+  align-items: stretch;
+}
+.int-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 10px 12px;
+  border-radius: var(--r);
+  border: 1px solid var(--border2);
+  background: var(--card);
+  cursor: pointer;
+  transition: all .15s;
+  font-family: var(--sans);
+}
+.int-card:hover { background: var(--card2); }
+.int-card.active {
+  border-color: var(--ac, var(--ind));
+  background: var(--card2);
+  box-shadow: 0 0 0 1px var(--ac, var(--ind)) inset, 0 4px 20px rgba(0,0,0,.3);
+}
+.int-card i {
+  font-size: 16px;
+  color: var(--txt-s);
+  transition: color .15s;
+}
+.int-card.active i { color: var(--ac, var(--ind)); }
+.int-label { font-size: 11px; font-weight: 700; color: var(--txt); }
+.int-bpm { font-size: 9px; font-family: var(--mono); color: var(--txt-m); }
 
-/* ── STATUS BAR ── */
-#statusbar{height:22px;flex-shrink:0;display:flex;align-items:center;gap:8px;padding:0 12px;background:var(--surface);border-top:1px solid var(--border);font-size:9px;color:var(--txt-m);}
-.s-dot{width:5px;height:5px;border-radius:50%;background:var(--border-hi);flex-shrink:0;transition:background .2s;}
-.s-dot.ok{background:var(--green);}
-.s-dot.mid{background:var(--teal);}
-.s-dot.warn{background:var(--amber);}
-kbd{padding:1px 4px;border-radius:2px;background:var(--card);border:1px solid var(--border-hi);font-family:var(--mono);font-size:7px;}
+/* TWO-COL ROW */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+@media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
 
-/* ── TOASTS ── */
-#toasts{position:fixed;bottom:26px;right:12px;z-index:999;display:flex;flex-direction:column;gap:4px;pointer-events:none;}
-.toast{background:var(--card2);border:1px solid var(--border-hi);padding:7px 12px;border-radius:7px;font-size:10.5px;color:var(--txt);opacity:0;transform:translateX(10px);transition:all .15s;max-width:290px;pointer-events:all;display:flex;align-items:center;gap:7px;}
-.toast.show{opacity:1;transform:none;}
-.toast.ok{border-left:3px solid var(--green);}
-.toast.err{border-left:3px solid var(--red);}
-.toast.warn{border-left:3px solid var(--amber);}
-.toast.info{border-left:3px solid var(--teal);}
+/* FIELD */
+.field { margin-bottom: 14px; }
+.field label {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--txt-m);
+  margin-bottom: 5px;
+}
+.field-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.field-row input[type=range] {
+  flex: 1;
+  accent-color: var(--ind);
+  cursor: pointer;
+  height: 4px;
+}
+.field-val {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--hi);
+  min-width: 40px;
+  text-align: right;
+}
+input[type=number].bpm-input {
+  width: 56px;
+  padding: 5px 7px;
+  background: var(--card);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  color: var(--hi);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--mono);
+  text-align: center;
+  outline: none;
+  transition: border-color .12s;
+}
+input[type=number].bpm-input:focus { border-color: var(--ind); }
+.field-hints { display: flex; justify-content: space-between; font-size: 9px; color: var(--txt-s); margin-top: 3px; }
 
-/* ── WELCOME ── */
-#welcome{display:none;position:absolute;inset:0;z-index:100;background:var(--bg);flex-direction:column;align-items:center;justify-content:center;}
-#welcome.show{display:flex;}
-.wc-logo{font-size:28px;font-weight:700;color:var(--hi);letter-spacing:-.03em;margin-bottom:6px;display:flex;align-items:center;gap:9px;}
-.wc-dot{width:11px;height:11px;border-radius:50%;background:var(--teal);animation:blink 2.6s ease-in-out infinite;}
-.wc-sub{font-size:12px;color:var(--txt-m);margin-bottom:40px;text-align:center;line-height:1.65;max-width:460px;}
-.wc-cards{display:flex;gap:11px;margin-bottom:22px;}
-.wc-card{width:195px;padding:20px 16px;border-radius:var(--rl);border:1px solid var(--border-hi);background:var(--card);cursor:pointer;transition:all .14s;text-align:center;display:flex;flex-direction:column;align-items:center;gap:9px;}
-.wc-card:hover{border-color:rgba(45,212,191,.35);background:rgba(45,212,191,.04);transform:translateY(-2px);}
-.wc-card.primary{border-color:rgba(45,212,191,.2);}
-.wc-ico{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;}
-.wc-ico.t{background:var(--teal-d);color:var(--teal);}
-.wc-ico.p{background:var(--purple-d);color:var(--purple);}
-.wc-title{font-size:12px;font-weight:700;color:var(--hi);}
-.wc-desc{font-size:10px;color:var(--txt-m);line-height:1.55;}
-.wc-hint{font-size:9px;color:var(--txt-m);display:flex;align-items:center;gap:4px;}
+/* INSTRUMENT CHECKBOXES */
+.instruments-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.inst-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 11px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  cursor: pointer;
+  transition: all .12s;
+}
+.inst-row:hover { border-color: var(--border2); background: var(--card2); }
+.inst-row.enabled { border-color: rgba(108,99,255,.25); }
+.inst-check {
+  width: 16px; height: 16px;
+  border-radius: 4px;
+  border: 1.5px solid var(--border2);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all .12s;
+}
+.inst-row.enabled .inst-check {
+  background: var(--ind);
+  border-color: var(--ind);
+}
+.inst-check i { font-size: 8px; color: #fff; display: none; }
+.inst-row.enabled .inst-check i { display: block; }
+.inst-row input[type=checkbox] { display: none; }
+.inst-info { flex: 1; }
+.inst-name { font-size: 12px; font-weight: 600; color: var(--txt); }
+.inst-sub { font-size: 9.5px; color: var(--txt-m); }
+.inst-icon { font-size: 13px; color: var(--txt-s); width: 20px; text-align: center; }
 
-/* ── COLOR TOKENS for presets ── */
-.p-teal{--ac:var(--teal);}
-.p-purple{--ac:var(--purple);}
-.p-amber{--ac:var(--amber);}
-.p-blue{--ac:var(--blue);}
-.p-pink{--ac:var(--pink);}
-.p-green{--ac:var(--green);}
-.p-red{--ac:var(--red);}
+/* EXTRA NOTES */
+textarea.extra-area {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--card);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  color: var(--hi);
+  font-size: 12px;
+  font-family: var(--sans);
+  outline: none;
+  resize: vertical;
+  min-height: 72px;
+  line-height: 1.6;
+  transition: border-color .12s;
+}
+textarea.extra-area:focus { border-color: var(--ind); }
+textarea.extra-area::placeholder { color: var(--txt-s); }
+
+/* MELODY LOAD ZONE */
+.melody-zone {
+  border: 2px dashed var(--border2);
+  border-radius: var(--rl);
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all .15s;
+  margin-bottom: 28px;
+}
+.melody-zone:hover {
+  border-color: var(--ind);
+  background: var(--ind-d);
+}
+.melody-zone.loaded {
+  border-style: solid;
+  border-color: rgba(0,201,167,.35);
+  background: var(--teal-d);
+  text-align: left;
+  cursor: default;
+}
+.mz-icon { font-size: 20px; color: var(--txt-s); margin-bottom: 6px; }
+.mz-label { font-size: 11.5px; color: var(--txt-m); }
+.mz-label strong { color: var(--txt); }
+.mz-loaded-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.mz-title { font-size: 12px; font-weight: 700; color: var(--teal); display: flex; align-items: center; gap: 6px; }
+.mz-meta { font-size: 10px; font-family: var(--mono); color: var(--txt-m); }
+.mz-bars { display: flex; gap: 2px; height: 28px; align-items: flex-end; margin-top: 6px; }
+.mz-bar { flex: 1; background: var(--teal); border-radius: 2px; opacity: .6; min-height: 3px; }
+
+/* TRACK SELECTOR in melody zone */
+.mz-tracks { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+.mz-track-chip {
+  padding: 3px 9px;
+  border-radius: 20px;
+  border: 1px solid var(--border2);
+  background: var(--card);
+  font-size: 10px;
+  cursor: pointer;
+  transition: all .1s;
+  color: var(--txt-m);
+}
+.mz-track-chip:hover { border-color: var(--teal); color: var(--teal); }
+.mz-track-chip.active { background: var(--teal-d); border-color: var(--teal); color: var(--teal); font-weight: 600; }
+
+/* CTA */
+.compose-cta {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding-top: 12px;
+}
+
+/* ══════════════════════════════════════════════════════════
+   PAGE 2 — PROMPT
+══════════════════════════════════════════════════════════ */
+#page-prompt {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.prompt-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.prompt-toolbar-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--txt-m);
+}
+.pt-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  background: var(--ind-d);
+  border: 1px solid rgba(108,99,255,.2);
+  font-size: 10px;
+  color: var(--ind);
+}
+
+#prompt-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 24px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  line-height: 1.9;
+  color: var(--txt);
+  white-space: pre-wrap;
+  background: var(--bg);
+  outline: none;
+  cursor: text;
+}
+#prompt-area.empty { color: var(--txt-s); font-style: italic; }
+
+/* Syntax-like coloring */
+.prompt-area-wrapper { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+
+/* ══════════════════════════════════════════════════════════
+   PAGE 3 — MIX
+══════════════════════════════════════════════════════════ */
+#page-mix {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+#mix-inner {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  overflow: hidden;
+}
+
+/* PASTE PANEL */
+#paste-panel {
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.panel-head {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.panel-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--txt-m);
+}
+
+#json-paste {
+  flex: 1;
+  resize: none;
+  border: none;
+  outline: none;
+  background: var(--bg);
+  color: var(--hi);
+  font-family: var(--mono);
+  font-size: 10.5px;
+  line-height: 1.7;
+  padding: 14px 16px;
+  transition: background .15s;
+}
+#json-paste.err { background: rgba(248,113,113,.04); }
+#json-paste.ok { background: rgba(45,212,160,.03); }
+#json-paste::placeholder { color: var(--txt-s); font-family: var(--sans); font-size: 12px; }
+
+.paste-actions {
+  padding: 10px 14px;
+  border-top: 1px solid var(--border);
+  background: var(--bg2);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.paste-row { display: flex; gap: 6px; }
+
+#parse-msg {
+  padding: 4px 2px;
+  font-size: 10px;
+  font-family: var(--mono);
+  min-height: 18px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.msg-ok { color: var(--green); }
+.msg-err { color: var(--red); }
+
+#repair-log {
+  display: none;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: rgba(245,166,35,.06);
+  border: 1px solid rgba(245,166,35,.2);
+  font-family: var(--mono);
+  font-size: 9.5px;
+  color: var(--amber);
+  line-height: 1.7;
+  max-height: 80px;
+  overflow-y: auto;
+}
+#repair-log.show { display: block; }
+
+/* MIXER PANEL */
+#mixer-panel {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--surface);
+}
+#mixer-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+}
+#mixer-empty {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--txt-s);
+  font-size: 11px;
+}
+
+/* MIXER TRACK CARD */
+.mx-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  margin-bottom: 6px;
+  overflow: hidden;
+  transition: opacity .15s;
+}
+.mx-card.muted { opacity: .3; }
+.mx-card.locked { border-color: rgba(245,166,35,.3); }
+.mx-top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 9px;
+  border-bottom: 1px solid var(--border);
+}
+.mx-color { width: 3px; height: 20px; border-radius: 2px; flex-shrink: 0; }
+.mx-name { flex: 1; font-size: 10.5px; font-weight: 700; color: var(--hi); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mx-sub { font-size: 8.5px; color: var(--txt-m); white-space: nowrap; }
+.mx-btn {
+  width: 20px; height: 20px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--txt-m);
+  font-size: 9px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .1s;
+  padding: 0;
+  flex-shrink: 0;
+}
+.mx-btn:hover { border-color: var(--border2); color: var(--hi); }
+.mx-btn.on { background: var(--amber-d); border-color: rgba(245,166,35,.3); color: var(--amber); }
+.mx-btn.mut { background: var(--ind-d); border-color: rgba(108,99,255,.3); color: var(--ind); }
+
+.mx-faders { padding: 7px 9px; display: flex; flex-direction: column; gap: 4px; }
+.mx-fader-row { display: flex; align-items: center; gap: 6px; }
+.mx-fader-label { font-size: 8px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--txt-s); width: 24px; }
+.mx-fader-row input[type=range] { flex: 1; accent-color: var(--ac, var(--ind)); height: 3px; cursor: pointer; }
+.mx-fader-val { font-family: var(--mono); font-size: 8px; color: var(--txt-m); min-width: 24px; text-align: right; }
+.mx-info { font-size: 8.5px; color: var(--txt-s); padding: 4px 9px; border-top: 1px solid var(--border); }
+.mx-roll { height: 16px; border-top: 1px solid var(--border); overflow: hidden; }
+.mx-roll canvas { display: block; width: 100%; height: 100%; }
+
+/* MIX FOOTER */
+#mix-footer {
+  padding: 10px 16px;
+  border-top: 1px solid var(--border);
+  background: var(--bg2);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ══════════════════════════════════════════════════════════
+   PAGE 4 — EXPORT
+══════════════════════════════════════════════════════════ */
+#page-export {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 40px 32px;
+}
+
+.export-hero {
+  text-align: center;
+  padding: 40px 0 32px;
+}
+.export-hero-icon {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: var(--ind-d);
+  border: 2px solid rgba(108,99,255,.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  color: var(--ind);
+  margin: 0 auto 16px;
+}
+.export-title { font-size: 22px; font-weight: 800; color: var(--hi); margin-bottom: 6px; letter-spacing: -.02em; }
+.export-sub { font-size: 12.5px; color: var(--txt-m); max-width: 480px; margin: 0 auto; line-height: 1.65; }
+
+.export-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 24px 0;
+}
+.export-card {
+  padding: 20px;
+  border-radius: var(--rl);
+  border: 1px solid var(--border2);
+  background: var(--card);
+}
+.export-card-title {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--hi);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.export-card-title i { color: var(--ind); }
+.export-card-desc { font-size: 10.5px; color: var(--txt-m); line-height: 1.6; margin-bottom: 14px; }
+
+/* WATERMARK INFO */
+.watermark-info {
+  padding: 16px;
+  border-radius: var(--r);
+  border: 1px solid rgba(245,166,35,.2);
+  background: rgba(245,166,35,.05);
+  margin: 16px 0;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.wm-icon { font-size: 16px; color: var(--amber); flex-shrink: 0; margin-top: 2px; }
+.wm-text { font-size: 11px; color: var(--txt); line-height: 1.65; }
+.wm-text strong { color: var(--amber); }
+
+/* COPYRIGHT */
+.copyright-box {
+  margin: 20px 0;
+  padding: 16px;
+  border-radius: var(--r);
+  border: 1px solid var(--border2);
+  background: var(--card);
+}
+.cb-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--txt-m); margin-bottom: 6px; }
+.cb-input {
+  width: 100%;
+  padding: 8px 10px;
+  background: var(--bg);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  color: var(--hi);
+  font-family: var(--sans);
+  font-size: 12px;
+  outline: none;
+  transition: border-color .12s;
+  margin-bottom: 8px;
+}
+.cb-input:focus { border-color: var(--ind); }
+.cb-hint { font-size: 9.5px; color: var(--txt-s); line-height: 1.5; }
+
+/* ══════════════════════════════════════════════════════════
+   SHARED COMPONENTS
+══════════════════════════════════════════════════════════ */
+
+/* BUTTONS */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--txt-m);
+  font-size: 11.5px;
+  font-weight: 500;
+  font-family: var(--sans);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all .13s;
+}
+.btn:hover { background: rgba(255,255,255,.05); color: var(--hi); }
+.btn:active { transform: scale(.97); }
+.btn:disabled { opacity: .25; pointer-events: none; }
+.btn.sm { height: 26px; padding: 0 10px; font-size: 10.5px; border-radius: 6px; }
+.btn.lg { height: 40px; padding: 0 20px; font-size: 13px; font-weight: 700; border-radius: 10px; }
+.btn.xl { height: 46px; padding: 0 28px; font-size: 14px; font-weight: 800; border-radius: 11px; }
+.btn.full { width: 100%; }
+
+.btn.primary {
+  background: var(--ind);
+  border-color: var(--ind);
+  color: #fff;
+  box-shadow: 0 4px 20px var(--ind-glow);
+}
+.btn.primary:hover { filter: brightness(1.12); box-shadow: 0 6px 28px var(--ind-glow); }
+
+.btn.ghost-green { border-color: rgba(45,212,160,.3); color: var(--green); }
+.btn.ghost-green:hover { background: var(--green-d); }
+.btn.ghost-teal { border-color: rgba(0,201,167,.3); color: var(--teal); }
+.btn.ghost-teal:hover { background: var(--teal-d); }
+.btn.ghost-amber { border-color: rgba(245,166,35,.3); color: var(--amber); }
+.btn.ghost-amber:hover { background: var(--amber-d); }
+.btn.ghost-red { border-color: rgba(248,113,113,.25); color: var(--red); }
+.btn.ghost-red:hover { background: rgba(248,113,113,.07); }
+.btn.ghost-ind { border-color: rgba(108,99,255,.3); color: var(--ind); }
+.btn.ghost-ind:hover { background: var(--ind-d); }
+
+/* STATUS BAR */
+#statusbar {
+  height: 24px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 16px;
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  font-size: 10px;
+  color: var(--txt-m);
+}
+.status-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--border2);
+  flex-shrink: 0;
+  transition: background .2s;
+}
+.status-dot.ok { background: var(--green); }
+.status-dot.active { background: var(--ind); animation: pulse-dot 1.5s ease-in-out infinite; }
+.status-dot.warn { background: var(--amber); }
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .4; }
+}
+.sb-spacer { flex: 1; }
+kbd {
+  padding: 1px 4px;
+  border-radius: 3px;
+  background: var(--card);
+  border: 1px solid var(--border2);
+  font-family: var(--mono);
+  font-size: 8.5px;
+  color: var(--txt-m);
+}
+
+/* TOASTS */
+#toasts {
+  position: fixed;
+  bottom: 30px; right: 14px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  pointer-events: none;
+}
+.toast {
+  background: var(--card2);
+  border: 1px solid var(--border2);
+  padding: 9px 13px;
+  border-radius: 9px;
+  font-size: 11.5px;
+  color: var(--txt);
+  opacity: 0;
+  transform: translateX(14px);
+  transition: all .18s;
+  max-width: 310px;
+  pointer-events: all;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  backdrop-filter: blur(8px);
+}
+.toast.show { opacity: 1; transform: none; }
+.toast.ok { border-left: 3px solid var(--green); }
+.toast.err { border-left: 3px solid var(--red); }
+.toast.warn { border-left: 3px solid var(--amber); }
+.toast.info { border-left: 3px solid var(--ind); }
+
+/* DIVIDER */
+.divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+/* ACCENT PALETTE helpers */
+.ac-ind { --ac: var(--ind); --ac-d: var(--ind-d); }
+.ac-rose { --ac: var(--rose); --ac-d: var(--rose-d); }
+.ac-amber { --ac: var(--amber); --ac-d: var(--amber-d); }
+.ac-teal { --ac: var(--teal); --ac-d: var(--teal-d); }
+.ac-blue { --ac: var(--blue); --ac-d: rgba(96,165,250,.10); }
+.ac-pink { --ac: var(--pink); --ac-d: rgba(244,114,182,.10); }
+.ac-green { --ac: var(--green); --ac-d: var(--green-d); }
+.ac-red { --ac: var(--red); --ac-d: rgba(248,113,113,.10); }
+
+/* hidden file input */
+#fi-midi { display: none; }
 </style>
 </head>
 <body>
 <div id="toasts"></div>
+<input type="file" id="fi-midi" accept=".mid,.midi" multiple>
 
-<!-- WELCOME -->
-<div id="welcome" class="show">
-  <div class="wc-logo"><div class="wc-dot"></div>MIDI Composer</div>
-  <div class="wc-sub">Pick a scene, set the length, copy the prompt into Claude or ChatGPT — get a real MIDI file back in seconds.</div>
-  <div class="wc-cards">
-    <div class="wc-card primary" onclick="App.newBlank()">
-      <div class="wc-ico t"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
-      <div class="wc-title">Start from scratch</div>
-      <div class="wc-desc">Pick a scene preset and let the AI write everything</div>
-    </div>
-    <div class="wc-card" onclick="document.getElementById('fi-midi').click()">
-      <div class="wc-ico p"><i class="fa-solid fa-headphones"></i></div>
-      <div class="wc-title">Build around my melody</div>
-      <div class="wc-desc">Load a MIDI tune — AI adds instruments around it</div>
-    </div>
-  </div>
-  <div class="wc-hint"><i class="fa-solid fa-arrow-down-to-line"></i> Or drop a .mid file anywhere on this window</div>
-</div>
+<div id="app">
 
-<!-- TOP BAR -->
-<div id="topbar">
-  <div class="logo"><div class="logo-dot"></div>MIDI Composer</div>
-  <button class="tbtn pur" onclick="App.newBlank()"><i class="fa-solid fa-plus"></i> New</button>
-  <div class="dvd"></div>
-  <button class="tbtn" onclick="document.getElementById('fi-midi').click()"><i class="fa-solid fa-folder-open"></i> Open MIDI</button>
-  <input type="file" id="fi-midi" accept=".mid,.midi" multiple hidden>
-  <div class="sp"></div>
-  <button class="tbtn" id="mel-dl-btn" disabled onclick="App.downloadMelody()"><i class="fa-solid fa-download"></i> Melody</button>
-  <button class="tbtn grn" id="acmp-dl-btn" disabled onclick="App.downloadAccomp()"><i class="fa-solid fa-download"></i> Download MIDI</button>
-  <button class="ibt" id="theme-btn" onclick="App.toggleTheme()" title="Toggle theme"><i class="fa-solid fa-moon" id="theme-icon"></i></button>
-</div>
-
-<!-- SHELL -->
-<div id="shell">
-
-  <!-- SIDEBAR -->
-  <div id="sb">
-    <div id="sb-s">
-      <div class="sb-sec">
-        <div class="sb-t"><i class="fa-solid fa-folder-open" style="font-size:8px"></i> Melody files</div>
-        <div id="file-list"><div class="eh">Drop .mid files here or use "Open MIDI"</div></div>
+  <!-- ══ HEADER ══ -->
+  <header id="header">
+    <div class="logo-mark">
+      <div class="logo-spectrum" id="logo-spectrum">
+        <div class="ls-bar" style="height:8px;--dur:.55s;animation-delay:0s"></div>
+        <div class="ls-bar" style="height:14px;--dur:.7s;animation-delay:.1s"></div>
+        <div class="ls-bar" style="height:20px;--dur:.5s;animation-delay:.2s"></div>
+        <div class="ls-bar" style="height:11px;--dur:.8s;animation-delay:.05s"></div>
+        <div class="ls-bar" style="height:17px;--dur:.6s;animation-delay:.15s"></div>
+        <div class="ls-bar" style="height:9px;--dur:.65s;animation-delay:.3s"></div>
       </div>
-      <div class="sb-sec">
-        <div class="sb-t"><i class="fa-solid fa-bars" style="font-size:8px"></i> Tracks</div>
-        <div id="track-list"><div class="eh">Select a file above</div></div>
-      </div>
-      <div class="sb-sec">
-        <div class="sb-t"><i class="fa-solid fa-music" style="font-size:8px"></i> Chords found</div>
-        <div id="chord-list"><div class="eh">Load a melody to detect chords</div></div>
-      </div>
+      <span class="logo-text">MIDI<span>Composer</span></span>
     </div>
-    <div id="sb-foot">No melody loaded</div>
-  </div>
 
-  <!-- LEFT PANEL -->
-  <div id="left">
-    <div id="left-scroll">
+    <nav id="nav">
+      <button class="nav-tab active" data-page="compose" onclick="App.goto('compose',this)">
+        <span class="tab-num"><span class="tab-num-n">1</span></span>
+        Compose
+      </button>
+      <button class="nav-tab" data-page="prompt" onclick="App.goto('prompt',this)">
+        <span class="tab-num"><span class="tab-num-n">2</span></span>
+        Prompt
+      </button>
+      <button class="nav-tab" data-page="mix" onclick="App.goto('mix',this)">
+        <span class="tab-num"><span class="tab-num-n">3</span></span>
+        Mix &amp; Preview
+      </button>
+      <button class="nav-tab" data-page="export" onclick="App.goto('export',this)">
+        <span class="tab-num"><span class="tab-num-n">4</span></span>
+        Export
+      </button>
+    </nav>
 
-      <div class="gap">
-        <div class="sh"><i class="fa-solid fa-film"></i> What's the scene?</div>
+    <div class="hsp"></div>
+    <div id="header-actions">
+      <button class="btn sm" onclick="document.getElementById('fi-midi').click()"><i class="fa-solid fa-folder-open"></i> Open MIDI</button>
+      <button class="btn sm ghost-green" id="dl-btn" disabled onclick="App.downloadAccomp()"><i class="fa-solid fa-download"></i> Download</button>
+    </div>
+  </header>
+
+  <!-- ══ PAGES ══ -->
+  <div id="pages">
+
+    <!-- PAGE 1: COMPOSE -->
+    <div class="page active" id="page-compose">
+
+      <div style="max-width:1100px;margin:0 auto;padding:28px 32px 40px">
+
+        <!-- PRESETS -->
+        <div class="section-header">
+          <span class="section-title"><i class="fa-solid fa-film" style="margin-right:5px"></i>Scene / Style</span>
+          <div class="section-line"></div>
+        </div>
         <div class="preset-grid" id="preset-grid"></div>
-      </div>
 
-      <div class="gap">
-        <div class="sh"><i class="fa-solid fa-gauge"></i> Intensity</div>
-        <div class="int-row" id="int-row">
-          <div style="font-size:10px;color:var(--txt-m);padding:6px 0">Pick a scene above</div>
+        <!-- INTENSITY -->
+        <div class="section-header">
+          <span class="section-title"><i class="fa-solid fa-gauge" style="margin-right:5px"></i>Intensity</span>
+          <div class="section-line"></div>
         </div>
-      </div>
+        <div class="intensity-strip" id="intensity-strip">
+          <div style="font-size:11px;color:var(--txt-s);padding:20px 0;align-self:center">Pick a scene above to see intensity options.</div>
+        </div>
 
-      <div class="gap">
-        <div class="sh"><i class="fa-solid fa-clock"></i> Length &amp; Speed</div>
-        <div class="f">
-          <label>Song length</label>
-          <div class="srow">
-            <input type="range" min="10" max="300" step="5" value="60" id="dur-sl" oninput="App.onDur()">
-            <span class="sv" id="dur-v">1:00</span>
+        <!-- MELODY ZONE -->
+        <div class="section-header">
+          <span class="section-title"><i class="fa-solid fa-music" style="margin-right:5px"></i>Melody (optional)</span>
+          <div class="section-line"></div>
+        </div>
+        <div class="melody-zone" id="melody-zone" onclick="App.melodyZoneClick(event)">
+          <div id="mz-empty">
+            <div class="mz-icon"><i class="fa-solid fa-waveform-lines"></i></div>
+            <div class="mz-label"><strong>Drop a .mid file here</strong> or click to browse — the AI will build an arrangement around your melody.</div>
           </div>
-          <div class="ends"><span>10 sec</span><span>5 min</span></div>
-        </div>
-        <div class="f">
-          <label>Speed (BPM) <span id="bpm-hint" style="font-weight:400;font-style:italic;color:var(--teal);margin-left:4px;font-size:8px"></span></label>
-          <div class="srow">
-            <input type="range" min="40" max="220" value="90" id="bpm-sl" oninput="document.getElementById('bpm-num').value=this.value;App.onBpm()">
-            <input type="number" id="bpm-num" value="90" min="40" max="220" style="width:50px;flex-shrink:0;text-align:center" onchange="document.getElementById('bpm-sl').value=Math.max(40,Math.min(220,parseInt(this.value)||90));App.onBpm()">
+          <div id="mz-loaded" style="display:none">
+            <div class="mz-loaded-header">
+              <div class="mz-title"><i class="fa-solid fa-circle-check"></i> <span id="mz-filename">—</span></div>
+              <button class="btn sm ghost-red" onclick="App.clearMelody(event)"><i class="fa-solid fa-xmark"></i> Remove</button>
+            </div>
+            <div class="mz-meta" id="mz-meta">—</div>
+            <div class="mz-tracks" id="mz-tracks"></div>
+            <div class="mz-bars" id="mz-bars"></div>
           </div>
-          <div class="ends"><span>Slow (40)</span><span>Fast (220)</span></div>
+        </div>
+
+        <!-- TWO COL -->
+        <div class="two-col">
+          <div class="compose-col">
+            <div class="section-header">
+              <span class="section-title"><i class="fa-solid fa-clock" style="margin-right:5px"></i>Length &amp; BPM</span>
+              <div class="section-line"></div>
+            </div>
+            <div class="field">
+              <label>Song Length</label>
+              <div class="field-row">
+                <input type="range" min="10" max="300" step="5" value="60" id="dur-sl" oninput="App.onDur()">
+                <span class="field-val" id="dur-v">1:00</span>
+              </div>
+              <div class="field-hints"><span>10 sec</span><span>5 min</span></div>
+            </div>
+            <div class="field">
+              <label>Tempo <span id="bpm-hint" style="font-weight:400;color:var(--teal);font-size:9px;margin-left:4px"></span></label>
+              <div class="field-row">
+                <input type="range" min="40" max="220" value="90" id="bpm-sl" oninput="document.getElementById('bpm-num').value=this.value;App.onBpm()">
+                <input type="number" class="bpm-input" id="bpm-num" value="90" min="40" max="220" onchange="document.getElementById('bpm-sl').value=Math.max(40,Math.min(220,parseInt(this.value)||90));App.onBpm()">
+              </div>
+              <div class="field-hints"><span>40 BPM</span><span>220 BPM</span></div>
+            </div>
+            <div class="field" style="margin-top:10px">
+              <label>Extra instructions</label>
+              <textarea class="extra-area" id="extra" placeholder='e.g. "no drums", "more piano", "build to a climax at the end", "add a key change halfway through"…' oninput="App.rp()"></textarea>
+            </div>
+          </div>
+
+          <div class="compose-col">
+            <div class="section-header">
+              <span class="section-title"><i class="fa-solid fa-guitar" style="margin-right:5px"></i>Instruments</span>
+              <div class="section-line"></div>
+            </div>
+            <div class="instruments-grid" id="instruments-grid">
+              <label class="inst-row enabled" id="inst-melody">
+                <input type="checkbox" id="trk-melody" checked onchange="App.updateInstRow('inst-melody',this);App.rp()">
+                <div class="inst-check"><i class="fa-solid fa-check"></i></div>
+                <span class="inst-icon"><i class="fa-solid fa-piano-keyboard"></i></span>
+                <div class="inst-info"><div class="inst-name">Melody / Lead</div><div class="inst-sub">Piano, synth lead</div></div>
+              </label>
+              <label class="inst-row enabled" id="inst-chords">
+                <input type="checkbox" id="trk-chords" checked onchange="App.updateInstRow('inst-chords',this);App.rp()">
+                <div class="inst-check"><i class="fa-solid fa-check"></i></div>
+                <span class="inst-icon"><i class="fa-solid fa-music"></i></span>
+                <div class="inst-info"><div class="inst-name">Chords / Harmony</div><div class="inst-sub">Strings, pads</div></div>
+              </label>
+              <label class="inst-row enabled" id="inst-bass">
+                <input type="checkbox" id="trk-bass" checked onchange="App.updateInstRow('inst-bass',this);App.rp()">
+                <div class="inst-check"><i class="fa-solid fa-check"></i></div>
+                <span class="inst-icon"><i class="fa-solid fa-wave-square"></i></span>
+                <div class="inst-info"><div class="inst-name">Bass line</div><div class="inst-sub">Electric or synth bass</div></div>
+              </label>
+              <label class="inst-row enabled" id="inst-arp">
+                <input type="checkbox" id="trk-arp" checked onchange="App.updateInstRow('inst-arp',this);App.rp()">
+                <div class="inst-check"><i class="fa-solid fa-check"></i></div>
+                <span class="inst-icon"><i class="fa-solid fa-sliders"></i></span>
+                <div class="inst-info"><div class="inst-name">Texture / Arpeggios</div><div class="inst-sub">Harp, flute, synth</div></div>
+              </label>
+              <label class="inst-row enabled" id="inst-drums">
+                <input type="checkbox" id="trk-drums" checked onchange="App.updateInstRow('inst-drums',this);App.rp()">
+                <div class="inst-check"><i class="fa-solid fa-check"></i></div>
+                <span class="inst-icon"><i class="fa-solid fa-drum"></i></span>
+                <div class="inst-info"><div class="inst-name">Drums / Percussion</div><div class="inst-sub">Full GM drum kit</div></div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="compose-cta">
+          <button class="btn lg primary" id="gen-prompt-btn" onclick="App.buildAndGoPrompt()">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Prompt
+          </button>
+        </div>
+
+      </div>
+    </div><!-- /page-compose -->
+
+    <!-- PAGE 2: PROMPT -->
+    <div class="page" id="page-prompt" style="display:flex;flex-direction:column">
+      <div class="prompt-toolbar">
+        <span class="prompt-toolbar-label"><i class="fa-solid fa-code" style="margin-right:5px"></i>AI Prompt</span>
+        <div class="hsp"></div>
+        <div class="pt-badge" id="pt-scene-badge">No scene selected</div>
+        <div class="pt-badge" id="pt-bars-badge" style="display:none"><i class="fa-solid fa-ruler-horizontal" style="margin-right:4px"></i><span id="pt-bars-val">—</span></div>
+        <div class="hsp"></div>
+        <button class="btn ghost-ind" onclick="App.goto('compose')"><i class="fa-solid fa-arrow-left"></i> Edit</button>
+        <button class="btn primary" id="copy-btn" onclick="App.copyPrompt()"><i class="fa-solid fa-clipboard"></i> Copy Prompt</button>
+        <button class="btn ghost-green" onclick="App.goto('mix')">Paste Response <i class="fa-solid fa-arrow-right"></i></button>
+      </div>
+      <div class="prompt-area-wrapper">
+        <div id="prompt-area" class="empty" contenteditable="true" spellcheck="false">Generate a prompt on the Compose tab first.</div>
+      </div>
+      <div style="padding:8px 16px;border-top:1px solid var(--border);background:var(--bg2);font-size:9.5px;color:var(--txt-s);display:flex;align-items:center;gap:8px">
+        <i class="fa-solid fa-circle-info" style="color:var(--ind);font-size:11px"></i>
+        Copy this entire prompt into Claude, ChatGPT, or Gemini. Then paste the JSON response into the Mix &amp; Preview tab.
+        <span style="margin-left:auto"><kbd>Ctrl+Enter</kbd> copy</span>
+      </div>
+    </div><!-- /page-prompt -->
+
+    <!-- PAGE 3: MIX -->
+    <div class="page" id="page-mix" style="display:flex;flex-direction:column">
+      <div id="mix-inner">
+
+        <!-- PASTE PANEL -->
+        <div id="paste-panel">
+          <div class="panel-head">
+            <span class="panel-title"><i class="fa-solid fa-comment-code" style="margin-right:5px"></i>Paste AI Response</span>
+            <div class="hsp"></div>
+            <button class="btn sm" onclick="App.goto('prompt')"><i class="fa-solid fa-arrow-left"></i> Back to Prompt</button>
+          </div>
+          <textarea id="json-paste" placeholder="Paste the JSON from Claude, ChatGPT, or Gemini here…&#10;&#10;It should look like:&#10;{&quot;bpm&quot;: 90, &quot;tracks&quot;: [ ... ]}"></textarea>
+          <div class="paste-actions">
+            <div class="paste-row">
+              <button class="btn ghost-green full" onclick="App.parseAccomp()" style="font-weight:700"><i class="fa-solid fa-play"></i> Preview Tracks</button>
+              <button class="btn ghost-amber" onclick="App.repairAndParse()" title="Auto-fix broken JSON"><i class="fa-solid fa-wrench"></i> Fix JSON</button>
+              <button class="btn ghost-red" onclick="App.clearAccomp()" title="Clear"><i class="fa-solid fa-trash"></i></button>
+            </div>
+            <div class="paste-row">
+              <button class="btn ghost-teal full" onclick="App.quantizeAccomp()"><i class="fa-solid fa-align-center"></i> Tighten Timing</button>
+            </div>
+            <div id="parse-msg"></div>
+            <div id="repair-log"></div>
+          </div>
+        </div>
+
+        <!-- MIXER PANEL -->
+        <div id="mixer-panel">
+          <div class="panel-head">
+            <span class="panel-title"><i class="fa-solid fa-sliders" style="margin-right:5px"></i>Mixer</span>
+          </div>
+          <div id="mixer-scroll">
+            <div id="mixer-empty">Paste a response and click Preview Tracks</div>
+          </div>
         </div>
       </div>
-
-      <div class="gap">
-        <div class="sh"><i class="fa-solid fa-guitar"></i> Instruments</div>
-        <label class="trk-item"><input type="checkbox" id="trk-melody" checked onchange="App.rp()"><span class="trk-name">Melody / lead</span><span class="trk-sub">Piano</span></label>
-        <label class="trk-item"><input type="checkbox" id="trk-chords" checked onchange="App.rp()"><span class="trk-name">Chords / harmony</span><span class="trk-sub">Strings or pad</span></label>
-        <label class="trk-item"><input type="checkbox" id="trk-bass" checked onchange="App.rp()"><span class="trk-name">Bass line</span><span class="trk-sub">Electric bass</span></label>
-        <label class="trk-item"><input type="checkbox" id="trk-arp" checked onchange="App.rp()"><span class="trk-name">Texture / arpeggios</span><span class="trk-sub">Harp or synth</span></label>
-        <label class="trk-item"><input type="checkbox" id="trk-drums" checked onchange="App.rp()"><span class="trk-name">Drums / percussion</span><span class="trk-sub">Full drum kit</span></label>
+      <div id="mix-footer">
+        <div class="status-dot" id="mix-dot"></div>
+        <span id="mix-status" style="font-size:11px;color:var(--txt-m)">Waiting for response…</span>
+        <div class="hsp"></div>
+        <button class="btn ghost-green lg" id="dl-btn2" disabled onclick="App.downloadAccomp()"><i class="fa-solid fa-download"></i> Download MIDI</button>
       </div>
+    </div><!-- /page-mix -->
 
-      <div class="gap">
-        <div class="sh"><i class="fa-solid fa-pen-to-square"></i> Extra requests <span style="font-weight:400;letter-spacing:0;text-transform:none">(optional)</span></div>
-        <div class="f">
-          <textarea id="extra" placeholder='e.g. "no drums", "more bass", "add a piano solo halfway through", "build to a climax at the end"…' oninput="App.rp()"></textarea>
+    <!-- PAGE 4: EXPORT -->
+    <div class="page" id="page-export">
+      <div style="max-width:720px;margin:0 auto;padding:40px 32px">
+
+        <div class="export-hero">
+          <div class="export-hero-icon"><i class="fa-solid fa-download"></i></div>
+          <div class="export-title">Export your music</div>
+          <div class="export-sub">Download your MIDI file and open it in any DAW — FL Studio, Ableton, Logic, GarageBand, LMMS, and more.</div>
         </div>
-      </div>
 
-    </div>
-    <div id="left-foot">
-      <button class="btn xl acc-pur full" id="copy-prompt-btn" onclick="App.copyPrompt()">
-        <i class="fa-solid fa-clipboard"></i> Copy Prompt
-      </button>
-      <button class="btn full" onclick="App.rp()" style="height:24px;font-size:10px">
-        <i class="fa-solid fa-rotate"></i> Refresh
-      </button>
-    </div>
+        <!-- COPYRIGHT BOX -->
+        <div class="copyright-box">
+          <div class="cb-label"><i class="fa-regular fa-copyright" style="margin-right:4px"></i> Copyright Metadata</div>
+          <input class="cb-input" id="copyright-name" type="text" placeholder="Your name / artist name / organization" oninput="App.updateCopyright()">
+          <input class="cb-input" id="copyright-url" type="text" placeholder="Website URL (optional)" oninput="App.updateCopyright()">
+          <div class="cb-hint">This gets written into the MIDI file's metadata. Displays in most DAWs under the file's properties — makes ownership clear.</div>
+        </div>
+
+        <!-- WATERMARK INFO -->
+        <div class="watermark-info">
+          <div class="wm-icon"><i class="fa-solid fa-fingerprint"></i></div>
+          <div class="wm-text">
+            <strong>Invisible watermark active.</strong> Every file created with MIDIComposer contains a hidden signature note — a single-tick MIDI event on channel 16 at the very start of the file, well outside the normal pitch range. It's silent in any DAW and doesn't affect playback, but you (or anyone who knows to look) can verify a file came from this tool. The channel 16 event carries the text <code style="font-family:var(--mono);font-size:10px;color:var(--amber)">"MIDIComposer"</code> in a text event, which is checked during verification.
+          </div>
+        </div>
+
+        <!-- VERIFY TOOL -->
+        <div class="copyright-box" style="margin-top:16px">
+          <div class="cb-label"><i class="fa-solid fa-magnifying-glass" style="margin-right:4px"></i> Verify a File</div>
+          <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
+            <button class="btn ghost-ind" onclick="document.getElementById('fi-verify').click()"><i class="fa-solid fa-folder-open"></i> Load .mid to verify</button>
+            <input type="file" id="fi-verify" accept=".mid,.midi" style="display:none">
+            <span id="verify-result" style="font-size:11px;color:var(--txt-m);font-family:var(--mono)">—</span>
+          </div>
+          <div class="cb-hint">Drop any .mid file here to check if it was made with MIDIComposer.</div>
+        </div>
+
+        <div class="export-cards">
+          <div class="export-card">
+            <div class="export-card-title"><i class="fa-solid fa-file-audio"></i> Full Arrangement</div>
+            <div class="export-card-desc">All tracks — melody, harmony, bass, drums. Ready to import into your DAW as a complete multi-track MIDI project.</div>
+            <button class="btn ghost-green full lg" id="dl-full-btn" disabled onclick="App.downloadAccomp()"><i class="fa-solid fa-download"></i> Download Arrangement</button>
+          </div>
+          <div class="export-card">
+            <div class="export-card-title"><i class="fa-solid fa-music"></i> Melody Only</div>
+            <div class="export-card-desc">Just the melody track from a loaded MIDI file — useful for re-exporting your original melody after arrangement.</div>
+            <button class="btn ghost-teal full lg" id="dl-melody-btn" disabled onclick="App.downloadMelody()"><i class="fa-solid fa-download"></i> Download Melody</button>
+          </div>
+        </div>
+
+        <div style="font-size:10.5px;color:var(--txt-s);text-align:center;line-height:1.7;padding-top:8px">
+          All music you generate is yours to use. The watermark is for tool verification only — it doesn't affect your rights to the music.
+          <br>Include this tool's link if you share publicly: <span style="color:var(--ind);font-family:var(--mono);font-size:9.5px">miditool.yourdomain.com</span>
+        </div>
+
+      </div>
+    </div><!-- /page-export -->
+
+  </div><!-- /pages -->
+
+  <!-- ══ STATUS BAR ══ -->
+  <div id="statusbar">
+    <div class="status-dot" id="s-dot"></div>
+    <span id="s-main">Pick a scene and click Generate Prompt</span>
+    <div class="sb-spacer"></div>
+    <span><kbd>Ctrl+Shift+D</kbd> download · <kbd>Ctrl+Enter</kbd> copy prompt</span>
   </div>
 
-  <!-- MIDDLE: PROMPT -->
-  <div id="mid">
-    <div id="steps">
-      <div class="step active" id="step1"><span class="step-n" id="sn1">1</span>Pick scene</div>
-      <div class="step-sep">›</div>
-      <div class="step" id="step2"><span class="step-n" id="sn2">2</span>Copy prompt</div>
-      <div class="step-sep">›</div>
-      <div class="step" id="step3"><span class="step-n" id="sn3">3</span>Paste to AI</div>
-      <div class="step-sep">›</div>
-      <div class="step" id="step4"><span class="step-n" id="sn4">4</span>Paste response</div>
-      <div class="step-sep">›</div>
-      <div class="step" id="step5"><span class="step-n" id="sn5">5</span>Download</div>
-    </div>
-    <div id="mel-strip">
-      <div class="mel-t">
-        <span><i class="fa-solid fa-signal" style="margin-right:4px"></i>Melody loaded</span>
-        <button class="btn g-red" onclick="App.clearMelody()" style="height:16px;padding:0 6px;font-size:8.5px"><i class="fa-solid fa-xmark"></i> Remove</button>
-      </div>
-      <div class="mel-i" id="mel-i">—</div>
-      <div class="mel-bars" id="mel-bars"></div>
-    </div>
-    <div id="pr-wrap">
-      <div id="pr-head"><span><i class="fa-solid fa-keyboard" style="margin-right:4px"></i>Melody preview</span><span id="pr-info">—</span></div>
-      <canvas id="pr-canvas"></canvas>
-    </div>
-    <div class="ph">
-      <span class="ph-label"><i class="fa-solid fa-code" style="margin-right:5px"></i>AI Prompt</span>
-      <div class="sp"></div>
-      <span class="ph-hint">Copy <i class="fa-solid fa-arrow-right" style="font-size:8px;margin:0 2px"></i> paste into Claude / ChatGPT <i class="fa-solid fa-arrow-right" style="font-size:8px;margin:0 2px"></i> paste response →</span>
-    </div>
-    <div id="prompt-box" contenteditable="true" spellcheck="false">Pick a scene on the left, then click Copy Prompt.</div>
-  </div>
-
-  <!-- RIGHT: RESPONSE -->
-  <div id="right">
-    <div class="ph">
-      <span class="ph-label"><i class="fa-solid fa-comment" style="margin-right:5px"></i>AI Response</span>
-      <div class="sp"></div>
-      <span class="ph-hint">Paste <i class="fa-solid fa-arrow-right" style="font-size:8px;margin:0 2px"></i> fix <i class="fa-solid fa-arrow-right" style="font-size:8px;margin:0 2px"></i> download</span>
-    </div>
-    <div id="right-body">
-      <div style="margin-bottom:12px">
-        <div class="rl">Paste AI response here</div>
-        <textarea id="json-in" placeholder="Paste the JSON from Claude or ChatGPT here…"></textarea>
-        <div style="display:flex;gap:4px;margin-top:5px">
-          <button class="btn g-grn full" onclick="App.parseAccomp()" style="font-weight:700"><i class="fa-solid fa-play"></i> Preview</button>
-          <button class="btn g-amb" onclick="App.repairAndParse()" title="Auto-fix broken JSON"><i class="fa-solid fa-wrench"></i> Fix</button>
-          <button class="btn g-red" onclick="App.clearAccomp()" title="Clear response"><i class="fa-solid fa-trash"></i></button>
-        </div>
-        <div style="display:flex;gap:4px;margin-top:4px">
-          <button class="btn g-teal full" onclick="App.quantizeAccomp()"><i class="fa-solid fa-align-center"></i> Tighten timing</button>
-        </div>
-        <div id="parse-msg"></div>
-        <div id="repair-log"></div>
-      </div>
-      <div>
-        <div class="rl">Track mixer</div>
-        <div id="mx-body">
-          <div style="padding:16px 0;font-size:9.5px;color:var(--txt-m);text-align:center" id="mx-empty">Paste response and click Preview</div>
-        </div>
-      </div>
-      <button class="btn g-grn full lg" id="acmp-dl-btn2" disabled onclick="App.downloadAccomp()" style="margin-top:6px"><i class="fa-solid fa-download"></i> Download MIDI for DAW</button>
-    </div>
-  </div>
-
-</div><!-- /shell -->
-
-<div id="statusbar">
-  <div class="s-dot" id="s-dot"></div>
-  <span id="s-main">Pick a scene and click Copy Prompt</span>
-  <div class="sp"></div>
-  <span><kbd>Ctrl+Shift+D</kbd> download</span>
-</div>
+</div><!-- /app -->
 
 <script>
 'use strict';
 const TPB=480;
 const NN=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
-const COLORS=['#2dd4bf','#a78bfa','#fbbf24','#f472b6','#34d399','#60a5fa','#fb923c','#f87171','#e879f9','#2dd4a0'];
-const GM={0:'Acoustic Piano',1:'Bright Piano',2:'Electric Piano',4:'Rhodes',8:'Celesta',11:'Vibraphone',16:'Hammond Organ',24:'Nylon Guitar',25:'Steel Guitar',26:'Jazz Guitar',29:'Overdrive Guitar',30:'Distortion Guitar',32:'Acoustic Bass',33:'Finger Bass',34:'Picked Bass',38:'Synth Bass',40:'Violin',41:'Viola',42:'Cello',46:'Harp',48:'String Ensemble',49:'Slow Strings',50:'Synth Strings',52:'Choir Aahs',56:'Trumpet',57:'Trombone',60:'French Horn',65:'Alto Sax',73:'Flute',80:'Square Lead',81:'Saw Lead',88:'Warm Pad',89:'Bright Pad',98:'FX Crystal'};
+const COLORS=['#6C63FF','#00C9A7','#F5A623','#FF6584','#2DD4A0','#60A5FA','#F472B6','#F87171','#A78BFA','#34D399'];
+const GM={0:'Acoustic Piano',1:'Bright Piano',4:'Rhodes',8:'Celesta',11:'Vibraphone',16:'Hammond Organ',24:'Nylon Guitar',25:'Steel Guitar',32:'Acoustic Bass',33:'Finger Bass',38:'Synth Bass',40:'Violin',48:'String Ensemble',49:'Slow Strings',52:'Choir Aahs',56:'Trumpet',65:'Alto Sax',73:'Flute',80:'Square Lead',81:'Saw Lead',88:'Warm Pad',98:'FX Crystal'};
 
+const TPB4=TPB*4;
 const mn=n=>NN[((n%12)+12)%12]+(Math.floor(n/12)-1);
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 const cl=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -463,179 +1284,99 @@ const s2bars=(sec,bpm)=>Math.max(2,Math.round((sec*bpm/60/4)/2)*2);
 
 /* ════════════ PRESETS ════════════ */
 const PRESETS=[
-  {
-    id:'anime-romance',color:'p-teal',icon:'fa-heart',
-    name:'Anime Romance',tag:'Warm background music',
-    desc:'Tender, lush anime backing — perfect for slice-of-life, visual novel, and romantic animation scenes.',
-    genre:'city-pop',
-    intensities:[
-      {label:'Calm',icon:'fa-leaf',bpm:76,energy:3,mood:'romantic',swing:20,qa:55,
-       instruments:{melody:true,chords:true,bass:true,arp:true,drums:false},
-       extra:'Soft piano lead, warm string pads, gentle harp arpeggios, no percussion. Nostalgic and tender. Use suspended chords and gentle resolutions. Perfect loopable background music.',
-       promptHint:'Calm, tender slice-of-life anime background — peaceful, like a quiet evening where the protagonist is alone with their thoughts. Warm and nostalgic.'},
-      {label:'Normal',icon:'fa-star',bpm:92,energy:5,mood:'uplifting',swing:22,qa:60,
-       instruments:{melody:true,chords:true,bass:true,arp:true,drums:true},
-       extra:'Light groove, melodic piano or synth lead, warm strings, subtle drums (mostly hi-hats and soft kick). Think romantic anime OST from a visual novel — lively but emotionally warm.',
-       promptHint:'Uplifting anime romantic background — energetic enough to feel lively but still emotionally warm. The kind that plays during a sunny school scene.'},
-      {label:'Intense',icon:'fa-bolt',bpm:115,energy:8,mood:'epic',swing:14,qa:70,
-       instruments:{melody:true,chords:true,bass:true,arp:true,drums:true},
-       extra:'Driving rhythm, bold piano or synth melody, full drum kit with snare hits, cinematic strings swell. Like a confession or emotional climax scene in an anime.',
-       promptHint:'Emotionally powerful climax scene — driving and intense, like the big moment in an anime where feelings are finally revealed.'},
-    ]
-  },
-  {
-    id:'anime-action',color:'p-red',icon:'fa-burst',
-    name:'Anime Action',tag:'Fight / chase scene',
-    desc:'High-energy battle and chase music for anime, games, or action animations.',
-    genre:'anime',
-    intensities:[
-      {label:'Tension',icon:'fa-shield',bpm:95,energy:4,mood:'intense',swing:10,qa:75,
-       instruments:{melody:true,chords:true,bass:true,arp:true,drums:true},
-       extra:'Suspenseful underscore — strings ostinato, sparse percussion, low brass. Approaching danger feel.',
-       promptHint:'Tense buildup before action — suspenseful, quiet energy, like something dangerous is about to happen.'},
-      {label:'Battle',icon:'fa-shield-halved',bpm:140,energy:7,mood:'intense',swing:8,qa:80,
-       instruments:{melody:true,chords:true,bass:true,arp:true,drums:true},
-       extra:'Driving action cue — fast strings, punchy brass melody, steady driving drums, syncopated bass.',
-       promptHint:'Mid-battle action music — powerful and relentless, like a sustained fight sequence.'},
-      {label:'Climax',icon:'fa-fire',bpm:168,energy:10,mood:'epic',swing:5,qa:85,
-       instruments:{melody:true,chords:true,bass:true,arp:false,drums:true},
-       extra:'Full epic battle — fast orchestra with brass fanfare, rapid strings, heavy timpani and full drum kit. Maximum energy.',
-       promptHint:'Final boss / climax battle — maximum energy, everything at full blast, heroic and overwhelming.'},
-    ]
-  },
-  {
-    id:'lofi-study',color:'p-blue',icon:'fa-mug-hot',
-    name:'Lo-fi Study',tag:'Chill / focus',
-    desc:'Relaxed beats for studying, working, or background ambiance.',
-    genre:'lofi',
-    intensities:[
-      {label:'Ambient',icon:'fa-cloud',bpm:65,energy:2,mood:'chill',swing:40,qa:40,
-       instruments:{melody:true,chords:true,bass:true,arp:false,drums:true},
-       extra:'Very slow lo-fi — almost ambient. Soft jazz piano chords, warm bass, gentle brushed drums at low velocity.',
-       promptHint:'Almost-ambient lo-fi — barely there, like music drifting from another room on a rainy day.'},
-      {label:'Classic',icon:'fa-headphones',bpm:82,energy:4,mood:'chill',swing:50,qa:45,
-       instruments:{melody:true,chords:true,bass:true,arp:true,drums:true},
-       extra:'Classic lo-fi hip-hop — swinging drums, warm piano, walking bass line. The quintessential study beat.',
-       promptHint:'Classic lo-fi hip-hop study beat — warm and comfortable, the kind you can listen to for hours.'},
-      {label:'Groove',icon:'fa-compact-disc',bpm:98,energy:6,mood:'playful',swing:45,qa:55,
-       instruments:{melody:true,chords:true,bass:true,arp:true,drums:true},
-       extra:'More energetic lo-fi — busier melody, active bass, more movement in the drums. Still chill but engaging.',
-       promptHint:'Energetic lo-fi — still relaxed but with more groove and movement, like a productive flow state.'},
-    ]
-  },
-  {
-    id:'cinematic',color:'p-purple',icon:'fa-film',
-    name:'Cinematic',tag:'Drama / film score',
-    desc:'Emotional orchestral music for trailers, dramatic scenes, or story moments.',
-    genre:'anime',
-    intensities:[
-      {label:'Sad',icon:'fa-cloud-rain',bpm:58,energy:2,mood:'melancholy',swing:10,qa:50,
-       instruments:{melody:true,chords:true,bass:false,arp:true,drums:false},
-       extra:'Deeply melancholy — solo piano with sparse string accompaniment. Slow, sparse, emotionally heavy. Like a loss or departure scene.',
-       promptHint:'Deeply sad cinematic moment — a piano elegy, sparse and emotional, like a goodbye or loss scene.'},
-      {label:'Tense',icon:'fa-triangle-exclamation',bpm:80,energy:5,mood:'dark',swing:5,qa:65,
-       instruments:{melody:true,chords:true,bass:true,arp:true,drums:true},
-       extra:'Dark suspense — low strings, sparse tense melody, ominous bass pedal tones, subtle percussion.',
-       promptHint:'Dark suspense — something is wrong and getting worse. Tense, slow-building dread.'},
-      {label:'Epic',icon:'fa-crown',bpm:108,energy:9,mood:'epic',swing:5,qa:78,
-       instruments:{melody:true,chords:true,bass:true,arp:true,drums:true},
-       extra:'Full cinematic epic — grand orchestra, brass fanfare, powerful choir pads, heavy timpani, sweeping strings. Maximum drama.',
-       promptHint:'Full epic orchestral — massive and triumphant, the kind of music that plays at the climax of a film.'},
-    ]
-  },
-  {
-    id:'jpop',color:'p-pink',icon:'fa-star',
-    name:'J-Pop',tag:'Japanese pop',
-    desc:'Bright and catchy Japanese pop with the classic anime sound.',
-    genre:'jpop',
-    intensities:[
-      {label:'Soft',icon:'fa-dove',bpm:78,energy:3,mood:'romantic',swing:15,qa:55,
-       instruments:{melody:true,chords:true,bass:true,arp:true,drums:false},
-       extra:'Soft J-Pop ballad — no drums, warm piano melody, soft string pads, gentle feel.',
-       promptHint:'Soft J-Pop ballad — gentle and warm, the kind that plays during an emotional anime scene.'},
-      {label:'Pop',icon:'fa-music',bpm:130,energy:6,mood:'uplifting',swing:18,qa:62,
-       instruments:{melody:true,chords:true,bass:true,arp:true,drums:true},
-       extra:'Classic J-Pop — bright piano or synth melody, I–V–vi–IV progression, catchy and energetic.',
-       promptHint:'Classic upbeat J-Pop — catchy, bright, the kind that plays in anime openings.'},
-      {label:'Hype',icon:'fa-rocket',bpm:158,energy:9,mood:'uplifting',swing:10,qa:75,
-       instruments:{melody:true,chords:true,bass:true,arp:true,drums:true},
-       extra:'High-energy anime opening — fast, exciting, soaring melody, powerful backing. Like a shonen anime OP.',
-       promptHint:'Anime opening banger — fast, exciting, the kind that plays while the title card appears and everyone gets hyped.'},
-    ]
-  },
-  {
-    id:'rpg-bg',color:'p-amber',icon:'fa-dragon',
-    name:'RPG / Fantasy',tag:'Game background music',
-    desc:'Loopable background music for RPG games, fantasy scenes, and adventure.',
-    genre:'indie',
-    intensities:[
-      {label:'Town',icon:'fa-house',bpm:80,energy:3,mood:'playful',swing:20,qa:55,
-       instruments:{melody:true,chords:true,bass:true,arp:true,drums:false},
-       extra:'Cozy RPG town music — acoustic, warm, gentle melody on flute or acoustic guitar, no drums. Loopable and charming.',
-       promptHint:'Cozy RPG town theme — peaceful and charming, the kind of music that plays when you arrive at a friendly village.'},
-      {label:'Field',icon:'fa-mountain',bpm:100,energy:5,mood:'uplifting',swing:25,qa:60,
-       instruments:{melody:true,chords:true,bass:true,arp:true,drums:true},
-       extra:'RPG overworld — adventurous, lively, light percussion, melodic and hopeful.',
-       promptHint:'RPG overworld music — adventurous and open, like exploring a vast world for the first time.'},
-      {label:'Boss',icon:'fa-skull',bpm:145,energy:9,mood:'intense',swing:8,qa:80,
-       instruments:{melody:true,chords:true,bass:true,arp:false,drums:true},
-       extra:'RPG boss battle — dramatic and intense, heavy orchestra, fast strings, hard-hitting drums, ominous choir or brass.',
-       promptHint:'Epic RPG boss fight — dark and powerful, like standing before the final enemy.'},
-    ]
-  },
-  {
-    id:'synthwave',color:'p-purple',icon:'fa-robot',
-    name:'Synthwave',tag:'Retro 80s electronic',
-    desc:'Neon-soaked 80s retrowave with driving arpeggios and analog synths.',
-    genre:'synthwave',
-    intensities:[
-      {label:'Chill',icon:'fa-moon',bpm:88,energy:3,mood:'melancholy',swing:10,qa:65,
-       instruments:{melody:true,chords:true,bass:true,arp:true,drums:true},
-       extra:'Slow, dreamy synthwave — distant pads, slow arp, mellow bass, sparse drum machine.',
-       promptHint:'Dreamy midnight synthwave — slow and atmospheric, like driving alone at 2am.'},
-      {label:'Drive',icon:'fa-car',bpm:120,energy:6,mood:'intense',swing:8,qa:72,
-       instruments:{melody:true,chords:true,bass:true,arp:true,drums:true},
-       extra:'Classic driving synthwave — pulsing arp, saw lead, four-on-the-floor drum machine, punchy bass.',
-       promptHint:'Classic retrowave — pulsing arpeggios and a saw synth lead, like an 80s action movie chase.'},
-      {label:'Hyper',icon:'fa-bolt',bpm:148,energy:9,mood:'epic',swing:5,qa:80,
-       instruments:{melody:true,chords:true,bass:true,arp:true,drums:true},
-       extra:'High-energy outrun/cyberpunk — fast arp, distorted bass, heavy drum machine, intense synth leads.',
-       promptHint:'Outrun / cyberpunk action — maximum energy, neon-lit chase sequence, relentless.'},
-    ]
-  },
-  {
-    id:'lounge',color:'p-green',icon:'fa-wine-glass',
-    name:'Lounge / Jazz',tag:'Sophisticated ambiance',
-    desc:'Smooth jazz and lounge music for relaxed or sophisticated scenes.',
-    genre:'jazz',
-    intensities:[
-      {label:'Mellow',icon:'fa-wind',bpm:68,energy:2,mood:'chill',swing:55,qa:40,
-       instruments:{melody:true,chords:true,bass:true,arp:false,drums:true},
-       extra:'Very mellow lounge — brushed jazz drums, warm piano comping, walking bass. Like a near-empty late-night bar.',
-       promptHint:'Late-night mellow jazz — contemplative and intimate, like the last few customers in a quiet bar.'},
-      {label:'Smooth',icon:'fa-glass-water',bpm:88,energy:4,mood:'romantic',swing:60,qa:45,
-       instruments:{melody:true,chords:true,bass:true,arp:false,drums:true},
-       extra:'Smooth jazz lounge — alto sax or vibes melody, rich piano voicings, walking bass, swing drums.',
-       promptHint:'Smooth jazz lounge — warm and sophisticated, perfect for a restaurant or cocktail scene.'},
-      {label:'Lively',icon:'fa-music',bpm:138,energy:7,mood:'playful',swing:65,qa:50,
-       instruments:{melody:true,chords:true,bass:true,arp:true,drums:true},
-       extra:'Lively jazz — faster swing, energetic melody, active piano comping, driving bass and drums.',
-       promptHint:'Lively jazz club — energetic and fun, the kind where people are up on their feet.'},
-    ]
-  },
+  {id:'anime-romance',ac:'ac-teal',icon:'fa-heart',name:'Anime Romance',tag:'Warm, emotional OST',genre:'city-pop',
+   intensities:[
+    {label:'Calm',icon:'fa-leaf',bpm:76,energy:3,mood:'romantic',swing:20,qa:55,instruments:{melody:true,chords:true,bass:true,arp:true,drums:false},extra:'Soft piano lead, warm string pads, gentle harp arpeggios, no percussion. Nostalgic and tender. Use suspended chords.',promptHint:'Calm, tender slice-of-life anime — peaceful, like a quiet evening where the protagonist is alone. Warm and nostalgic.'},
+    {label:'Normal',icon:'fa-star',bpm:92,energy:5,mood:'uplifting',swing:22,qa:60,instruments:{melody:true,chords:true,bass:true,arp:true,drums:true},extra:'Light groove, melodic piano or synth lead, warm strings, subtle drums. Like a romantic visual novel OST.',promptHint:'Uplifting anime romantic background — energetic but warm. Like a sunny school hallway scene.'},
+    {label:'Intense',icon:'fa-bolt',bpm:115,energy:8,mood:'epic',swing:14,qa:70,instruments:{melody:true,chords:true,bass:true,arp:true,drums:true},extra:'Driving rhythm, bold piano or synth melody, full drum kit with snare hits, cinematic strings swell.',promptHint:'Emotionally powerful confession scene — driving and intense, like the big moment in an anime.'},
+   ]},
+  {id:'anime-action',ac:'ac-rose',icon:'fa-burst',name:'Anime Action',tag:'Fight & chase scenes',genre:'anime',
+   intensities:[
+    {label:'Tension',icon:'fa-shield',bpm:95,energy:4,mood:'intense',swing:10,qa:75,instruments:{melody:true,chords:true,bass:true,arp:true,drums:true},extra:'Suspenseful underscore — strings ostinato, sparse percussion, low brass. Approaching danger feel.',promptHint:'Tense buildup before action — something dangerous is about to happen.'},
+    {label:'Battle',icon:'fa-shield-halved',bpm:140,energy:7,mood:'intense',swing:8,qa:80,instruments:{melody:true,chords:true,bass:true,arp:true,drums:true},extra:'Driving action cue — fast strings, punchy brass melody, steady driving drums, syncopated bass.',promptHint:'Mid-battle action music — powerful and relentless, like a sustained fight sequence.'},
+    {label:'Climax',icon:'fa-fire',bpm:168,energy:10,mood:'epic',swing:5,qa:85,instruments:{melody:true,chords:true,bass:true,arp:false,drums:true},extra:'Full epic battle — fast orchestra with brass fanfare, rapid strings, heavy timpani and drums. Maximum energy.',promptHint:'Final boss climax — maximum energy, everything at full blast, heroic and overwhelming.'},
+   ]},
+  {id:'lofi-study',ac:'ac-blue',icon:'fa-mug-hot',name:'Lo-fi Study',tag:'Chill focus beats',genre:'lofi',
+   intensities:[
+    {label:'Ambient',icon:'fa-cloud',bpm:65,energy:2,mood:'chill',swing:40,qa:40,instruments:{melody:true,chords:true,bass:true,arp:false,drums:true},extra:'Very slow lo-fi — almost ambient. Soft jazz piano chords, warm bass, gentle brushed drums at low velocity.',promptHint:'Almost-ambient lo-fi — barely there, like music drifting from another room on a rainy day.'},
+    {label:'Classic',icon:'fa-headphones',bpm:82,energy:4,mood:'chill',swing:50,qa:45,instruments:{melody:true,chords:true,bass:true,arp:true,drums:true},extra:'Classic lo-fi hip-hop — swinging drums, warm piano, walking bass. The quintessential study beat.',promptHint:'Classic lo-fi hip-hop study beat — warm and comfortable, the kind you listen to for hours.'},
+    {label:'Groove',icon:'fa-compact-disc',bpm:98,energy:6,mood:'playful',swing:45,qa:55,instruments:{melody:true,chords:true,bass:true,arp:true,drums:true},extra:'More energetic lo-fi — busier melody, active bass, more drum movement. Still chill but engaging.',promptHint:'Energetic lo-fi — relaxed but with groove, like a productive flow state.'},
+   ]},
+  {id:'cinematic',ac:'ac-ind',icon:'fa-film',name:'Cinematic',tag:'Drama & film score',genre:'orchestral',
+   intensities:[
+    {label:'Sad',icon:'fa-cloud-rain',bpm:58,energy:2,mood:'melancholy',swing:10,qa:50,instruments:{melody:true,chords:true,bass:false,arp:true,drums:false},extra:'Deeply melancholy — solo piano with sparse string accompaniment. Slow, emotionally heavy. Like a loss scene.',promptHint:'Deeply sad cinematic moment — a piano elegy, sparse and emotional, like a goodbye.'},
+    {label:'Tense',icon:'fa-triangle-exclamation',bpm:80,energy:5,mood:'dark',swing:5,qa:65,instruments:{melody:true,chords:true,bass:true,arp:true,drums:true},extra:'Dark suspense — low strings, sparse tense melody, ominous bass pedal tones, subtle percussion.',promptHint:'Dark suspense — something is wrong. Tense, slow-building dread.'},
+    {label:'Epic',icon:'fa-crown',bpm:108,energy:9,mood:'epic',swing:5,qa:78,instruments:{melody:true,chords:true,bass:true,arp:true,drums:true},extra:'Full cinematic epic — grand orchestra, brass fanfare, choir pads, heavy timpani, sweeping strings.',promptHint:'Full epic orchestral — massive and triumphant, the climax of a film.'},
+   ]},
+  {id:'jpop',ac:'ac-pink',icon:'fa-star',name:'J-Pop',tag:'Japanese pop',genre:'jpop',
+   intensities:[
+    {label:'Soft',icon:'fa-dove',bpm:78,energy:3,mood:'romantic',swing:15,qa:55,instruments:{melody:true,chords:true,bass:true,arp:true,drums:false},extra:'Soft J-Pop ballad — no drums, warm piano melody, soft string pads, gentle feel.',promptHint:'Soft J-Pop ballad — gentle and warm, like an emotional anime scene.'},
+    {label:'Pop',icon:'fa-music',bpm:130,energy:6,mood:'uplifting',swing:18,qa:62,instruments:{melody:true,chords:true,bass:true,arp:true,drums:true},extra:'Classic J-Pop — bright piano or synth melody, I–V–vi–IV progression, catchy and energetic.',promptHint:'Classic upbeat J-Pop — catchy, bright, like an anime opening.'},
+    {label:'Hype',icon:'fa-rocket',bpm:158,energy:9,mood:'uplifting',swing:10,qa:75,instruments:{melody:true,chords:true,bass:true,arp:true,drums:true},extra:'High-energy anime opening — fast, exciting, soaring melody, powerful backing. Like a shonen anime OP.',promptHint:'Anime opening banger — fast, exciting, the kind that plays during the title card.'},
+   ]},
+  {id:'rpg',ac:'ac-amber',icon:'fa-dragon',name:'RPG / Fantasy',tag:'Game background music',genre:'game',
+   intensities:[
+    {label:'Town',icon:'fa-house',bpm:80,energy:3,mood:'playful',swing:20,qa:55,instruments:{melody:true,chords:true,bass:true,arp:true,drums:false},extra:'Cozy RPG town music — acoustic, warm, gentle melody on flute or acoustic guitar, no drums. Loopable.',promptHint:'Cozy RPG town theme — peaceful and charming, arriving at a friendly village.'},
+    {label:'Field',icon:'fa-mountain',bpm:100,energy:5,mood:'uplifting',swing:25,qa:60,instruments:{melody:true,chords:true,bass:true,arp:true,drums:true},extra:'RPG overworld — adventurous, lively, light percussion, melodic and hopeful.',promptHint:'RPG overworld music — adventurous and open, exploring a vast world.'},
+    {label:'Boss',icon:'fa-skull',bpm:145,energy:9,mood:'intense',swing:8,qa:80,instruments:{melody:true,chords:true,bass:true,arp:false,drums:true},extra:'RPG boss battle — dramatic and intense, heavy orchestra, fast strings, hard-hitting drums, ominous choir.',promptHint:'Epic RPG boss fight — dark and powerful, standing before the final enemy.'},
+   ]},
+  {id:'synthwave',ac:'ac-ind',icon:'fa-robot',name:'Synthwave',tag:'Retro 80s electronic',genre:'synthwave',
+   intensities:[
+    {label:'Chill',icon:'fa-moon',bpm:88,energy:3,mood:'melancholy',swing:10,qa:65,instruments:{melody:true,chords:true,bass:true,arp:true,drums:true},extra:'Slow, dreamy synthwave — distant pads, slow arp, mellow bass, sparse drum machine.',promptHint:'Dreamy midnight synthwave — slow and atmospheric, driving alone at 2am.'},
+    {label:'Drive',icon:'fa-car',bpm:120,energy:6,mood:'intense',swing:8,qa:72,instruments:{melody:true,chords:true,bass:true,arp:true,drums:true},extra:'Classic driving synthwave — pulsing arp, saw lead, four-on-the-floor drum machine, punchy bass.',promptHint:'Classic retrowave — pulsing arpeggios and a saw synth lead, like an 80s action movie.'},
+    {label:'Hyper',icon:'fa-bolt',bpm:148,energy:9,mood:'epic',swing:5,qa:80,instruments:{melody:true,chords:true,bass:true,arp:true,drums:true},extra:'High-energy outrun/cyberpunk — fast arp, distorted bass, heavy drum machine, intense synth leads.',promptHint:'Outrun / cyberpunk action — maximum energy, neon-lit chase, relentless.'},
+   ]},
+  {id:'lounge',ac:'ac-green',icon:'fa-wine-glass',name:'Lounge / Jazz',tag:'Sophisticated ambiance',genre:'jazz',
+   intensities:[
+    {label:'Mellow',icon:'fa-wind',bpm:68,energy:2,mood:'chill',swing:55,qa:40,instruments:{melody:true,chords:true,bass:true,arp:false,drums:true},extra:'Very mellow lounge — brushed jazz drums, warm piano comping, walking bass. Late-night bar.',promptHint:'Late-night mellow jazz — contemplative and intimate, last few customers in a quiet bar.'},
+    {label:'Smooth',icon:'fa-glass-water',bpm:88,energy:4,mood:'romantic',swing:60,qa:45,instruments:{melody:true,chords:true,bass:true,arp:false,drums:true},extra:'Smooth jazz lounge — alto sax or vibes melody, rich piano voicings, walking bass, swing drums.',promptHint:'Smooth jazz lounge — warm and sophisticated, a restaurant or cocktail scene.'},
+    {label:'Lively',icon:'fa-music',bpm:138,energy:7,mood:'playful',swing:65,qa:50,instruments:{melody:true,chords:true,bass:true,arp:true,drums:true},extra:'Lively jazz — faster swing, energetic melody, active piano comping, driving bass and drums.',promptHint:'Lively jazz club — energetic and fun, people on their feet.'},
+   ]},
 ];
 
 /* ════════════ MIDI WRITER ════════════ */
-function buildMidi(tracks,bpm,tpb=TPB){
+function buildMidi(tracks,bpm,tpb,copyrightName,copyrightUrl){
+  tpb=tpb||TPB;copyrightName=copyrightName||'';copyrightUrl=copyrightUrl||'';
   const out=[];
   const w16=(a,v)=>a.push((v>>8)&0xff,v&0xff);
   const w32=(a,v)=>a.push((v>>24)&0xff,(v>>16)&0xff,(v>>8)&0xff,v&0xff);
   const wVL=(a,v)=>{if(v<0x80){a.push(v);return;}const b=[];b.push(v&0x7f);v>>=7;while(v>0){b.push((v&0x7f)|0x80);v>>=7;}for(let i=b.length-1;i>=0;i--)a.push(b[i]);};
+  const wStr=(a,s)=>s.split('').forEach(c=>a.push(c.charCodeAt(0)&0x7f));
+  const wMeta=(a,type,s)=>{wVL(a,0);a.push(0xFF,type);const b=s.split('').map(c=>c.charCodeAt(0)&0x7f);wVL(a,b.length);a.push(...b);};
+
+  /* ── Tempo / time-sig track ── */
   const tt=[];const us=Math.round(60000000/bpm);
   wVL(tt,0);tt.push(0xFF,0x51,0x03,(us>>16)&0xff,(us>>8)&0xff,us&0xff);
-  wVL(tt,0);tt.push(0xFF,0x58,0x04,4,2,24,8);wVL(tt,0);tt.push(0xFF,0x2F,0x00);
-  out.push(0x4D,0x54,0x68,0x64);w32(out,6);w16(out,1);w16(out,tracks.length+1);w16(out,tpb);
+  wVL(tt,0);tt.push(0xFF,0x58,0x04,4,2,24,8);
+  // Sequence/Track Name
+  wMeta(tt,0x03,'MIDIComposer');
+  // Copyright text
+  const cpText='(c) '+new Date().getFullYear()+(copyrightName?' '+copyrightName:'')+(copyrightUrl?' | '+copyrightUrl:'');
+  wMeta(tt,0x02,cpText);
+  // Tool credit
+  wMeta(tt,0x01,'Created with MIDIComposer — ai-midi-tool.com');
+  wVL(tt,0);tt.push(0xFF,0x2F,0x00);
+
+  /* ── WATERMARK track (channel 16 / index 15) ── */
+  // One silent note at tick 0: pitch 108 (C8), velocity 1, dur 1 tick
+  // Invisible to ears and to most DAW views, but detectable programmatically.
+  // Plus a text meta event with the tool signature.
+  const wt=[];
+  wMeta(wt,0x03,'_MC_WM');        // track name — hidden identifier
+  wMeta(wt,0x01,'MIDIComposer');  // text event — what verifier checks
+  // note on ch15 pitch 108 vel 1
+  wVL(wt,0);wt.push(0x9F,108,1);
+  // note off after 1 tick
+  wVL(wt,1);wt.push(0x8F,108,0);
+  wVL(wt,0);wt.push(0xFF,0x2F,0x00);
+
+  const nTracks=tracks.filter(t=>t.notes&&t.notes.length).length;
+  out.push(0x4D,0x54,0x68,0x64);w32(out,6);
+  w16(out,1);w16(out,nTracks+2);w16(out,tpb); // +2: tempo track + watermark track
+
   out.push(0x4D,0x54,0x72,0x6B);w32(out,tt.length);out.push(...tt);
+  out.push(0x4D,0x54,0x72,0x6B);w32(out,wt.length);out.push(...wt);
+
   for(const trk of tracks){
     if(!trk.notes||!trk.notes.length)continue;
     const r=trk.channel===9?'drums':detectRole(trk),prof=ROLE_PROFILE[r]||ROLE_PROFILE.melody;
@@ -676,6 +1417,44 @@ function dlMidi(bytes,name){
   a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),5000);
 }
 
+/* ════════════ WATERMARK VERIFIER ════════════ */
+function verifyWatermark(bytes){
+  // Look for a track with name "_MC_WM" and text event "MIDIComposer"
+  let pos=0;
+  const r8=()=>bytes[pos++];
+  const r16=()=>{const v=(bytes[pos]<<8)|bytes[pos+1];pos+=2;return v;};
+  const r32=()=>{const v=(bytes[pos]<<24)|(bytes[pos+1]<<16)|(bytes[pos+2]<<8)|bytes[pos+3];pos+=4;return v>>>0;};
+  const rVL=()=>{let v=0,b;while((b=r8())&0x80){v=(v<<7)|(b&0x7f);}return(v<<7)|b;};
+  try{
+    const hdr=String.fromCharCode(bytes[0],bytes[1],bytes[2],bytes[3]);
+    if(hdr!=='MThd')return{found:false,reason:'Not a valid MIDI file'};
+    r32();r16();const nTrk=r16();r16();
+    for(let t=0;t<nTrk;t++){
+      const tHdr=String.fromCharCode(bytes[pos],bytes[pos+1],bytes[pos+2],bytes[pos+3]);
+      if(tHdr!=='MTrk'){return{found:false,reason:'Bad track header'};}
+      pos+=4;const tlen=r32(),end=pos+tlen;
+      let tname='',texts=[];
+      while(pos<end){
+        const d=rVL();let st=r8();
+        if(st===0xFF){
+          const mt=r8(),ml=rVL();
+          const s=Array.from(bytes.subarray(pos,pos+ml)).map(b=>String.fromCharCode(b)).join('');
+          pos+=ml;
+          if(mt===0x03)tname=s;
+          if(mt===0x01)texts.push(s);
+          if(mt===0x2F)break;
+        }else{
+          if((st&0xF0)===0x90||(st&0xF0)===0x80||(st&0xF0)===0xB0||(st&0xF0)===0xE0||(st&0xF0)===0xA0){r8();r8();}
+          else if((st&0xF0)===0xC0||(st&0xF0)===0xD0){r8();}
+        }
+      }
+      pos=end;
+      if(tname==='_MC_WM'&&texts.includes('MIDIComposer'))return{found:true,trackName:tname};
+    }
+    return{found:false,reason:'No watermark found — not created with MIDIComposer'};
+  }catch(e){return{found:false,reason:'Could not read file: '+e.message};}
+}
+
 /* ════════════ MIDI READER ════════════ */
 function parseMidiFile(bytes){
   let pos=0;
@@ -707,7 +1486,8 @@ function parseMidiFile(bytes){
       else if(mt===0xB0||mt===0xE0){r8();r8();}else r8();
     }
     for(const[,arr]of active)for(const n of arr)notes.push({tick:n.tick,dur:Math.max(1,tick-n.tick),pitch:n.pitch,velocity:n.velocity,channel:n.channel});
-    if(notes.length>0)tracks.push({name:tname||(gm(prog)+(ch===9?' (Drums)':'')),notes,program:prog,channel:ch,index:tracks.length});
+    // skip watermark track
+    if(notes.length>0&&tname!=='_MC_WM')tracks.push({name:tname||(gm(prog)+(ch===9?' (Drums)':'')),notes,program:prog,channel:ch,index:tracks.length});
     pos=end;
   }
   return{tpb,tracks,bpm:globalBpm};
@@ -728,14 +1508,7 @@ function detectChords(notes,tpb=TPB){
   return res.sort((a,b)=>a.bar-b.bar);
 }
 
-/* ════════════ GENERATION ENGINE ════════════
-   Lets the AI write compact patterns/chords/drum-grids instead of every
-   single note by hand — cuts output tokens way down and keeps the mix
-   balanced no matter what numbers the AI sends. */
-
-// One source of truth for "how loud/present should this role be". Always
-// used to set cc7 (channel volume) and to pull note velocities toward a
-// sane target — this is what stops chords from drowning out the melody.
+/* ════════════ ROLE PROFILES ════════════ */
 const ROLE_PROFILE={
   melody:{cc7:108,cc7min:95,cc7max:122,cc10:64,cc11:100,cc91:22,velTarget:88,velFloor:60,velCeil:122},
   bass:  {cc7:112,cc7min:96,cc7max:120,cc10:62,cc11:90, cc91:10,velTarget:85,velFloor:55,velCeil:118},
@@ -754,7 +1527,7 @@ function detectRole(t){
   return'melody';
 }
 
-// Chord macro: AI sends one object per chord change, we build the notes.
+/* ════════════ CHORD / PATTERN / DRUM EXPANSION ════════════ */
 const CHORD_Q={
   '':[0,4,7],'maj':[0,4,7],'m':[0,3,7],'min':[0,3,7],'dim':[0,3,6],'aug':[0,4,8],
   '7':[0,4,7,10],'maj7':[0,4,7,11],'m7':[0,3,7,10],'mmaj7':[0,3,7,11],
@@ -788,40 +1561,25 @@ function voiceChord(c){
   }else if(voicing==='roll'||voicing==='strum'){
     pitches.forEach((p,i)=>notes.push({tick:tick+i*18,dur:Math.max(1,dur-i*18),pitch:p,velocity:cl(Math.round(baseVel-i*2+rnd(-3,3)),1,127)}));
   }else if(voicing==='broken'||voicing==='arp'||voicing==='arpup'){
-    let tt=tick,i=0;
-    while(tt<tick+dur){
-      const p=pitches[i%pitches.length];
-      notes.push({tick:tt,dur:Math.min(step,tick+dur-tt),pitch:p,velocity:cl(Math.round(baseVel+rnd(-4,4)),1,127)});
-      tt+=step;i++;
-    }
+    let tt=tick,i=0;while(tt<tick+dur){const p=pitches[i%pitches.length];notes.push({tick:tt,dur:Math.min(step,tick+dur-tt),pitch:p,velocity:cl(Math.round(baseVel+rnd(-4,4)),1,127)});tt+=step;i++;}
   }else if(voicing==='alberti'){
     const order=[0,Math.min(2,pitches.length-1),1%pitches.length,Math.min(2,pitches.length-1)];
-    let tt=tick,i=0;
-    while(tt<tick+dur){
-      const p=pitches[order[i%order.length]];
-      notes.push({tick:tt,dur:Math.min(step,tick+dur-tt),pitch:p,velocity:cl(Math.round(baseVel+rnd(-4,4)),1,127)});
-      tt+=step;i++;
-    }
-  }else{
-    pitches.forEach(p=>notes.push({tick,dur,pitch:p,velocity:baseVel}));
-  }
+    let tt=tick,i=0;while(tt<tick+dur){const p=pitches[order[i%order.length]];notes.push({tick:tt,dur:Math.min(step,tick+dur-tt),pitch:p,velocity:cl(Math.round(baseVel+rnd(-4,4)),1,127)});tt+=step;i++;}
+  }else{pitches.forEach(p=>notes.push({tick,dur,pitch:p,velocity:baseVel}));}
   return notes;
 }
 
-// Drum grid macro: rhythm written as a step string per lane, not per hit.
 const DRUM_LANES={
-  kick:{p:36,v:102},kick2:{p:35,v:100},snare:{p:38,v:96},rim:{p:37,v:80},
-  clap:{p:39,v:90},hat:{p:42,v:66},hatOpen:{p:46,v:88},hatPedal:{p:44,v:60},
+  kick:{p:36,v:102},kick2:{p:35,v:100},snare:{p:38,v:96},rim:{p:37,v:80},clap:{p:39,v:90},
+  hat:{p:42,v:66},hatOpen:{p:46,v:88},hatPedal:{p:44,v:60},
   tom1:{p:50,v:92},tom2:{p:47,v:90},tom3:{p:45,v:88},tom4:{p:43,v:86},
   crash:{p:49,v:104},crash2:{p:57,v:100},ride:{p:51,v:78},ride2:{p:59,v:80},
   tamb:{p:54,v:70},cowbell:{p:56,v:75},shaker:{p:70,v:65}
 };
 function expandDrumGrid(dg){
-  const notes=[];
-  if(!dg)return notes;
+  const notes=[];if(!dg)return notes;
   const step=dg.stepTicks||(TPB/4);
-  const patterns=dg.patterns||{};
-  const events=dg.events||[];
+  const patterns=dg.patterns||{};const events=dg.events||[];
   for(const ev of events){
     try{
       const rawPat=patterns[ev.pattern||ev.name];if(!rawPat)continue;
@@ -836,190 +1594,163 @@ function expandDrumGrid(dg){
           const def=DRUM_LANES[lane];if(!def)continue;
           const str=String(pat[lane]);
           for(let s=0;s<str.length;s++){
-            const ch=str[s];
-            if(ch==='.'||ch===' ')continue;
+            const ch=str[s];if(ch==='.'||ch===' ')continue;
             let vel=def.v;
             if(ch==='X')vel+=18;else if(ch==='o')vel-=28;
             notes.push({tick:baseTick+s*step,dur:Math.max(30,Math.round(step*0.9)),pitch:def.p,velocity:cl(Math.round(vel+rnd(-4,4)),1,127)});
           }
         }
       }
-    }catch(e){/* skip malformed drum event, keep the rest */}
+    }catch(e){}
   }
   return notes;
 }
-
-// Generic pattern + repeat: define a short motif once, stamp it across bars.
 function patternSpan(notes){return Math.max(1,...notes.map(n=>(n.t??n.tick??0)+(n.d??n.dur??0)));}
 function expandPatternEvents(t){
-  const notes=[];
-  const pats=t.patterns||{};
-  const evs=t.events||t.plays||[];
+  const notes=[];const pats=t.patterns||{};const evs=t.events||t.plays||[];
   for(const ev of evs){
     try{
       const pat=pats[ev.pattern||ev.name];if(!pat||!pat.notes)continue;
       const span=ev.every||patternSpan(pat.notes);
       const reps=Math.max(1,Math.round(ev.repeat||1));
       for(let r=0;r<reps;r++){
-        const off=(ev.at||0)+r*span;
-        const transp=(ev.transpose||0)+(ev.transposeStep||0)*r;
+        const off=(ev.at||0)+r*span,transp=(ev.transpose||0)+(ev.transposeStep||0)*r;
         const frac=reps>1?r/(reps-1):0;
         const velMul=ev.velocityFade!=null?(1+(ev.velocityFade-1)*frac):1;
         for(const n of pat.notes){
-          notes.push({
-            tick:off+(n.t??n.tick??0),
-            dur:Math.max(1,n.d??n.dur??240),
-            pitch:cl(Math.round((n.p??n.pitch??60)+transp),0,127),
-            velocity:cl(Math.round((n.v??n.velocity??80)*velMul),1,127)
-          });
+          notes.push({tick:off+(n.t??n.tick??0),dur:Math.max(1,n.d??n.dur??240),pitch:cl(Math.round((n.p??n.pitch??60)+transp),0,127),velocity:cl(Math.round((n.v??n.velocity??80)*velMul),1,127)});
         }
       }
-    }catch(e){/* skip malformed pattern event, keep the rest */}
+    }catch(e){}
   }
   return notes;
 }
-function expandChordsTrack(t){
-  const notes=[];
-  for(const c of (t.chords||t.progression||[])){
-    try{notes.push(...voiceChord(c));}catch(e){/* skip malformed chord, keep the rest */}
-  }
-  return notes;
-}
-
-// Merge every source a track might use — patterns, chords, drum grid, and/or
-// plain hand-written notes — additively. Never throws: a malformed entry
-// just gets skipped instead of taking the whole track down with it.
 function expandTrack(t){
   let notes=[];
-  try{ if(t.patterns&&(t.events||t.plays)) notes=notes.concat(expandPatternEvents(t)); }catch(e){}
-  try{ if(t.chords||t.progression) notes=notes.concat(expandChordsTrack(t)); }catch(e){}
-  try{ const dg=t.drumGrid||t.drumPattern; if(dg) notes=notes.concat(expandDrumGrid(dg)); }catch(e){}
-  try{
-    if(t.notes) for(const n of t.notes) notes.push({
-      tick:Math.max(0,Math.round(n.tick??n.t??0)),
-      dur:Math.max(1,Math.round(n.durationTicks??n.dur??n.d??480)),
-      pitch:cl(Math.round(n.pitch??n.p??60),0,127),
-      velocity:cl(Math.round(n.velocity??n.v??80),1,127)
-    });
-  }catch(e){}
+  try{if(t.patterns&&(t.events||t.plays))notes=notes.concat(expandPatternEvents(t));}catch(e){}
+  try{if(t.chords||t.progression)for(const c of(t.chords||t.progression)){try{notes=notes.concat(voiceChord(c));}catch(e){}}}catch(e){}
+  try{const dg=t.drumGrid||t.drumPattern;if(dg)notes=notes.concat(expandDrumGrid(dg));}catch(e){}
+  try{if(t.notes)for(const n of t.notes)notes.push({tick:Math.max(0,Math.round(n.tick??n.t??0)),dur:Math.max(1,Math.round(n.durationTicks??n.dur??n.d??480)),pitch:cl(Math.round(n.pitch??n.p??60),0,127),velocity:cl(Math.round(n.velocity??n.v??80),1,127)});}catch(e){}
   return notes;
 }
 
-/* ════════════ JSON AUTO-REPAIR ════════════ */
+/* ════════════ JSON REPAIR ════════════ */
 function repairJson(raw){
   const log=[];let s=raw.trim();
-  if(s.includes('```')){s=s.replace(/```(?:json)?\s*/gi,'').replace(/```/g,'').trim();log.push('Stripped code formatting');}
+  if(s.includes('```')){s=s.replace(/```(?:json)?\s*/gi,'').replace(/```/g,'').trim();log.push('Stripped code fences');}
   const js=s.indexOf('{'),je=s.lastIndexOf('}');
-  if(js>=0&&je>js&&(js>0||je<s.length-1)){s=s.substring(js,je+1);log.push('Extracted JSON');}
+  if(js>=0&&je>js&&(js>0||je<s.length-1)){s=s.substring(js,je+1);log.push('Extracted JSON object');}
   let p;
   p=s;s=s.replace(/,(\s*[}\]])/g,'$1');if(s!==p)log.push('Removed trailing commas');
-  p=s;s=s.replace(/([{,]\s*)([a-zA-Z_][a-zA-Z0-9_]*)(\s*:)/g,(m,a,k,c)=>`${a}"${k}"${c}`);if(s!==p)log.push('Quoted unquoted keys');
-  p=s;s=s.replace(/:\s*'([^']*)'/g,':"$1"');if(s!==p)log.push('Fixed single quotes');
+  p=s;s=s.replace(/([{,]\s*)([a-zA-Z_][a-zA-Z0-9_]*)(\s*:)/g,(m,a,k,c)=>`${a}"${k}"${c}`);if(s!==p)log.push('Quoted bare keys');
+  p=s;s=s.replace(/:\s*'([^']*)'/g,':"$1"');if(s!==p)log.push('Fixed single-quoted strings');
   p=s;s=s.replace(/:\s*(-?\d+)\.0+([,\}\]])/g,':$1$2');if(s!==p)log.push('Fixed float integers');
   p=s;s=s.replace(/:\s*NaN\b/g,':0').replace(/:\s*-?Infinity\b/g,':0');if(s!==p)log.push('Replaced NaN/Infinity');
   const op=(s.match(/{/g)||[]).length,cl2=(s.match(/}/g)||[]).length;
   if(op>cl2){s+='}'.repeat(op-cl2);log.push(`Added ${op-cl2} missing }`);}
   const oa=(s.match(/\[/g)||[]).length,ca=(s.match(/]/g)||[]).length;
   if(oa>ca){s+=']'.repeat(oa-ca);log.push(`Added ${oa-ca} missing ]`);}
-  p=s;s=s.replace(/}(\s*){/g,'},\n$1{').replace(/](\s*)\[/g,'],\n$1[');if(s!==p)log.push('Fixed missing commas between objects');
+  p=s;s=s.replace(/}(\s*){/g,'},\n$1{').replace(/](\s*)\[/g,'],\n$1[');if(s!==p)log.push('Fixed missing object commas');
   p=s;s=s.replace(/\/\/[^\n]*/g,'').replace(/\/\*[\s\S]*?\*\//g,'');if(s!==p)log.push('Removed comments');
   p=s;s=s.replace(/"startTick"\s*:/g,'"tick":').replace(/"durationTicks"\s*:/g,'"dur":').replace(/"note"\s*:/g,'"pitch":');if(s!==p)log.push('Normalised field names');
   return{fixed:s,log};
 }
 
-/* ════════════════════════════════════
+/* ══════════════════════════════════════════════════════════
    APP
-════════════════════════════════════ */
+══════════════════════════════════════════════════════════ */
 const App={
-  _files:[],_fi:-1,_ti:-1,_trks:[],_bpm:90,
-  _hasMel:false,_hasAccomp:false,
-  _durSec:60,_presetId:null,_intIdx:0,
-  _curQa:65, // current quantize strength from intensity
+  _presetId:null,_intIdx:0,_bpm:90,_durSec:60,
+  _files:[],_fi:-1,_ti:-1,
+  _trks:[],_hasAccomp:false,
+  _curQa:65,
+  _copyright:{name:'',url:''},
+  _lastPromptBars:0,
 
-  /* ── Theme ── */
-  toggleTheme(){
-    const h=document.documentElement,cur=h.getAttribute('data-theme'),next=cur==='dark'?'light':'dark';
-    h.setAttribute('data-theme',next);localStorage.setItem('mcp-theme',next);
-    $('theme-icon').className=next==='dark'?'fa-solid fa-moon':'fa-solid fa-sun';
-    this.toast('Theme: '+(next==='dark'?'Dark':'Light'),'info');
-  },
-  loadTheme(){
-    const s=localStorage.getItem('mcp-theme')||'dark';
-    document.documentElement.setAttribute('data-theme',s);
-    $('theme-icon').className=s==='dark'?'fa-solid fa-moon':'fa-solid fa-sun';
+  /* ── PAGE NAV ── */
+  goto(page,tabEl){
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+    const pg=$('page-'+page);if(pg)pg.classList.add('active');
+    if(tabEl)tabEl.classList.add('active');
+    else{const t=document.querySelector(`.nav-tab[data-page="${page}"]`);if(t)t.classList.add('active');}
+    // Special: rebuild prompt when switching to prompt page
+    if(page==='prompt')this.rp();
   },
 
-  /* ── Toast ── */
-  toast(msg,type='info',dur=2500){
+  markTabDone(page){
+    const t=document.querySelector(`.nav-tab[data-page="${page}"]`);
+    if(t)t.classList.add('done');
+  },
+
+  /* ── TOAST ── */
+  toast(msg,type='info',dur=2600){
     const ico={ok:'fa-circle-check',err:'fa-circle-xmark',warn:'fa-triangle-exclamation',info:'fa-circle-info'};
     const c=$('toasts'),el=document.createElement('div');
     el.className='toast '+type;
-    el.innerHTML=`<i class="fa-solid ${ico[type]||ico.info}" style="font-size:12px;flex-shrink:0"></i><span>${esc(msg)}</span>`;
+    el.innerHTML=`<i class="fa-solid ${ico[type]||ico.info}" style="font-size:13px;flex-shrink:0"></i><span>${esc(msg)}</span>`;
     c.appendChild(el);requestAnimationFrame(()=>el.classList.add('show'));
     setTimeout(()=>{el.classList.remove('show');setTimeout(()=>el.remove(),200);},dur);
   },
 
-  /* ── Status ── */
-  status(msg,dot=''){$('s-main').textContent=msg;$('s-dot').className='s-dot '+(dot||'');},
+  /* ── STATUS ── */
+  status(msg,dot=''){$('s-main').textContent=msg;$('s-dot').className='status-dot '+(dot||'');},
 
-  /* ── Steps ── */
-  setStep(n){
-    for(let i=1;i<=5;i++){
-      const el=$('step'+i);if(!el)continue;
-      el.classList.remove('active','done');
-      if(i<n)el.classList.add('done');
-      if(i===n)el.classList.add('active');
-    }
+  /* ── LOGO ANIMATION ── */
+  animateLogo(bpm){
+    const bars=document.querySelectorAll('.ls-bar');
+    const speed=Math.max(0.2,Math.min(1.2,60/bpm));
+    bars.forEach((b,i)=>{b.style.animationDuration=(speed*(0.5+i*0.07)).toFixed(2)+'s';});
   },
-  showSteps(){$('steps').style.display='flex';},
 
-  /* ── BPM / Duration helpers ── */
-  onDur(){
-    this._durSec=parseInt($('dur-sl').value)||60;
-    $('dur-v').textContent=fmt(this._durSec);
-    this.rp();
-  },
+  /* ── DURATION / BPM ── */
+  onDur(){this._durSec=parseInt($('dur-sl').value)||60;$('dur-v').textContent=fmt(this._durSec);},
   onBpm(){
     this._bpm=Math.max(40,Math.min(220,parseInt($('bpm-sl').value)||90));
     $('bpm-num').value=this._bpm;$('bpm-sl').value=this._bpm;
-    this.rp();
+    this.animateLogo(this._bpm);
   },
 
-  /* ── Build preset grid ── */
+  /* ── INSTRUMENT ROW ── */
+  updateInstRow(rowId,cb){
+    const row=$(rowId);if(!row)return;
+    if(cb.checked)row.classList.add('enabled');else row.classList.remove('enabled');
+  },
+
+  /* ── PRESET GRID ── */
   buildPresetGrid(){
     $('preset-grid').innerHTML=PRESETS.map(p=>`
-      <button class="preset-btn ${p.color}" data-pid="${p.id}" onclick="App.selectPreset('${p.id}')" title="${esc(p.desc)}">
-        <i class="fa-solid ${p.icon} pb-icon"></i>
-        <div class="pb-name">${esc(p.name)}</div>
-        <div class="pb-tag">${esc(p.tag)}</div>
+      <button class="preset-card ${p.ac}" data-pid="${p.id}" onclick="App.selectPreset('${p.id}')">
+        <div class="pc-check"><i class="fa-solid fa-check"></i></div>
+        <div class="pc-icon"><i class="fa-solid ${p.icon}"></i></div>
+        <div class="pc-name">${esc(p.name)}</div>
+        <div class="pc-tag">${esc(p.tag)}</div>
       </button>`).join('');
   },
 
-  /* ── Select preset ── */
   selectPreset(id){
     this._presetId=id;
-    document.querySelectorAll('.preset-btn').forEach(b=>b.classList.toggle('active',b.dataset.pid===id));
+    document.querySelectorAll('.preset-card').forEach(b=>b.classList.toggle('active',b.dataset.pid===id));
     const p=PRESETS.find(x=>x.id===id);if(!p)return;
-    // default to middle intensity when switching presets
     this._intIdx=Math.floor(p.intensities.length/2);
-    this.buildIntensityRow(p);
+    this.buildIntensityStrip(p);
     this.applyIntensity(p,this._intIdx);
-    this.showSteps();this.setStep(1);
   },
 
-  buildIntensityRow(preset){
-    const row=$('int-row');
-    row.innerHTML=preset.intensities.map((int,i)=>`
-      <button class="int-pill ${preset.color}${i===this._intIdx?' active':''}" data-ii="${i}" onclick="App.selectIntensity(${i})">
+  buildIntensityStrip(preset){
+    const strip=$('intensity-strip');
+    strip.innerHTML=preset.intensities.map((int,i)=>`
+      <button class="int-card ${preset.ac}${i===this._intIdx?' active':''}" data-ii="${i}" onclick="App.selectIntensity(${i})">
         <i class="fa-solid ${int.icon}"></i>
         <span class="int-label">${esc(int.label)}</span>
+        <span class="int-bpm">${int.bpm} BPM · ${int.energy}/10</span>
       </button>`).join('');
   },
 
   selectIntensity(i){
     this._intIdx=i;
     const p=PRESETS.find(x=>x.id===this._presetId);if(!p)return;
-    document.querySelectorAll('.int-pill').forEach((b,j)=>b.classList.toggle('active',j===i));
+    document.querySelectorAll('.int-card').forEach((b,j)=>b.classList.toggle('active',j===i));
     this.applyIntensity(p,i);
   },
 
@@ -1027,168 +1758,44 @@ const App={
     const int=preset.intensities[intIdx];if(!int)return;
     this._bpm=int.bpm;
     $('bpm-sl').value=int.bpm;$('bpm-num').value=int.bpm;
-    $('trk-melody').checked=int.instruments.melody;
-    $('trk-chords').checked=int.instruments.chords;
-    $('trk-bass').checked=int.instruments.bass;
-    $('trk-arp').checked=int.instruments.arp;
-    $('trk-drums').checked=int.instruments.drums;
-    this._curQa=int.qa; // save for quantize use
-    // flash BPM hint
-    $('bpm-hint').textContent='← set by preset';
+    this._curQa=int.qa;
+    // Apply instrument defaults
+    const insts={melody:'inst-melody',chords:'inst-chords',bass:'inst-bass',arp:'inst-arp',drums:'inst-drums'};
+    const cbs={melody:'trk-melody',chords:'trk-chords',bass:'trk-bass',arp:'trk-arp',drums:'trk-drums'};
+    for(const[key,rowId]of Object.entries(insts)){
+      const cb=$(cbs[key]),row=$(rowId);if(!cb||!row)continue;
+      cb.checked=int.instruments[key];
+      if(int.instruments[key])row.classList.add('enabled');
+      else row.classList.remove('enabled');
+    }
+    this.animateLogo(int.bpm);
+    // Flash BPM hint
+    $('bpm-hint').textContent='← preset';
     clearTimeout(this._bpmHintTimer);
     this._bpmHintTimer=setTimeout(()=>{if($('bpm-hint'))$('bpm-hint').textContent='';},2000);
+    this.status(preset.name+' — '+int.label,'active');
+  },
+
+  /* ── BUILD PROMPT & NAVIGATE ── */
+  buildAndGoPrompt(){
+    if(!this._presetId){this.toast('Pick a scene first','warn');return;}
+    this.goto('prompt',document.querySelector('.nav-tab[data-page="prompt"]'));
     this.rp();
-    this.status(preset.name+' — '+int.label,'mid');
+    this.markTabDone('compose');
   },
 
-  /* ── New blank ── */
-  newBlank(){
-    this._files=[];this._fi=-1;this._ti=-1;this._trks=[];this._hasMel=false;this._hasAccomp=false;
-    $('welcome').classList.remove('show');this.showSteps();
-    $('file-list').innerHTML='<div class="eh">No files loaded</div>';
-    $('track-list').innerHTML='<div class="eh">No melody</div>';
-    $('chord-list').innerHTML='<div class="eh">No melody to analyze</div>';
-    $('sb-foot').textContent='No melody loaded';
-    $('mel-dl-btn').disabled=true;$('acmp-dl-btn').disabled=true;$('acmp-dl-btn2').disabled=true;
-    $('mel-strip').classList.remove('show');$('pr-wrap').classList.remove('show');
-    this.clearAccomp(true);
-    // If a preset is already selected just re-render the prompt; otherwise select default
-    if(this._presetId){this.rp();}else{this.selectPreset(PRESETS[0].id);}
-    this.status('Pick a scene — click Copy Prompt','');this.setStep(1);
-  },
-
-  /* ── Load MIDI ── */
-  loadFile(file){
-    const r=new FileReader();r.onload=()=>{
-      try{
-        const bytes=new Uint8Array(r.result),parsed=parseMidiFile(bytes);
-        this._files.push({name:file.name,data:bytes,parsed});
-        this._fi=this._files.length-1;this._ti=-1;this._hasMel=true;
-        // sync BPM from file
-        this._bpm=parsed.bpm||90;$('bpm-sl').value=this._bpm;$('bpm-num').value=this._bpm;
-        // estimate duration and set slider
-        const maxTick=parsed.tracks.reduce((mx,t)=>Math.max(mx,...t.notes.map(n=>n.tick+n.dur)),0);
-        const estSec=maxTick>0?Math.round((maxTick/TPB/this._bpm)*60):60;
-        const clamped=Math.max(10,Math.min(300,Math.round(estSec/5)*5));
-        $('dur-sl').value=clamped;this._durSec=clamped;$('dur-v').textContent=fmt(clamped);
-        $('welcome').classList.remove('show');this.showSteps();
-        this.renderFiles();this.renderTracks();this.updateFoot();
-        $('mel-dl-btn').disabled=false;
-        this.status('Loaded: '+file.name,'ok');
-        // keep current preset or select default
-        if(!this._presetId)this.selectPreset(PRESETS[0].id);
-        // re-apply this file's own tempo — selecting a preset above may have
-        // just overwritten it with the preset's default BPM
-        this._bpm=parsed.bpm||90;$('bpm-sl').value=this._bpm;$('bpm-num').value=this._bpm;
-        this.rp();
-        this.setStep(1);this.toast('Loaded: '+file.name,'ok');
-      }catch(e){this.toast('Could not read MIDI: '+e.message,'err');}
-    };r.readAsArrayBuffer(file);
-  },
-
-  /* ── Sidebar ── */
-  renderFiles(){
-    const c=$('file-list');
-    if(!this._files.length){c.innerHTML='<div class="eh">Drop .mid files here</div>';return;}
-    c.innerHTML=this._files.map((f,i)=>`<div class="frow${i===this._fi?' active':''}" onclick="App.selFile(${i})"><div class="fdot" style="background:${COLORS[i%COLORS.length]}"></div><div class="fi"><div class="fn">${esc(f.name)}</div><div class="fm">${f.parsed.tracks.length} tracks &middot; ${f.parsed.bpm} BPM</div></div><button class="fdel" onclick="event.stopPropagation();App.rmFile(${i})"><i class="fa-solid fa-xmark"></i></button></div>`).join('');
-  },
-  selFile(i){
-    this._fi=i;this._ti=-1;this._bpm=this._files[i].parsed.bpm||90;
-    $('bpm-sl').value=this._bpm;$('bpm-num').value=this._bpm;
-    this.renderFiles();this.renderTracks();this.updateFoot();this.clearMelVis();
-    $('mel-dl-btn').disabled=false;this.rp();this.setStep(1);
-  },
-  rmFile(i){
-    this._files.splice(i,1);
-    if(this._fi>=this._files.length)this._fi=this._files.length-1;
-    if(!this._files.length){
-      this._fi=-1;this._ti=-1;this._hasMel=false;
-      $('mel-dl-btn').disabled=true;this.clearMelVis();
-    }
-    this.renderFiles();this.renderTracks();this.updateFoot();this.rp();
-  },
-  renderTracks(){
-    const c=$('track-list');
-    if(this._fi<0||!this._files.length){c.innerHTML='<div class="eh">Select a file above</div>';return;}
-    const trks=this._files[this._fi].parsed.tracks;
-    c.innerHTML=trks.map((t,i)=>`<div class="trow${i===this._ti?' active':''}" onclick="App.selTrack(${i})"><div class="fdot" style="background:${COLORS[i%COLORS.length]}"></div><div class="fi"><div class="fn">${esc(t.name)}</div><div class="fm">${t.notes?t.notes.length:0} notes &middot; Ch${t.channel}</div></div></div>`).join('');
-  },
-  selTrack(i){this._ti=i;this.renderTracks();this.showMelVis();this.detectChordsUi();this.rp();this.setStep(1);},
-  updateFoot(){
-    if(this._fi>=0&&this._files.length>0){const f=this._files[this._fi];$('sb-foot').textContent=f.name+' · '+f.parsed.bpm+' BPM';}
-    else $('sb-foot').textContent='No melody loaded';
-  },
-
-  /* ── Melody visuals ── */
-  showMelVis(){
-    if(this._fi<0||this._ti<0)return;
-    const p=this._files[this._fi].parsed,t=p.tracks[this._ti];
-    if(!t.notes||!t.notes.length)return;
-    $('mel-strip').classList.add('show');
-    $('mel-i').textContent=`${t.notes.length} notes  ·  ${mn(Math.min(...t.notes.map(n=>n.pitch)))}–${mn(Math.max(...t.notes.map(n=>n.pitch)))}  ·  Ch${t.channel}`;
-    const barT=p.tpb*4,maxB=Math.max(1,Math.ceil(Math.max(...t.notes.map(n=>n.tick+n.dur))/barT));
-    const bc=new Array(Math.min(maxB,64)).fill(0);
-    for(const n of t.notes){const b=Math.floor(n.tick/barT);if(b<bc.length)bc[b]++;}
-    const mx=Math.max(1,...bc);
-    $('mel-bars').innerHTML=bc.map(c=>{const h=Math.round((c/mx)*100);return`<div class="mel-bar" style="opacity:${.25+(h/100)*.75};height:${Math.max(3,h)}%"></div>`;}).join('');
-    $('pr-wrap').classList.add('show');
-    $('pr-info').textContent=`${t.notes.length} notes · ${p.bpm} BPM`;
-    this.drawPR(t.notes,p.tpb);
-  },
-  clearMelVis(){
-    $('mel-strip').classList.remove('show');$('pr-wrap').classList.remove('show');
-    $('chord-list').innerHTML='<div class="eh">Select a track to detect chords</div>';
-  },
-  clearMelody(){
-    this._files=[];this._fi=-1;this._ti=-1;this._hasMel=false;
-    this.clearMelVis();$('mel-dl-btn').disabled=true;
-    $('file-list').innerHTML='<div class="eh">Drop .mid files here</div>';
-    $('track-list').innerHTML='<div class="eh">Select a file above</div>';
-    this.updateFoot();this.rp();
-    this.status('Melody removed','');this.toast('Melody removed','info');
-  },
-  drawPR(notes,tpb=TPB){
-    if(!$('pr-wrap').classList.contains('show'))return;
-    const canvas=$('pr-canvas');
-    const rect=canvas.parentElement.getBoundingClientRect();
-    canvas.width=Math.max(rect.width||300,100);canvas.height=65;
-    const ctx=canvas.getContext('2d'),w=canvas.width,h=canvas.height;
-    ctx.clearRect(0,0,w,h);if(!notes||!notes.length)return;
-    const allP=notes.map(n=>n.pitch),minP=Math.max(0,Math.min(...allP)-4),maxP=Math.min(127,Math.max(...allP)+4);
-    const pR=Math.max(1,maxP-minP),total=Math.max(1,Math.max(...notes.map(n=>n.tick+n.dur)));
-    ctx.strokeStyle='rgba(255,255,255,.04)';ctx.lineWidth=.5;
-    for(let b=0;b<=Math.ceil(total/(tpb*4));b++){const x=(b*tpb*4/total)*w;ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke();}
-    for(const n of notes){
-      const x=(n.tick/total)*w,y=h-((n.pitch-minP)/pR)*h;
-      const nw=Math.max(2,(n.dur/total)*w),nh=Math.max(2,h/pR-1);
-      ctx.fillStyle='#2dd4bf';ctx.globalAlpha=.62;ctx.fillRect(x,y,nw,nh);
-    }
-    ctx.globalAlpha=1;
-  },
-  detectChordsUi(){
-    if(this._fi<0||this._ti<0)return;
-    const p=this._files[this._fi].parsed,t=p.tracks[this._ti];
-    if(!t.notes||!t.notes.length){$('chord-list').innerHTML='<div class="eh">No notes in this track</div>';return;}
-    const chords=detectChords(t.notes,p.tpb);
-    if(!chords.length){$('chord-list').innerHTML='<div class="eh">No chords detected</div>';return;}
-    $('chord-list').innerHTML='<div style="padding:4px;display:flex;flex-wrap:wrap">'+
-      chords.slice(0,24).map(c=>`<div class="cp"><span class="cb">Bar ${c.bar+1}</span><span class="cn">${c.chord}</span></div>`).join('')+'</div>';
-  },
-
-  /* ── Prompt builder ── */
+  /* ── PROMPT BUILDER ── */
   rp(){
-    const bpm=this._bpm||90;
-    const durSec=this._durSec||60;
+    if(!this._presetId)return;
+    const bpm=this._bpm||90,durSec=this._durSec||60;
     const bars=s2bars(durSec,bpm);
     const actualSec=Math.round((bars*4/bpm)*60);
     const tM=$('trk-melody').checked,tC=$('trk-chords').checked,tB=$('trk-bass').checked;
     const tA=$('trk-arp').checked,tD=$('trk-drums').checked;
     const extra=($('extra').value||'').trim();
-
     const preset=PRESETS.find(x=>x.id===this._presetId);
     const intensity=preset?preset.intensities[this._intIdx]:null;
-
-    const sceneDesc=intensity?intensity.promptHint:'Musical piece — well-arranged with natural variation throughout.';
+    const sceneDesc=intensity?intensity.promptHint:'Musical piece — well-arranged.';
     const genreRef=preset?preset.genre:'pop';
     const energy=intensity?intensity.energy:5;
     const mood=intensity?intensity.mood:'uplifting';
@@ -1196,11 +1803,10 @@ const App={
     const qa=intensity?intensity.qa:65;
     const presetExtra=intensity?intensity.extra:'';
 
-    const eLabel=['','very calm, minimal','calm and sparse','gentle and relaxed','moderately quiet','moderate energy','medium energy','energetic','high energy','very high energy','maximum energy — dense and driving'][Math.round(energy)];
-    const swLabel=swing<15?'straight (no swing)':swing<40?'light swing feel':swing<65?'moderate swing':swing<85?'heavy swing':'very heavy swing';
-    const tLabel=qa<30?'very loose, human feel':qa<55?'slightly loose timing':qa<75?'moderately tight':'tight, on-grid timing';
+    const eLabel=['','very calm, minimal','calm and sparse','gentle and relaxed','moderately quiet','moderate energy','medium energy','energetic','high energy','very high energy','maximum energy'][Math.round(energy)];
+    const swLabel=swing<15?'straight (no swing)':swing<40?'light swing':swing<65?'moderate swing':swing<85?'heavy swing':'very heavy swing';
+    const tLabel=qa<30?'very loose, human':qa<55?'slightly loose':qa<75?'moderately tight':'tight, on-grid';
 
-    // Melody section if loaded
     let melSection='';
     if(this._fi>=0&&this._ti>=0&&this._files.length>0){
       const parsed=this._files[this._fi].parsed,trk=parsed.tracks[this._ti];
@@ -1213,8 +1819,7 @@ File: ${this._files[this._fi].name}
 Track: ${trk.name} (channel ${trk.channel}, ${gm(trk.program)})
 Key center: ${sr.length>0?NN[parseInt(sr[0][0])]:'detect from notes'}
 Detected chords: ${chords.slice(0,12).map(c=>`Bar ${c.bar+1}: ${c.chord}`).join(', ')||'none detected'}
-Note count: ${(trk.notes||[]).length}
-Melody notes — copy these EXACTLY into the Melody track's "notes" array (this part is pre-composed, don't use patterns for it):
+Melody notes — copy these EXACTLY into the Melody track's "notes" array:
 [
   ${(trk.notes||[]).map(n=>`{"tick":${n.tick},"dur":${n.dur},"pitch":${n.pitch},"velocity":${n.velocity}}`).join(',\n  ')}
 ]
@@ -1222,277 +1827,263 @@ Melody notes — copy these EXACTLY into the Melody track's "notes" array (this 
     }
 
     const trackLines=[
-      tM?`• Melody/Lead — "role":"melody", channel 0, program 0 (Acoustic Piano)${this._fi>=0&&this._ti>=0?' — this one is pre-composed, see MELODY TO BUILD AROUND below; copy its notes exactly':' — write a memorable line in "notes" (use "patterns" too for any motif that repeats)'}. This should be the most prominent voice.`:null,
-      tC?`• Chords/Harmony — "role":"chords", channel 1, program 48 (String Ensemble) or 49 (Slow Strings) — use the "chords" macro (voicing "pad" or "broken"). Keep it quiet and behind the melody, velocity ~45-60.`:null,
-      tB?`• Bass — "role":"bass", channel 2, program 33 (Finger Bass) or 38 (Synth Bass) — use "patterns"+"events" to repeat the groove across bars instead of writing every note.`:null,
-      tA?`• Texture/Arpeggio — "role":"arp", channel 3, program 46 (Harp), 73 (Flute), or 80 (Square Lead) — use "patterns"+"events", or "chords" with voicing "broken"/"alberti".`:null,
-      tD?`• Drums — "role":"drums", channel 9, program 0 — use "drumGrid". GM lanes map automatically: kick, snare, hat, hatOpen, crash, ride, tom1-4, clap, rim.`:null,
+      tM?`• Melody/Lead — "role":"melody", channel 0, program 0${this._fi>=0&&this._ti>=0?' — pre-composed, copy melody notes EXACTLY':' — write a memorable line in "notes" (use "patterns" for repeating motifs)'}. Most prominent voice.`:null,
+      tC?`• Chords/Harmony — "role":"chords", channel 1, program 48 — use "chords" macro (voicing "pad" or "broken"). Quiet behind melody, velocity ~45-60.`:null,
+      tB?`• Bass — "role":"bass", channel 2, program 33 — use "patterns"+"events" for the groove.`:null,
+      tA?`• Texture/Arp — "role":"arp", channel 3, program 46 — use "patterns"+"events" or "chords" with voicing "broken".`:null,
+      tD?`• Drums — "role":"drums", channel 9, program 0 — use "drumGrid".`:null,
     ].filter(Boolean).join('\n');
 
-    const prompt=`You are a professional MIDI arranger. Generate music that fits this scene exactly.
+    const prompt=`You are a professional MIDI arranger. Generate music that fits this scene.
 
-=== SCENE DESCRIPTION ===
+=== SCENE ===
 ${sceneDesc}
-${preset?`Style: ${preset.name} (${preset.tag})\nGenre reference: ${genreRef}`:''}
-${presetExtra?`Sound direction: ${presetExtra}`:''}
-${extra?`\nUser request: "${extra}"`:''}
+Style: ${preset?preset.name+' ('+preset.tag+')':''}
+Genre reference: ${genreRef}
+${presetExtra?'Sound direction: '+presetExtra:''}
+${extra?'\nUser request: "'+extra+'"':''}
 
-=== TECHNICAL SPECS ===
+=== SPECS ===
 BPM: ${bpm}
 Length: ~${fmt(actualSec)} → exactly ${bars} bars (${bars*TPB*4} ticks at ${TPB} ticks/beat)
 Time signature: 4/4
-Tick grid: 16th=${TPB/4}, 8th=${TPB/2}, quarter=${TPB}, half=${TPB*2}, bar=${TPB*4}. pitch=MIDI note 0-127 (60=middle C). velocity=loudness 1-127, vary it naturally.
-Energy: ${eLabel} (${energy}/10)
-Mood: ${mood}
-Timing feel: ${tLabel} (${qa}% quantization)
-Groove: ${swLabel} (${swing}% swing)
+Tick grid: 16th=${TPB/4}, 8th=${TPB/2}, quarter=${TPB}, half=${TPB*2}, bar=${TPB*4}
+pitch=MIDI 0-127 (60=C4). velocity=1-127.
+Energy: ${eLabel} (${energy}/10) · Mood: ${mood}
+Timing: ${tLabel} (${qa}%) · Groove: ${swLabel} (${swing}%)
 ${melSection}
 === TRACKS ===
 ${trackLines}
 
-=== HOW TO WRITE NOTES — pick whichever is cheapest for the job, you can mix several in one track ===
+=== WRITE NOTES — pick whichever is most efficient ===
 
-1) PATTERNS + REPEAT — best for bass, arpeggios, riffs, anything that repeats.
-   Write the motif once, then stamp it across the song. Short keys: t=tick, d=dur, p=pitch, v=velocity (relative to the pattern's own start at t=0).
-   "patterns": { "A": { "notes": [ {"t":0,"d":480,"p":36,"v":85}, {"t":960,"d":480,"p":43,"v":70} ] } }
-   "events": [ {"pattern":"A","at":0,"repeat":8,"every":1920} ]
-   "every" = ticks per repeat (1920 = 1 bar). "repeat":8 turns one 2-note pattern into 8 bars.
-   Optional: "transpose" (flat semitone shift), "transposeStep" (extra semitones added each repeat — walking bass, rising sequences), "velocityFade" (multiplier reached by the LAST repeat, ramped linearly from 1.0 — instant crescendo/decrescendo).
+1) PATTERNS + REPEAT (best for bass, arps, riffs that repeat)
+"patterns":{"A":{"notes":[{"t":0,"d":480,"p":36,"v":85},{"t":960,"d":480,"p":43,"v":70}]}}
+"events":[{"pattern":"A","at":0,"repeat":8,"every":1920}]
+"every"=ticks per repeat (1920=1 bar). Optional: "transpose","transposeStep","velocityFade".
 
-2) CHORDS — best for pads/strings/harmony. One object per chord change; the app voices it for you, so chords can never come out as a wall of full-velocity notes.
-   "chords": [ {"t":0,"d":1920,"root":"C","quality":"maj7","voicing":"pad","v":55}, {"t":1920,"d":1920,"root":"A","quality":"m7","voicing":"pad","v":55} ]
-   root: note name ("C","F#","Eb"), octave optional. quality: maj, m, 7, maj7, m7, dim, dim7, aug, sus2, sus4, 6, m6, 9, maj9, m9, add9.
-   voicing: "pad" (sustained block chord), "roll" (soft strum stagger), "broken" (arpeggiated, fills the duration), "alberti" (classical bass-treble-mid-treble figure).
-   Keep chord "v" around 45-60 — chords sit BEHIND the melody, never louder.
+2) CHORDS (best for pads/strings/harmony)
+"chords":[{"t":0,"d":1920,"root":"C","quality":"maj7","voicing":"pad","v":55}]
+quality: maj m 7 maj7 m7 dim aug sus2 sus4 add9 etc. voicing: pad roll broken alberti.
 
-3) DRUM GRID — best for any drum track. Write rhythm as a string, not individual hits.
-   "drumGrid": { "stepTicks":120, "patterns": { "main": { "kick":"x...x...x..x...", "snare":"....x.......x...", "hat":"x.x.x.x.x.x.x.x." } }, "events": [ {"pattern":"main","at":0,"repeat":8} ] }
-   stepTicks=120 means each character is a 16th note. x=normal hit, X=accent, o=ghost/soft, .=rest. Lanes map to GM drums automatically — you don't need to set velocity yourself: kick, kick2, snare, rim, clap, hat, hatOpen, hatPedal, tom1-4, crash, crash2, ride, ride2, tamb, cowbell, shaker.
+3) DRUM GRID (best for drums)
+"drumGrid":{"stepTicks":120,"patterns":{"main":{"kick":"x...x...","snare":"....x...","hat":"x.x.x.x."}},"events":[{"pattern":"main","at":0,"repeat":${bars}}]}
+x=hit X=accent o=ghost .=rest. Lanes: kick kick2 snare rim clap hat hatOpen hatPedal tom1-4 crash ride tamb cowbell shaker.
 
-4) RAW NOTES — only for things that truly need note-by-note control: the main melodic line, fills, one-off accents.
-   "notes": [ {"tick":0,"dur":960,"pitch":60,"velocity":78} ]
+4) RAW NOTES (only for melodic lines that need note-by-note control)
+"notes":[{"tick":0,"dur":960,"pitch":60,"velocity":78}]
 
 === RULES ===
-1. Cover the FULL ${bars} bars (${bars*TPB*4} ticks) using repeat/every math. Never manually write out anything that repeats more than twice — that's what patterns/chords/drumGrid are for.
-2. Give every track a "role": "melody" | "chords" | "bass" | "arp" | "drums" — the app uses this to set the mix levels correctly.
-3. Balance on purpose: melody/lead is the most prominent voice (velocity ~70-95). Chords/pads sit behind it, quiet (~45-60). Bass is present but not muddy (~65-90). Don't make every track equally loud — that's what makes mixes sound bad.
-4. Channel 9 is ALWAYS drums regardless of program.
-5. Build in real musical variety across the ${bars} bars — a fill, a build, a different chord voicing later, a melodic variation — via different patterns/events per section. Don't repeat one identical block the whole way through.
-6. Return ONLY valid JSON. No explanation, no markdown, no comments.
+1. Cover ALL ${bars} bars (${bars*TPB*4} ticks). Use repeat math — never write repeating patterns by hand.
+2. Every track needs "role": melody | chords | bass | arp | drums.
+3. Mix balance: melody loud (vel 70-95), chords quiet (vel 45-60), bass present (65-90). Variety across the song — fills, builds, variations.
+4. Channel 9 = drums always.
+5. Return ONLY valid JSON. No explanation, no markdown.
 
-=== OUTPUT FORMAT ===
-{
-  "bpm": ${bpm},
-  "tracks": [
-    {
-      "name": "Bass", "role": "bass", "channel": 2, "program": 33,
-      "patterns": { "A": { "notes": [ {"t":0,"d":480,"p":36,"v":85}, {"t":960,"d":480,"p":43,"v":78} ] } },
-      "events": [ {"pattern":"A","at":0,"repeat":${bars},"every":1920} ]
-    },
-    {
-      "name": "Chords", "role": "chords", "channel": 1, "program": 48,
-      "chords": [ {"t":0,"d":1920,"root":"C","quality":"maj7","voicing":"pad","v":55} ]
-    },
-    {
-      "name": "Melody", "role": "melody", "channel": 0, "program": 0,
-      "notes": [ {"tick":0,"dur":960,"pitch":67,"velocity":82} ]
-    },
-    {
-      "name": "Drums", "role": "drums", "channel": 9, "program": 0,
-      "drumGrid": { "stepTicks":120, "patterns": { "main": { "kick":"x.......", "snare":"....x...", "hat":"x.x.x.x." } }, "events": [ {"pattern":"main","at":0,"repeat":${bars}} ] }
-    }
-  ]
-}`;
+=== FORMAT ===
+{"bpm":${bpm},"tracks":[{"name":"Bass","role":"bass","channel":2,"program":33,"patterns":{"A":{"notes":[{"t":0,"d":480,"p":36,"v":85}]}},"events":[{"pattern":"A","at":0,"repeat":${bars},"every":1920}]},{"name":"Chords","role":"chords","channel":1,"program":48,"chords":[{"t":0,"d":1920,"root":"C","quality":"maj7","voicing":"pad","v":55}]},{"name":"Melody","role":"melody","channel":0,"program":0,"notes":[{"tick":0,"dur":960,"pitch":67,"velocity":82}]},{"name":"Drums","role":"drums","channel":9,"program":0,"drumGrid":{"stepTicks":120,"patterns":{"main":{"kick":"x...x...","snare":"....x...","hat":"x.x.x.x."}},"events":[{"pattern":"main","at":0,"repeat":${bars}}]}}]}`;
 
-    $('prompt-box').textContent=prompt;
-    $('prompt-box').classList.add('has-content');
-    this._lastPromptBars=bars;this._lastPromptBpmAtCopy=bpm;
-    this.setStep(2);
+    const box=$('prompt-area');
+    box.textContent=prompt;
+    box.classList.remove('empty');
+    this._lastPromptBars=bars;
+
+    // Update badges
+    $('pt-scene-badge').textContent=(preset?preset.name+' — '+(intensity?intensity.label:''):'');
+    $('pt-bars-badge').style.display='flex';
+    $('pt-bars-val').textContent=bars+' bars · '+bpm+' BPM';
   },
 
-  /* ── Copy Prompt ── */
+  /* ── COPY PROMPT ── */
   async copyPrompt(){
     try{
-      await navigator.clipboard.writeText($('prompt-box').textContent);
-      this.toast('Prompt copied — paste into Claude or ChatGPT','ok');
-      this.setStep(3);
-      this.status('Prompt copied — paste into an AI, then bring back the response','mid');
+      await navigator.clipboard.writeText($('prompt-area').textContent);
+      this.toast('Prompt copied — paste into Claude, ChatGPT, or Gemini','ok');
+      this.markTabDone('prompt');
+      this.status('Prompt copied — bring back the JSON response','active');
     }catch(e){
-      // Fallback: select all text
-      const el=$('prompt-box');
+      const el=$('prompt-area');
       if(window.getSelection){const s=window.getSelection(),r=document.createRange();r.selectNodeContents(el);s.removeAllRanges();s.addRange(r);}
-      this.toast('Could not auto-copy — text selected, press Ctrl+C','warn');
+      this.toast('Auto-copy failed — text selected, press Ctrl+C','warn');
     }
   },
 
-  /* ── Repair + Parse ── */
+  /* ── MELODY ── */
+  loadFile(file){
+    const r=new FileReader();r.onload=()=>{
+      try{
+        const bytes=new Uint8Array(r.result),parsed=parseMidiFile(bytes);
+        this._files.push({name:file.name,data:bytes,parsed});
+        this._fi=this._files.length-1;this._ti=-1;
+        this._bpm=parsed.bpm||90;$('bpm-sl').value=this._bpm;$('bpm-num').value=this._bpm;
+        const maxTick=parsed.tracks.reduce((mx,t)=>Math.max(mx,...t.notes.map(n=>n.tick+n.dur)),0);
+        const estSec=maxTick>0?Math.round((maxTick/TPB/this._bpm)*60):60;
+        const clamped=Math.max(10,Math.min(300,Math.round(estSec/5)*5));
+        $('dur-sl').value=clamped;this._durSec=clamped;$('dur-v').textContent=fmt(clamped);
+        this.renderMelodyZone();
+        $('dl-melody-btn').disabled=false;
+        this.status('Loaded: '+file.name,'ok');
+        this.toast('Loaded: '+file.name+' · '+parsed.tracks.length+' tracks','ok');
+      }catch(e){this.toast('Could not read MIDI: '+e.message,'err');}
+    };r.readAsArrayBuffer(file);
+  },
+
+  melodyZoneClick(e){
+    if(this._fi>=0)return;// loaded — don't reopen on click (only the remove btn fires)
+    document.getElementById('fi-midi').click();
+  },
+
+  clearMelody(e){
+    if(e)e.stopPropagation();
+    this._files=[];this._fi=-1;this._ti=-1;
+    $('dl-melody-btn').disabled=true;
+    this.renderMelodyZone();
+    this.toast('Melody removed','info');
+  },
+
+  renderMelodyZone(){
+    if(this._fi<0){
+      $('mz-empty').style.display='';$('mz-loaded').style.display='none';
+      $('melody-zone').classList.remove('loaded');return;
+    }
+    const f=this._files[this._fi],p=f.parsed;
+    $('mz-empty').style.display='none';$('mz-loaded').style.display='';
+    $('melody-zone').classList.add('loaded');
+    $('mz-filename').textContent=f.name;
+    $('mz-meta').textContent=p.tracks.length+' tracks · '+p.bpm+' BPM';
+    // track chips
+    $('mz-tracks').innerHTML=p.tracks.map((t,i)=>`<div class="mz-track-chip${i===this._ti?' active':''}" onclick="App.selTrack(${i})">${esc(t.name||('Track '+(i+1)))}</div>`).join('');
+    // bars viz
+    if(this._ti>=0){
+      const trk=p.tracks[this._ti];
+      const barT=p.tpb*4,maxB=Math.max(1,Math.ceil(Math.max(...trk.notes.map(n=>n.tick+n.dur))/barT));
+      const bc=new Array(Math.min(maxB,48)).fill(0);
+      for(const n of trk.notes){const b=Math.floor(n.tick/barT);if(b<bc.length)bc[b]++;}
+      const mx=Math.max(1,...bc);
+      $('mz-bars').innerHTML=bc.map(c=>`<div class="mz-bar" style="height:${Math.max(8,(c/mx)*100)}%;opacity:${.3+(c/mx)*.7}"></div>`).join('');
+    }else{$('mz-bars').innerHTML='';}
+  },
+
+  selTrack(i){
+    this._ti=i;
+    this.renderMelodyZone();
+    this.status('Track selected: '+(this._files[this._fi].parsed.tracks[i]?.name||'Track '+(i+1)),'ok');
+  },
+
+  /* ── PARSE / FIX ── */
   repairAndParse(){
-    const raw=$('json-in').value.trim();
+    const raw=$('json-paste').value.trim();
     if(!raw){this.toast('Paste the AI response first','warn');return;}
     const{fixed,log}=repairJson(raw);
-    $('json-in').value=fixed;
+    $('json-paste').value=fixed;
     const rl=$('repair-log');
-    if(log.length){rl.innerHTML='<i class="fa-solid fa-wrench" style="margin-right:4px"></i>Fixed: '+log.join(', ');rl.classList.add('show');}
-    else{rl.innerHTML='<i class="fa-solid fa-circle-check" style="margin-right:4px"></i>No issues found';rl.classList.add('show');}
-    this.parseAccomp();
+    if(log.length){rl.innerHTML='<i class="fa-solid fa-wrench" style="margin-right:5px"></i>'+log.join(' · ');rl.classList.add('show');}
+    else{rl.innerHTML='<i class="fa-solid fa-circle-check" style="margin-right:5px"></i>No issues found';rl.classList.add('show');}
+    this.parseAccomp(true);
   },
 
   parseAccomp(fromRepair){
-    const ji=$('json-in'),me=$('parse-msg');
+    const ji=$('json-paste'),me=$('parse-msg');
     ji.classList.remove('err','ok');me.textContent='';me.className='';
-    if(!fromRepair){$('repair-log').classList.remove('show');$('repair-log').innerHTML='';}
+    if(!fromRepair){$('repair-log').classList.remove('show');}
     const raw=ji.value.trim();
-    if(!raw){ji.classList.add('err');me.textContent='Paste the AI response first';me.className='msg-err';return;}
+    if(!raw){ji.classList.add('err');me.innerHTML='<i class="fa-solid fa-circle-xmark" style="margin-right:4px"></i>Paste the AI response first';me.className='msg-err';return;}
     let clean=raw.replace(/```(?:json)?\s*([\s\S]*?)```/g,'$1').trim();
     const js=clean.indexOf('{'),je=clean.lastIndexOf('}');
     if(js>=0&&je>js)clean=clean.substring(js,je+1);
     try{
       const data=JSON.parse(clean);
-      if(!data.tracks||!Array.isArray(data.tracks))throw new Error('"tracks" array is missing');
-
-      const balanceLog=[];
-      const usedChannels=new Set();
-      const channelPool=[0,1,2,3,4,5,6,7,8,10,11,12,13,14,15];
-      const builtTracks=[];
-
+      if(!data.tracks||!Array.isArray(data.tracks))throw new Error('"tracks" array missing');
+      const balLog=[];const usedCh=new Set();const chPool=[0,1,2,3,4,5,6,7,8,10,11,12,13,14];
+      const built=[];
       data.tracks.forEach((t,i)=>{
-        const label=esc((t&&t.name)||('Track '+(i+1)));
-        let expanded=[];
-        try{expanded=expandTrack(t||{});}catch(e){expanded=[];}
-        if(!expanded.length){balanceLog.push(`Skipped "${label}" — no notes were produced`);return;}
-
-        // de-dupe exact tick+pitch overlaps (e.g. a pattern landing on the
-        // same spot as a hand-written note) instead of letting them stack
+        const label=(t&&t.name)||('Track '+(i+1));
+        let expanded=[];try{expanded=expandTrack(t||{});}catch(e){expanded=[];}
+        if(!expanded.length){balLog.push('Skipped "'+label+'" — no notes');return;}
         const seen=new Set(),deduped=[];let dupCount=0;
-        for(const n of expanded){
-          const k=n.tick+'_'+n.pitch;
-          if(seen.has(k)){dupCount++;continue;}
-          seen.add(k);deduped.push(n);
-        }
-        if(dupCount)balanceLog.push(`"${label}": removed ${dupCount} duplicate note${dupCount>1?'s':''}`);
-
+        for(const n of expanded){const k=n.tick+'_'+n.pitch;if(seen.has(k)){dupCount++;continue;}seen.add(k);deduped.push(n);}
+        if(dupCount)balLog.push('"'+label+'": removed '+dupCount+' duplicate'+(dupCount>1?'s':''));
         const roleKey=(t&&t.channel===9)?'drums':detectRole(t||{});
         const prof=ROLE_PROFILE[roleKey];
-
-        // drums always own channel 9; everyone else gets a unique non-9
-        // channel even if the AI asked for one that clashes or is missing
         let channel;
-        if(roleKey==='drums'){channel=9;}
-        else{
+        if(roleKey==='drums'){channel=9;}else{
           let want=cl(Math.round((t&&t.channel!=null)?t.channel:i),0,15);
-          if(want===9||usedChannels.has(want)){
-            const free=channelPool.find(c=>!usedChannels.has(c));
-            want=free!=null?free:0;
-          }
-          channel=want;usedChannels.add(channel);
+          if(want===9||usedCh.has(want)){const free=chPool.find(c=>!usedCh.has(c));want=free!=null?free:0;}
+          channel=want;usedCh.add(channel);
         }
-
-        // pull this track's velocities toward its role's target — this is
-        // what stops chords overpowering the melody (or the melody coming
-        // out underpowered) regardless of what numbers the AI sent
         if(deduped.length){
           const avg=deduped.reduce((s,n)=>s+n.velocity,0)/deduped.length;
           let scale=1;
           if(avg>prof.velTarget*1.15)scale=prof.velTarget/avg;
           else if(avg<prof.velTarget*0.85)scale=prof.velTarget/avg;
           for(const n of deduped)n.velocity=cl(Math.round(n.velocity*scale),prof.velFloor,prof.velCeil);
-          if(Math.abs(scale-1)>0.04){
-            balanceLog.push(`"${label}" (${roleKey}): volume ${scale>1?'boosted':'reduced'} for balance (avg vel ${Math.round(avg)} → ~${Math.round(avg*scale)})`);
-          }
+          if(Math.abs(scale-1)>0.04)balLog.push('"'+label+'" ('+roleKey+'): vol '+(scale>1?'↑':'↓')+' (avg vel '+Math.round(avg)+'→'+Math.round(avg*scale)+')');
         }
-
-        builtTracks.push({
-          name:(t&&t.name)||('Track '+(i+1)),
-          channel,
-          program:cl(Math.round((t&&t.program)||0),0,127),
-          cc7:cl(Math.round((t&&t.cc7!=null)?t.cc7:prof.cc7),prof.cc7min,prof.cc7max),
-          cc10:(t&&t.cc10!=null)?cl(Math.round(t.cc10),0,127):prof.cc10,
-          cc11:(t&&t.cc11!=null)?cl(Math.round(t.cc11),0,127):prof.cc11,
-          cc91:(t&&t.cc91!=null)?cl(Math.round(t.cc91),0,127):prof.cc91,
-          role:roleKey,
-          notes:deduped.sort((a,b)=>a.tick-b.tick),
-          _muted:false,_locked:false
-        });
+        built.push({name:(t&&t.name)||('Track '+(i+1)),channel,program:cl(Math.round((t&&t.program)||0),0,127),cc7:cl(Math.round((t&&t.cc7!=null)?t.cc7:prof.cc7),prof.cc7min,prof.cc7max),cc10:(t&&t.cc10!=null)?cl(Math.round(t.cc10),0,127):prof.cc10,cc11:(t&&t.cc11!=null)?cl(Math.round(t.cc11),0,127):prof.cc11,cc91:(t&&t.cc91!=null)?cl(Math.round(t.cc91),0,127):prof.cc91,role:roleKey,notes:deduped.sort((a,b)=>a.tick-b.tick),_muted:false,_locked:false});
       });
-
-      if(!builtTracks.length)throw new Error('None of the tracks contained any notes, patterns, chords, or drum grids');
-
-      this._trks=builtTracks;
-      this._bpm=data.bpm||this._bpm;
-      this._hasAccomp=true;
+      if(!built.length)throw new Error('No tracks had any notes, patterns, or drum grids');
+      this._trks=built;this._bpm=data.bpm||this._bpm;this._hasAccomp=true;
       const total=this._trks.reduce((s,t)=>s+t.notes.length,0);
-
-      // flag a response that's noticeably shorter than what was actually requested
-      let shortWarning=null;
+      let shortWarn=null;
       if(this._lastPromptBars){
-        const maxTick=Math.max(0,...this._trks.flatMap(t=>t.notes.map(n=>n.tick+n.dur)));
-        const gotBars=Math.round(maxTick/(TPB*4));
-        if(gotBars<this._lastPromptBars*0.7){
-          shortWarning=`Only ~${gotBars} of the ${this._lastPromptBars} bars you asked for got filled — the AI likely stopped early. Ask it to continue, or regenerate.`;
-          balanceLog.push('⚠ '+shortWarning);
-        }
+        const maxT=Math.max(0,...this._trks.flatMap(t=>t.notes.map(n=>n.tick+n.dur)));
+        const gotBars=Math.round(maxT/(TPB*4));
+        if(gotBars<this._lastPromptBars*0.7){shortWarn=`Only ~${gotBars} of ${this._lastPromptBars} bars filled — AI may have stopped early. Ask it to continue.`;balLog.push('⚠ '+shortWarn);}
       }
-
-      me.innerHTML=`<i class="fa-solid fa-circle-check" style="margin-right:4px"></i>${this._trks.length} tracks · ${total} notes · ${this._bpm} BPM`;
+      me.innerHTML='<i class="fa-solid fa-circle-check" style="margin-right:4px"></i>'+this._trks.length+' tracks · '+total+' notes · '+this._bpm+' BPM';
       me.className='msg-ok';ji.classList.add('ok');
-      $('acmp-dl-btn').disabled=false;$('acmp-dl-btn2').disabled=false;
-      $('mx-empty').style.display='none';
-
-      if(balanceLog.length){
-        const html='<i class="fa-solid fa-sliders" style="margin-right:4px"></i>'+balanceLog.join('<br>');
+      $('dl-btn').disabled=false;$('dl-btn2').disabled=false;$('dl-full-btn').disabled=false;
+      $('mix-dot').className='status-dot ok';
+      $('mix-status').textContent=this._trks.length+' tracks · '+total+' notes ready';
+      if(balLog.length){
         const rl=$('repair-log');
-        rl.innerHTML=(fromRepair&&rl.innerHTML.trim())?rl.innerHTML+'<br>'+html:html;
+        rl.innerHTML=(fromRepair&&rl.innerHTML.trim())?rl.innerHTML+'<br>'+balLog.join('<br>'):balLog.join('<br>');
         rl.classList.add('show');
       }
-
-      this.renderMixer();this.setStep(5);
-      if(shortWarning){
-        this.status(shortWarning,'warn');
-        this.toast(shortWarning,'warn',6000);
-      }else{
-        this.status(`Ready — ${this._trks.length} tracks, ${total} notes`,'ok');
-        this.toast(`${this._trks.length} tracks, ${total} notes — ready to download!`,'ok');
-      }
+      this.renderMixer();this.markTabDone('mix');
+      if(shortWarn)this.toast(shortWarn,'warn',6000);
+      else this.toast(this._trks.length+' tracks, '+total+' notes — ready to download!','ok');
+      this.status('Ready — '+this._trks.length+' tracks, '+total+' notes','ok');
     }catch(e){
       ji.classList.add('err');
-      me.innerHTML=`<i class="fa-solid fa-circle-xmark" style="margin-right:4px"></i>${esc(e.message)} — try the Fix button`;
+      me.innerHTML='<i class="fa-solid fa-circle-xmark" style="margin-right:4px"></i>'+esc(e.message)+' — try Fix JSON';
       me.className='msg-err';
-      this.toast('Could not read response — try Fix','err');
+      this.toast('Could not read response — try Fix JSON','err');
     }
   },
 
-  /* ── Tighten timing ── */
+  /* ── QUANTIZE ── */
   quantizeAccomp(){
-    if(!this._trks.length){this.toast('No tracks to tighten yet','warn');return;}
-    const qa=this._curQa/100; // use preset's qa value
-    const gt=TPB/2;           // 8th note grid
-    let adj=0;
+    if(!this._trks.length){this.toast('No tracks loaded yet','warn');return;}
+    const qa=this._curQa/100,gt=TPB/2;let adj=0;
     for(const t of this._trks){
       if(t._locked||t.channel===9)continue;
-      for(const n of t.notes){
-        const nr=Math.round(n.tick/gt)*gt;
-        n.tick=Math.max(0,Math.round(n.tick+(nr-n.tick)*qa));
-        adj++;
-      }
+      for(const n of t.notes){const nr=Math.round(n.tick/gt)*gt;n.tick=Math.max(0,Math.round(n.tick+(nr-n.tick)*qa));adj++;}
     }
-    this.renderMixer();this.toast(`Timing tightened on ${adj} notes`,'info');
+    this.renderMixer();this.toast('Timing tightened on '+adj+' notes','info');
   },
 
-  /* ── Clear response ── */
-  clearAccomp(silent=false){
+  /* ── CLEAR ── */
+  clearAccomp(){
     this._trks=[];this._hasAccomp=false;
-    $('acmp-dl-btn').disabled=true;$('acmp-dl-btn2').disabled=true;
-    $('mx-empty').style.display='block';
+    $('dl-btn').disabled=true;$('dl-btn2').disabled=true;$('dl-full-btn').disabled=true;
+    $('mix-dot').className='status-dot';$('mix-status').textContent='Waiting for response…';
     $('parse-msg').textContent='';$('parse-msg').className='';
-    $('json-in').classList.remove('err','ok');
-    $('repair-log').classList.remove('show');
-    $('mx-body').querySelectorAll('.mx-card').forEach(c=>c.remove());
-    if(!silent){this.setStep(this._presetId?2:1);this.status('Response cleared','');}
+    $('json-paste').classList.remove('err','ok');$('repair-log').classList.remove('show');
+    $('mixer-scroll').querySelectorAll('.mx-card').forEach(c=>c.remove());
+    $('mixer-empty').style.display='block';
+    this.status('Cleared','');
   },
 
-  /* ── Mixer ── */
+  /* ── COPYRIGHT ── */
+  updateCopyright(){
+    this._copyright.name=$('copyright-name').value;
+    this._copyright.url=$('copyright-url').value;
+  },
+
+  /* ── MIXER ── */
   renderMixer(){
-    const c=$('mx-body');$('mx-empty').style.display='none';
+    const c=$('mixer-scroll');$('mixer-empty').style.display='none';
     c.querySelectorAll('.mx-card').forEach(e=>e.remove());
     this._trks.forEach((trk,i)=>{
       const card=document.createElement('div');
@@ -1502,24 +2093,23 @@ ${trackLines}
       const avgVel=nc?Math.round(trk.notes.reduce((s,n)=>s+n.velocity,0)/nc):0;
       card.innerHTML=`
         <div class="mx-top">
-          <div class="mx-sw" style="background:${col}"></div>
-          <div class="mx-nm">${esc(trk.name)}</div>
-          <span class="mx-pt">${isDrum?'Drums':gm(trk.program)} · Ch${trk.channel}</span>
-          <button class="mx-tool${trk._locked?' on-a':''}" data-a="lock" title="Lock — skip timing tighten"><i class="fa-solid fa-lock"></i></button>
-          <button class="mx-tool${trk._muted?' on':''}" data-a="mute" title="Mute track"><i class="fa-solid fa-volume-xmark"></i></button>
+          <div class="mx-color" style="background:${col}"></div>
+          <div class="mx-name">${esc(trk.name)}</div>
+          <span class="mx-sub">${isDrum?'Drums':gm(trk.program)}</span>
+          <button class="mx-btn${trk._locked?' on':''}" data-a="lock" title="Lock timing"><i class="fa-solid fa-lock"></i></button>
+          <button class="mx-btn${trk._muted?' mut':''}" data-a="mute" title="Mute"><i class="fa-solid fa-volume-xmark"></i></button>
         </div>
-        <div class="mx-bd">
-          <div class="mx-row"><span class="mx-rl">Vol</span><input type="range" min="0" max="127" value="${trk.cc7}" data-cc="cc7" style="flex:1;accent-color:${col}"><span class="mx-rv">${trk.cc7}</span></div>
-          <div class="mx-row"><span class="mx-rl">Pan</span><input type="range" min="0" max="127" value="${trk.cc10}" data-cc="cc10" style="flex:1;accent-color:${col}"><span class="mx-rv">${trk.cc10}</span></div>
-          <div class="mx-row"><span class="mx-rl">Rev</span><input type="range" min="0" max="127" value="${trk.cc91}" data-cc="cc91" style="flex:1;accent-color:${col}"><span class="mx-rv">${trk.cc91}</span></div>
+        <div class="mx-faders" style="--ac:${col}">
+          <div class="mx-fader-row"><span class="mx-fader-label">Vol</span><input type="range" min="0" max="127" value="${trk.cc7}" data-cc="cc7"><span class="mx-fader-val">${trk.cc7}</span></div>
+          <div class="mx-fader-row"><span class="mx-fader-label">Pan</span><input type="range" min="0" max="127" value="${trk.cc10}" data-cc="cc10"><span class="mx-fader-val">${trk.cc10}</span></div>
+          <div class="mx-fader-row"><span class="mx-fader-label">Rev</span><input type="range" min="0" max="127" value="${trk.cc91}" data-cc="cc91"><span class="mx-fader-val">${trk.cc91}</span></div>
         </div>
-        <div class="mx-info">${nc} notes · avg velocity ${avgVel}</div>
+        <div class="mx-info">${nc} notes · avg vel ${avgVel}</div>
         <div class="mx-roll"><canvas></canvas></div>`;
       card.addEventListener('click',function(e){
-        const btn=e.target.closest('.mx-tool');if(!btn)return;
+        const btn=e.target.closest('.mx-btn');if(!btn)return;
         const idx=parseInt(this.dataset.i),a=btn.dataset.a,t=App._trks[idx];
-        if(a==='mute')t._muted=!t._muted;
-        if(a==='lock')t._locked=!t._locked;
+        if(a==='mute')t._muted=!t._muted;if(a==='lock')t._locked=!t._locked;
         App.renderMixer();
       });
       card.querySelectorAll('input[type=range]').forEach(sl=>{
@@ -1533,7 +2123,7 @@ ${trackLines}
       requestAnimationFrame(()=>{
         const canvas=card.querySelector('canvas');if(!canvas)return;
         const rect=canvas.parentElement.getBoundingClientRect();
-        canvas.width=Math.max(rect.width||80,40);canvas.height=14;
+        canvas.width=Math.max(rect.width||100,60);canvas.height=16;
         const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);
         if(!trk.notes.length)return;
         const allP=trk.notes.map(n=>n.pitch),minP=Math.max(0,Math.min(...allP)-2),maxP=Math.min(127,Math.max(...allP)+2);
@@ -1542,74 +2132,85 @@ ${trackLines}
           const x=(n.tick/tot)*canvas.width,y=canvas.height-((n.pitch-minP)/pR)*canvas.height;
           ctx.fillStyle=col;ctx.globalAlpha=.55;
           ctx.fillRect(x,Math.max(0,y-2),Math.max(1.5,(n.dur/tot)*canvas.width),Math.max(2,canvas.height/pR));
-        }
-        ctx.globalAlpha=1;
+        }ctx.globalAlpha=1;
       });
     });
   },
 
-  /* ── Downloads ── */
+  /* ── DOWNLOAD ── */
   downloadAccomp(){
-    if(!this._trks.length){this.toast('No music to download yet','warn');return;}
-    const bytes=buildMidi(this._trks,this._bpm);
+    if(!this._trks.length){this.toast('No tracks to download yet','warn');return;}
+    const bytes=buildMidi(this._trks,this._bpm,TPB,this._copyright.name,this._copyright.url);
     const preset=PRESETS.find(x=>x.id===this._presetId);
     const intensity=preset?preset.intensities[this._intIdx]:null;
-    const pname=(preset?preset.name.toLowerCase().replace(/[^a-z0-9]+/g,'-'):'song')
-               +(intensity?'-'+intensity.label.toLowerCase():'');
+    const pname=(preset?preset.name.toLowerCase().replace(/[^a-z0-9]+/g,'-'):'song')+(intensity?'-'+intensity.label.toLowerCase():'');
     dlMidi(bytes,pname+'_'+this._bpm+'bpm.mid');
-    this.toast('Downloaded!','ok');this.status('MIDI downloaded','ok');
+    this.toast('MIDI downloaded!','ok');this.status('MIDI downloaded','ok');
+    this.markTabDone('export');
   },
   downloadMelody(){
     if(this._fi<0||!this._files.length){this.toast('No melody loaded','warn');return;}
-    const f=this._files[this._fi];dlMidi(f.data,f.name.replace(/\.midi?$/i,'')+'_melody.mid');
+    const f=this._files[this._fi];
+    dlMidi(f.data,f.name.replace(/\.midi?$/i,'')+'_melody.mid');
     this.toast('Downloaded: '+f.name,'ok');
   },
 
-  /* ── Init ── */
+  /* ── INIT ── */
   init(){
-    this.loadTheme();
     this.buildPresetGrid();
-    // Auto-select first preset so the app is immediately usable
     this.selectPreset(PRESETS[0].id);
-    // Hide welcome and show steps immediately (no need for the splash for returning users)
-    // But DO show welcome on first load — selectPreset already built the prompt, welcome is still visible
-    // User dismisses it by clicking a card or "New"
+    this.animateLogo(90);
 
+    // File input
     $('fi-midi').addEventListener('change',e=>{for(const f of e.target.files)this.loadFile(f);e.target.value='';});
+
+    // Drag & drop anywhere
     document.body.addEventListener('dragover',e=>e.preventDefault());
     document.body.addEventListener('drop',e=>{
       e.preventDefault();
       const files=[...e.dataTransfer.files].filter(f=>f.name.match(/\.midi?$/i));
-      if(files.length){
-        $('welcome').classList.remove('show');this.showSteps();
-        files.forEach(f=>this.loadFile(f));
-      }
+      if(files.length)files.forEach(f=>this.loadFile(f));
     });
+
+    // Verify file
+    $('fi-verify').addEventListener('change',e=>{
+      const f=e.target.files[0];if(!f)return;
+      const r=new FileReader();r.onload=()=>{
+        const bytes=new Uint8Array(r.result);
+        const result=verifyWatermark(bytes);
+        const el=$('verify-result');
+        if(result.found){
+          el.style.color='var(--green)';
+          el.innerHTML='<i class="fa-solid fa-circle-check" style="margin-right:4px"></i>Verified — created with MIDIComposer';
+        }else{
+          el.style.color='var(--red)';
+          el.innerHTML='<i class="fa-solid fa-circle-xmark" style="margin-right:4px"></i>'+result.reason;
+        }
+      };r.readAsArrayBuffer(f);
+    });
+
+    // Keyboard shortcuts
     document.addEventListener('keydown',e=>{
-      if(e.ctrlKey&&e.shiftKey&&e.key==='D'){e.preventDefault();if(this._hasAccomp)this.downloadAccomp();else if(this._hasMel)this.downloadMelody();}
-      // Ctrl+Enter copies prompt
-      if(e.ctrlKey&&e.key==='Enter'){e.preventDefault();this.copyPrompt();}
+      if(e.ctrlKey&&e.shiftKey&&e.key==='D'){e.preventDefault();if(this._hasAccomp)this.downloadAccomp();else if(this._fi>=0)this.downloadMelody();}
+      if(e.ctrlKey&&e.key==='Enter'){e.preventDefault();if(document.querySelector('.nav-tab[data-page="prompt"]').classList.contains('active'))this.copyPrompt();}
     });
-    $('json-in').addEventListener('input',()=>{
+
+    // Paste area: auto-detect JSON
+    $('json-paste').addEventListener('input',()=>{
       $('repair-log').classList.remove('show');
-      $('json-in').classList.remove('err','ok');
+      $('json-paste').classList.remove('err','ok');
       $('parse-msg').textContent='';$('parse-msg').className='';
-      if($('json-in').value.trim().includes('"tracks"'))this.setStep(4);
     });
-    // Click prompt-box to select all
-    $('prompt-box').addEventListener('dblclick',()=>{
-      if(window.getSelection){const s=window.getSelection(),r=document.createRange();r.selectNodeContents($('prompt-box'));s.removeAllRanges();s.addRange(r);}
+
+    // Prompt: double-click to select all
+    $('prompt-area').addEventListener('dblclick',()=>{
+      const el=$('prompt-area');
+      if(window.getSelection){const s=window.getSelection(),r=document.createRange();r.selectNodeContents(el);s.removeAllRanges();s.addRange(r);}
     });
-    window.addEventListener('resize',()=>{
-      if(this._fi>=0&&this._ti>=0){
-        const p=this._files[this._fi]?.parsed,t=p?.tracks[this._ti];
-        if(t?.notes)this.drawPR(t.notes,p.tpb);
-      }
-    });
-    this.status('Pick a scene — click Copy Prompt — paste into Claude or ChatGPT','');
+
+    this.status('Pick a scene on Compose, then Generate Prompt','');
   }
 };
-
 document.addEventListener('DOMContentLoaded',()=>App.init());
 </script>
 </body>
