@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MIDI Composer — AI Music Generator</title>
+<title>MIDIComposer – by Oroka Conner</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
@@ -20,7 +20,7 @@
   --border:   rgba(255,255,255,.07);
   --border2:  rgba(255,255,255,.12);
 
-  --ind:      #6C63FF; /* electric indigo — primary */
+  --ind:      #6C63FF;
   --ind-d:    rgba(108,99,255,.12);
   --ind-glow: rgba(108,99,255,.35);
   --rose:     #FF6584;
@@ -177,6 +177,8 @@ html, body { height: 100%; background: var(--bg); color: var(--txt); font-family
 #pages { flex: 1; overflow: hidden; }
 .page { display: none; height: 100%; overflow-y: auto; }
 .page.active { display: block; }
+/* prompt and mix need flex layout */
+#page-prompt.active, #page-mix.active { display: flex; flex-direction: column; }
 
 /* ══════════════════════════════════════════════════════════
    PAGE 1 — COMPOSE
@@ -424,6 +426,21 @@ input[type=number].bpm-input:focus { border-color: var(--ind); }
 .inst-sub { font-size: 9.5px; color: var(--txt-m); }
 .inst-icon { font-size: 13px; color: var(--txt-s); width: 20px; text-align: center; }
 
+/* instrument dropdown */
+.inst-program {
+  font-family: var(--sans);
+  font-size: 11px;
+  padding: 2px 6px;
+  background: var(--card);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  color: var(--hi);
+  outline: none;
+  cursor: pointer;
+  transition: border-color .12s;
+}
+.inst-program:focus { border-color: var(--ind); }
+
 /* EXTRA NOTES */
 textarea.extra-area {
   width: 100%;
@@ -504,11 +521,7 @@ textarea.extra-area::placeholder { color: var(--txt-s); }
 /* ══════════════════════════════════════════════════════════
    PAGE 2 — PROMPT
 ══════════════════════════════════════════════════════════ */
-#page-prompt {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
+/* flex via active class (no inline style) */
 
 .prompt-toolbar {
   display: flex;
@@ -553,17 +566,13 @@ textarea.extra-area::placeholder { color: var(--txt-s); }
 }
 #prompt-area.empty { color: var(--txt-s); font-style: italic; }
 
-/* Syntax-like coloring */
 .prompt-area-wrapper { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
 
 /* ══════════════════════════════════════════════════════════
    PAGE 3 — MIX
 ══════════════════════════════════════════════════════════ */
-#page-mix {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
+/* flex via active class */
+
 #mix-inner {
   flex: 1;
   display: grid;
@@ -977,6 +986,7 @@ kbd {
         <div class="ls-bar" style="height:9px;--dur:.65s;animation-delay:.3s"></div>
       </div>
       <span class="logo-text">MIDI<span>Composer</span></span>
+      <span style="font-size:9px;color:var(--txt-m);letter-spacing:.05em">by Oroka Conner</span>
     </div>
 
     <nav id="nav">
@@ -1085,35 +1095,79 @@ kbd {
               <div class="section-line"></div>
             </div>
             <div class="instruments-grid" id="instruments-grid">
+              <!-- Melody -->
               <label class="inst-row enabled" id="inst-melody">
                 <input type="checkbox" id="trk-melody" checked onchange="App.updateInstRow('inst-melody',this);App.rp()">
                 <div class="inst-check"><i class="fa-solid fa-check"></i></div>
                 <span class="inst-icon"><i class="fa-solid fa-piano-keyboard"></i></span>
-                <div class="inst-info"><div class="inst-name">Melody / Lead</div><div class="inst-sub">Piano, synth lead</div></div>
+                <div class="inst-info"><div class="inst-name">Melody / Lead</div><div class="inst-sub">Main melodic voice</div></div>
+                <select class="inst-program" id="prog-melody" onchange="App.onInstProgram('melody',this.value)">
+                  <option value="0" selected>Acoustic Piano</option>
+                  <option value="1">Bright Piano</option>
+                  <option value="4">Rhodes</option>
+                  <option value="8">Celesta</option>
+                  <option value="16">Hammond Organ</option>
+                  <option value="24">Nylon Guitar</option>
+                  <option value="25">Steel Guitar</option>
+                  <option value="56">Trumpet</option>
+                  <option value="65">Alto Sax</option>
+                  <option value="73">Flute</option>
+                  <option value="80">Square Lead</option>
+                  <option value="81">Saw Lead</option>
+                  <option value="88">Warm Pad</option>
+                </select>
               </label>
+              <!-- Chords -->
               <label class="inst-row enabled" id="inst-chords">
                 <input type="checkbox" id="trk-chords" checked onchange="App.updateInstRow('inst-chords',this);App.rp()">
                 <div class="inst-check"><i class="fa-solid fa-check"></i></div>
                 <span class="inst-icon"><i class="fa-solid fa-music"></i></span>
-                <div class="inst-info"><div class="inst-name">Chords / Harmony</div><div class="inst-sub">Strings, pads</div></div>
+                <div class="inst-info"><div class="inst-name">Chords / Harmony</div><div class="inst-sub">Pad or string bed</div></div>
+                <select class="inst-program" id="prog-chords" onchange="App.onInstProgram('chords',this.value)">
+                  <option value="48" selected>String Ensemble</option>
+                  <option value="49">Slow Strings</option>
+                  <option value="52">Choir Aahs</option>
+                  <option value="88">Warm Pad</option>
+                  <option value="89">Polysynth</option>
+                  <option value="98">FX Crystal</option>
+                </select>
               </label>
+              <!-- Bass -->
               <label class="inst-row enabled" id="inst-bass">
                 <input type="checkbox" id="trk-bass" checked onchange="App.updateInstRow('inst-bass',this);App.rp()">
                 <div class="inst-check"><i class="fa-solid fa-check"></i></div>
                 <span class="inst-icon"><i class="fa-solid fa-wave-square"></i></span>
-                <div class="inst-info"><div class="inst-name">Bass line</div><div class="inst-sub">Electric or synth bass</div></div>
+                <div class="inst-info"><div class="inst-name">Bass line</div><div class="inst-sub">Low-end groove</div></div>
+                <select class="inst-program" id="prog-bass" onchange="App.onInstProgram('bass',this.value)">
+                  <option value="33" selected>Finger Bass</option>
+                  <option value="32">Acoustic Bass</option>
+                  <option value="38">Synth Bass</option>
+                  <option value="39">Synth Bass 2</option>
+                </select>
               </label>
+              <!-- Arp/Texture -->
               <label class="inst-row enabled" id="inst-arp">
                 <input type="checkbox" id="trk-arp" checked onchange="App.updateInstRow('inst-arp',this);App.rp()">
                 <div class="inst-check"><i class="fa-solid fa-check"></i></div>
                 <span class="inst-icon"><i class="fa-solid fa-sliders"></i></span>
-                <div class="inst-info"><div class="inst-name">Texture / Arpeggios</div><div class="inst-sub">Harp, flute, synth</div></div>
+                <div class="inst-info"><div class="inst-name">Texture / Arp</div><div class="inst-sub">Arpeggios &amp; sparkle</div></div>
+                <select class="inst-program" id="prog-arp" onchange="App.onInstProgram('arp',this.value)">
+                  <option value="46" selected>Harp</option>
+                  <option value="11">Vibraphone</option>
+                  <option value="8">Celesta</option>
+                  <option value="73">Flute</option>
+                  <option value="88">Warm Pad</option>
+                </select>
               </label>
+              <!-- Drums -->
               <label class="inst-row enabled" id="inst-drums">
                 <input type="checkbox" id="trk-drums" checked onchange="App.updateInstRow('inst-drums',this);App.rp()">
                 <div class="inst-check"><i class="fa-solid fa-check"></i></div>
                 <span class="inst-icon"><i class="fa-solid fa-drum"></i></span>
-                <div class="inst-info"><div class="inst-name">Drums / Percussion</div><div class="inst-sub">Full GM drum kit</div></div>
+                <div class="inst-info"><div class="inst-name">Drums / Perc</div><div class="inst-sub">GM drum kit (ch 9)</div></div>
+                <select class="inst-program" id="prog-drums" onchange="App.onInstProgram('drums',this.value)" disabled>
+                  <option value="0" selected>Standard Kit</option>
+                </select>
               </label>
             </div>
           </div>
@@ -1130,7 +1184,7 @@ kbd {
     </div><!-- /page-compose -->
 
     <!-- PAGE 2: PROMPT -->
-    <div class="page" id="page-prompt" style="display:flex;flex-direction:column">
+    <div class="page" id="page-prompt">
       <div class="prompt-toolbar">
         <span class="prompt-toolbar-label"><i class="fa-solid fa-code" style="margin-right:5px"></i>AI Prompt</span>
         <div class="hsp"></div>
@@ -1152,7 +1206,7 @@ kbd {
     </div><!-- /page-prompt -->
 
     <!-- PAGE 3: MIX -->
-    <div class="page" id="page-mix" style="display:flex;flex-direction:column">
+    <div class="page" id="page-mix">
       <div id="mix-inner">
 
         <!-- PASTE PANEL -->
@@ -1217,7 +1271,7 @@ kbd {
         <div class="watermark-info">
           <div class="wm-icon"><i class="fa-solid fa-fingerprint"></i></div>
           <div class="wm-text">
-            <strong>Invisible watermark active.</strong> Every file created with MIDIComposer contains a hidden signature note — a single-tick MIDI event on channel 16 at the very start of the file, well outside the normal pitch range. It's silent in any DAW and doesn't affect playback, but you (or anyone who knows to look) can verify a file came from this tool. The channel 16 event carries the text <code style="font-family:var(--mono);font-size:10px;color:var(--amber)">"MIDIComposer"</code> in a text event, which is checked during verification.
+            <strong>Invisible watermark active.</strong> Every file created with MIDIComposer contains a hidden signature — a single‑tick MIDI event on channel 16 carrying the text <code style="font-family:var(--mono);font-size:10px;color:var(--amber)">"MIDIComposer by Lukas Bohez (Oroka Conner)"</code>. It is silent and does not affect playback, but you can verify a file was created with this tool.
           </div>
         </div>
 
@@ -1246,8 +1300,8 @@ kbd {
         </div>
 
         <div style="font-size:10.5px;color:var(--txt-s);text-align:center;line-height:1.7;padding-top:8px">
-          All music you generate is yours to use. The watermark is for tool verification only — it doesn't affect your rights to the music.
-          <br>Include this tool's link if you share publicly: <span style="color:var(--ind);font-family:var(--mono);font-size:9.5px">miditool.yourdomain.com</span>
+          All music you generate is yours to use. The watermark is for tool verification only — it does not affect your rights.<br>
+          Tool created by <strong>Lukas Bohez (Oroka Conner)</strong>.
         </div>
 
       </div>
@@ -1348,31 +1402,23 @@ function buildMidi(tracks,bpm,tpb,copyrightName,copyrightUrl){
   const tt=[];const us=Math.round(60000000/bpm);
   wVL(tt,0);tt.push(0xFF,0x51,0x03,(us>>16)&0xff,(us>>8)&0xff,us&0xff);
   wVL(tt,0);tt.push(0xFF,0x58,0x04,4,2,24,8);
-  // Sequence/Track Name
   wMeta(tt,0x03,'MIDIComposer');
-  // Copyright text
   const cpText='(c) '+new Date().getFullYear()+(copyrightName?' '+copyrightName:'')+(copyrightUrl?' | '+copyrightUrl:'');
   wMeta(tt,0x02,cpText);
-  // Tool credit
-  wMeta(tt,0x01,'Created with MIDIComposer — ai-midi-tool.com');
+  wMeta(tt,0x01,'Created with MIDIComposer by Lukas Bohez (Oroka Conner)');
   wVL(tt,0);tt.push(0xFF,0x2F,0x00);
 
   /* ── WATERMARK track (channel 16 / index 15) ── */
-  // One silent note at tick 0: pitch 108 (C8), velocity 1, dur 1 tick
-  // Invisible to ears and to most DAW views, but detectable programmatically.
-  // Plus a text meta event with the tool signature.
   const wt=[];
-  wMeta(wt,0x03,'_MC_WM');        // track name — hidden identifier
-  wMeta(wt,0x01,'MIDIComposer');  // text event — what verifier checks
-  // note on ch15 pitch 108 vel 1
-  wVL(wt,0);wt.push(0x9F,108,1);
-  // note off after 1 tick
+  wMeta(wt,0x03,'_MC_WM');
+  wMeta(wt,0x01,'MIDIComposer by Lukas Bohez (Oroka Conner)'); // watermark text for verifier
+  wVL(wt,0);wt.push(0x9F,108,1);  // silent note
   wVL(wt,1);wt.push(0x8F,108,0);
   wVL(wt,0);wt.push(0xFF,0x2F,0x00);
 
   const nTracks=tracks.filter(t=>t.notes&&t.notes.length).length;
   out.push(0x4D,0x54,0x68,0x64);w32(out,6);
-  w16(out,1);w16(out,nTracks+2);w16(out,tpb); // +2: tempo track + watermark track
+  w16(out,1);w16(out,nTracks+2);w16(out,tpb); // +2 for tempo + watermark
 
   out.push(0x4D,0x54,0x72,0x6B);w32(out,tt.length);out.push(...tt);
   out.push(0x4D,0x54,0x72,0x6B);w32(out,wt.length);out.push(...wt);
@@ -1419,7 +1465,6 @@ function dlMidi(bytes,name){
 
 /* ════════════ WATERMARK VERIFIER ════════════ */
 function verifyWatermark(bytes){
-  // Look for a track with name "_MC_WM" and text event "MIDIComposer"
   let pos=0;
   const r8=()=>bytes[pos++];
   const r16=()=>{const v=(bytes[pos]<<8)|bytes[pos+1];pos+=2;return v;};
@@ -1449,7 +1494,7 @@ function verifyWatermark(bytes){
         }
       }
       pos=end;
-      if(tname==='_MC_WM'&&texts.includes('MIDIComposer'))return{found:true,trackName:tname};
+      if(tname==='_MC_WM'&&texts.some(tx=>tx.includes('MIDIComposer by Lukas Bohez')))return{found:true,trackName:tname};
     }
     return{found:false,reason:'No watermark found — not created with MIDIComposer'};
   }catch(e){return{found:false,reason:'Could not read file: '+e.message};}
@@ -1486,7 +1531,6 @@ function parseMidiFile(bytes){
       else if(mt===0xB0||mt===0xE0){r8();r8();}else r8();
     }
     for(const[,arr]of active)for(const n of arr)notes.push({tick:n.tick,dur:Math.max(1,tick-n.tick),pitch:n.pitch,velocity:n.velocity,channel:n.channel});
-    // skip watermark track
     if(notes.length>0&&tname!=='_MC_WM')tracks.push({name:tname||(gm(prog)+(ch===9?' (Drums)':'')),notes,program:prog,channel:ch,index:tracks.length});
     pos=end;
   }
@@ -1666,6 +1710,7 @@ const App={
   _curQa:65,
   _copyright:{name:'',url:''},
   _lastPromptBars:0,
+  _instPrograms: { melody: 0, chords: 48, bass: 33, arp: 46, drums: 0 },
 
   /* ── PAGE NAV ── */
   goto(page,tabEl){
@@ -1674,7 +1719,6 @@ const App={
     const pg=$('page-'+page);if(pg)pg.classList.add('active');
     if(tabEl)tabEl.classList.add('active');
     else{const t=document.querySelector(`.nav-tab[data-page="${page}"]`);if(t)t.classList.add('active');}
-    // Special: rebuild prompt when switching to prompt page
     if(page==='prompt')this.rp();
   },
 
@@ -1715,6 +1759,13 @@ const App={
   updateInstRow(rowId,cb){
     const row=$(rowId);if(!row)return;
     if(cb.checked)row.classList.add('enabled');else row.classList.remove('enabled');
+  },
+
+  /* ── INSTRUMENT PROGRAM ── */
+  onInstProgram(role,val){
+    const prog = parseInt(val)||0;
+    this._instPrograms[role] = cl(prog,0,127);
+    this.rp();
   },
 
   /* ── PRESET GRID ── */
@@ -1759,7 +1810,6 @@ const App={
     this._bpm=int.bpm;
     $('bpm-sl').value=int.bpm;$('bpm-num').value=int.bpm;
     this._curQa=int.qa;
-    // Apply instrument defaults
     const insts={melody:'inst-melody',chords:'inst-chords',bass:'inst-bass',arp:'inst-arp',drums:'inst-drums'};
     const cbs={melody:'trk-melody',chords:'trk-chords',bass:'trk-bass',arp:'trk-arp',drums:'trk-drums'};
     for(const[key,rowId]of Object.entries(insts)){
@@ -1768,8 +1818,8 @@ const App={
       if(int.instruments[key])row.classList.add('enabled');
       else row.classList.remove('enabled');
     }
+    // Don't overwrite user's instrument choices when switching intensity
     this.animateLogo(int.bpm);
-    // Flash BPM hint
     $('bpm-hint').textContent='← preset';
     clearTimeout(this._bpmHintTimer);
     this._bpmHintTimer=setTimeout(()=>{if($('bpm-hint'))$('bpm-hint').textContent='';},2000);
@@ -1826,12 +1876,13 @@ Melody notes — copy these EXACTLY into the Melody track's "notes" array:
 `;
     }
 
+    const progs = this._instPrograms;
     const trackLines=[
-      tM?`• Melody/Lead — "role":"melody", channel 0, program 0${this._fi>=0&&this._ti>=0?' — pre-composed, copy melody notes EXACTLY':' — write a memorable line in "notes" (use "patterns" for repeating motifs)'}. Most prominent voice.`:null,
-      tC?`• Chords/Harmony — "role":"chords", channel 1, program 48 — use "chords" macro (voicing "pad" or "broken"). Quiet behind melody, velocity ~45-60.`:null,
-      tB?`• Bass — "role":"bass", channel 2, program 33 — use "patterns"+"events" for the groove.`:null,
-      tA?`• Texture/Arp — "role":"arp", channel 3, program 46 — use "patterns"+"events" or "chords" with voicing "broken".`:null,
-      tD?`• Drums — "role":"drums", channel 9, program 0 — use "drumGrid".`:null,
+      tM?`• Melody/Lead — "role":"melody", channel 0, program ${progs.melody} (${gm(progs.melody)})${this._fi>=0&&this._ti>=0?' — pre-composed, copy melody notes EXACTLY':' — write a memorable line in "notes" (use "patterns" for repeating motifs)'}. Most prominent voice.`:null,
+      tC?`• Chords/Harmony — "role":"chords", channel 1, program ${progs.chords} (${gm(progs.chords)}) — use "chords" macro (voicing "pad" or "broken"). Quiet behind melody, velocity ~45-60.`:null,
+      tB?`• Bass — "role":"bass", channel 2, program ${progs.bass} (${gm(progs.bass)}) — use "patterns"+"events" for the groove.`:null,
+      tA?`• Texture/Arp — "role":"arp", channel 3, program ${progs.arp} (${gm(progs.arp)}) — use "patterns"+"events" or "chords" with voicing "broken".`:null,
+      tD?`• Drums — "role":"drums", channel 9, program ${progs.drums} — use "drumGrid".`:null,
     ].filter(Boolean).join('\n');
 
     const prompt=`You are a professional MIDI arranger. Generate music that fits this scene.
@@ -1881,14 +1932,13 @@ x=hit X=accent o=ghost .=rest. Lanes: kick kick2 snare rim clap hat hatOpen hatP
 5. Return ONLY valid JSON. No explanation, no markdown.
 
 === FORMAT ===
-{"bpm":${bpm},"tracks":[{"name":"Bass","role":"bass","channel":2,"program":33,"patterns":{"A":{"notes":[{"t":0,"d":480,"p":36,"v":85}]}},"events":[{"pattern":"A","at":0,"repeat":${bars},"every":1920}]},{"name":"Chords","role":"chords","channel":1,"program":48,"chords":[{"t":0,"d":1920,"root":"C","quality":"maj7","voicing":"pad","v":55}]},{"name":"Melody","role":"melody","channel":0,"program":0,"notes":[{"tick":0,"dur":960,"pitch":67,"velocity":82}]},{"name":"Drums","role":"drums","channel":9,"program":0,"drumGrid":{"stepTicks":120,"patterns":{"main":{"kick":"x...x...","snare":"....x...","hat":"x.x.x.x."}},"events":[{"pattern":"main","at":0,"repeat":${bars}}]}}]}`;
+{"bpm":${bpm},"tracks":[{"name":"Bass","role":"bass","channel":2,"program":${progs.bass},"patterns":{"A":{"notes":[{"t":0,"d":480,"p":36,"v":85}]}},"events":[{"pattern":"A","at":0,"repeat":${bars},"every":1920}]},{"name":"Chords","role":"chords","channel":1,"program":${progs.chords},"chords":[{"t":0,"d":1920,"root":"C","quality":"maj7","voicing":"pad","v":55}]},{"name":"Melody","role":"melody","channel":0,"program":${progs.melody},"notes":[{"tick":0,"dur":960,"pitch":67,"velocity":82}]},{"name":"Drums","role":"drums","channel":9,"program":${progs.drums},"drumGrid":{"stepTicks":120,"patterns":{"main":{"kick":"x...x...","snare":"....x...","hat":"x.x.x.x."}},"events":[{"pattern":"main","at":0,"repeat":${bars}}]}}]}`;
 
     const box=$('prompt-area');
     box.textContent=prompt;
     box.classList.remove('empty');
     this._lastPromptBars=bars;
 
-    // Update badges
     $('pt-scene-badge').textContent=(preset?preset.name+' — '+(intensity?intensity.label:''):'');
     $('pt-bars-badge').style.display='flex';
     $('pt-bars-val').textContent=bars+' bars · '+bpm+' BPM';
@@ -1929,7 +1979,7 @@ x=hit X=accent o=ghost .=rest. Lanes: kick kick2 snare rim clap hat hatOpen hatP
   },
 
   melodyZoneClick(e){
-    if(this._fi>=0)return;// loaded — don't reopen on click (only the remove btn fires)
+    if(this._fi>=0)return;
     document.getElementById('fi-midi').click();
   },
 
@@ -1951,9 +2001,7 @@ x=hit X=accent o=ghost .=rest. Lanes: kick kick2 snare rim clap hat hatOpen hatP
     $('melody-zone').classList.add('loaded');
     $('mz-filename').textContent=f.name;
     $('mz-meta').textContent=p.tracks.length+' tracks · '+p.bpm+' BPM';
-    // track chips
     $('mz-tracks').innerHTML=p.tracks.map((t,i)=>`<div class="mz-track-chip${i===this._ti?' active':''}" onclick="App.selTrack(${i})">${esc(t.name||('Track '+(i+1)))}</div>`).join('');
-    // bars viz
     if(this._ti>=0){
       const trk=p.tracks[this._ti];
       const barT=p.tpb*4,maxB=Math.max(1,Math.ceil(Math.max(...trk.notes.map(n=>n.tick+n.dur))/barT));
@@ -2028,7 +2076,7 @@ x=hit X=accent o=ghost .=rest. Lanes: kick kick2 snare rim clap hat hatOpen hatP
       if(this._lastPromptBars){
         const maxT=Math.max(0,...this._trks.flatMap(t=>t.notes.map(n=>n.tick+n.dur)));
         const gotBars=Math.round(maxT/(TPB*4));
-        if(gotBars<this._lastPromptBars*0.7){shortWarn=`Only ~${gotBars} of ${this._lastPromptBars} bars filled — AI may have stopped early. Ask it to continue.`;balLog.push('⚠ '+shortWarn);}
+        if(gotBars<this._lastPromptBars*0.7){shortWarn=`Only ~${gotBars} of ${this._lastPromptBars} bars filled — AI may have stopped early.`;balLog.push('⚠ '+shortWarn);}
       }
       me.innerHTML='<i class="fa-solid fa-circle-check" style="margin-right:4px"></i>'+this._trks.length+' tracks · '+total+' notes · '+this._bpm+' BPM';
       me.className='msg-ok';ji.classList.add('ok');
@@ -2161,10 +2209,8 @@ x=hit X=accent o=ghost .=rest. Lanes: kick kick2 snare rim clap hat hatOpen hatP
     this.selectPreset(PRESETS[0].id);
     this.animateLogo(90);
 
-    // File input
     $('fi-midi').addEventListener('change',e=>{for(const f of e.target.files)this.loadFile(f);e.target.value='';});
 
-    // Drag & drop anywhere
     document.body.addEventListener('dragover',e=>e.preventDefault());
     document.body.addEventListener('drop',e=>{
       e.preventDefault();
@@ -2172,7 +2218,6 @@ x=hit X=accent o=ghost .=rest. Lanes: kick kick2 snare rim clap hat hatOpen hatP
       if(files.length)files.forEach(f=>this.loadFile(f));
     });
 
-    // Verify file
     $('fi-verify').addEventListener('change',e=>{
       const f=e.target.files[0];if(!f)return;
       const r=new FileReader();r.onload=()=>{
@@ -2181,7 +2226,7 @@ x=hit X=accent o=ghost .=rest. Lanes: kick kick2 snare rim clap hat hatOpen hatP
         const el=$('verify-result');
         if(result.found){
           el.style.color='var(--green)';
-          el.innerHTML='<i class="fa-solid fa-circle-check" style="margin-right:4px"></i>Verified — created with MIDIComposer';
+          el.innerHTML='<i class="fa-solid fa-circle-check" style="margin-right:4px"></i>Verified — created with MIDIComposer by Oroka Conner';
         }else{
           el.style.color='var(--red)';
           el.innerHTML='<i class="fa-solid fa-circle-xmark" style="margin-right:4px"></i>'+result.reason;
@@ -2189,20 +2234,17 @@ x=hit X=accent o=ghost .=rest. Lanes: kick kick2 snare rim clap hat hatOpen hatP
       };r.readAsArrayBuffer(f);
     });
 
-    // Keyboard shortcuts
     document.addEventListener('keydown',e=>{
       if(e.ctrlKey&&e.shiftKey&&e.key==='D'){e.preventDefault();if(this._hasAccomp)this.downloadAccomp();else if(this._fi>=0)this.downloadMelody();}
       if(e.ctrlKey&&e.key==='Enter'){e.preventDefault();if(document.querySelector('.nav-tab[data-page="prompt"]').classList.contains('active'))this.copyPrompt();}
     });
 
-    // Paste area: auto-detect JSON
     $('json-paste').addEventListener('input',()=>{
       $('repair-log').classList.remove('show');
       $('json-paste').classList.remove('err','ok');
       $('parse-msg').textContent='';$('parse-msg').className='';
     });
 
-    // Prompt: double-click to select all
     $('prompt-area').addEventListener('dblclick',()=>{
       const el=$('prompt-area');
       if(window.getSelection){const s=window.getSelection(),r=document.createRange();r.selectNodeContents(el);s.removeAllRanges();s.addRange(r);}
